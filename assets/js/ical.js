@@ -17,7 +17,7 @@
 
 const CRLF = '\r\n';
 
-const SITE = 'https://bernhardkreminski.github.io/rosencri.me/';
+const SITE = 'https://rosencri.me/';
 
 const DEFAULTS = Object.freeze({
   calName: 'rosencri.me — Subkultur in Rosenheim',

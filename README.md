@@ -2,7 +2,7 @@
 
 A community board for subculture events in Rosenheim, Germany — concerts, Vokü dinners, flea markets, DIY workshops, and everything else the local punk/indie/DIY scene puts on a flyer. Photograph a poster, let OCR read it, review the result, and it's on the board for everyone.
 
-**Live site:** https://bernhardkreminski.github.io/rosencri.me/
+**Live site:** https://rosencri.me/
 
 ## Features
 

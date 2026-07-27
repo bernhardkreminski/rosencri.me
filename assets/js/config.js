@@ -38,7 +38,7 @@ export const SITE_NAME = 'rosencri.me';
 export const SITE_TAGLINE = 'Subkultur-Events in Rosenheim';
 
 /** Public base URL, used for iCal links and share URLs. */
-export const SITE_URL = 'https://bernhardkreminski.github.io/rosencri.me/';
+export const SITE_URL = 'https://rosencri.me/';
 
 /** Path of the subscribable calendar feed, relative to SITE_URL. */
 export const ICS_PATH = 'calendar.ics';

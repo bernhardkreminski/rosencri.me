@@ -37,7 +37,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DEFAULT_SEED_PATH = path.join(REPO_ROOT, 'data', 'seed-events.json');
 const OUTPUT_PATH = path.join(REPO_ROOT, 'calendar.ics');
-const CAL_URL = 'https://bernhardkreminski.github.io/rosencri.me/';
+const CAL_URL = 'https://rosencri.me/';
 
 // ---------------------------------------------------------------------
 // Supabase source

@@ -14,7 +14,7 @@
 Once deployed, the site is available at:
 
 ```
-https://bernhardkreminski.github.io/rosencri.me/
+https://rosencri.me/
 ```
 
 ## 2. Repo secrets for the calendar workflow
@@ -32,7 +32,7 @@ Each command prompts for the value interactively (or pipe it in with `--body`). 
 
 - **Actions tab**: confirm the Pages workflow run is green.
 - **Site check**: open the live URL and confirm events load.
-- **Calendar check**: confirm `https://bernhardkreminski.github.io/rosencri.me/calendar.ics` returns a valid `.ics` file, and that it's being refreshed — check the "regenerate calendar.ics" workflow runs on its hourly schedule in the Actions tab.
+- **Calendar check**: confirm `https://rosencri.me/calendar.ics` returns a valid `.ics` file, and that it's being refreshed — check the "regenerate calendar.ics" workflow runs on its hourly schedule in the Actions tab.
 
 ## 4. Custom domain (optional): `rosencri.me`
 
@@ -77,7 +77,7 @@ Each command prompts for the value interactively (or pipe it in with `--body`). 
 
 ## 5. Subscribing to the calendar
 
-The feed lives at `webcal://bernhardkreminski.github.io/rosencri.me/calendar.ics` (or `https://.../calendar.ics` if a client doesn't support the `webcal://` scheme). Subscribing keeps it in sync — clients periodically re-fetch it rather than importing a one-time snapshot.
+The feed lives at `webcal://rosencri.me/calendar.ics` (or `https://.../calendar.ics` if a client doesn't support the `webcal://` scheme). Subscribing keeps it in sync — clients periodically re-fetch it rather than importing a one-time snapshot.
 
 - **iOS**: Settings → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar → paste the `webcal://` URL.
 - **macOS (Calendar app)**: File → New Calendar Subscription → paste the `webcal://` URL → Subscribe.
