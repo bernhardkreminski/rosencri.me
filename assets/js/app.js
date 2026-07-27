@@ -343,6 +343,14 @@ function bindAddFlow() {
     if (state.draft) state.draft.blob = null;
     ui.formPoster.hidden = true;
   });
+  $('#form-poster-view').addEventListener('click', () => {
+    $('#lightbox-img').src = ui.formPosterImg.src;
+    $('#dlg-lightbox').showModal();
+  });
+  // Tapping the image itself (not just the close button) dismisses the lightbox.
+  $('#dlg-lightbox').addEventListener('click', (e) => {
+    if (e.target.id !== 'lightbox-img') $('#dlg-lightbox').close();
+  });
   ui.form.addEventListener('submit', onSubmitEvent);
 
   // Touch devices get the camera option first; on desktop it just opens a picker.

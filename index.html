@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
 
@@ -229,8 +229,18 @@
 
   <form id="event-form" class="form" novalidate>
     <div class="form-poster" id="form-poster" hidden>
-      <img id="form-poster-img" alt="Gewähltes Poster">
-      <button type="button" class="btn btn-ghost btn-sm" id="form-poster-remove">Bild entfernen</button>
+      <button type="button" class="form-poster-view" id="form-poster-view" title="Poster vergrößern">
+        <img id="form-poster-img" alt="Das aufgenommene Poster">
+        <span class="form-poster-zoom" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5M11 8v6M8 11h6"/></svg>
+          Vergrößern
+        </span>
+      </button>
+      <div class="form-poster-side">
+        <p class="form-poster-hint">Nicht jedes Poster lässt sich vollständig auslesen — handgemalte
+          Schrift oft gar nicht. Tipp das Bild an, um alles abzulesen und zu ergänzen.</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="form-poster-remove">Bild entfernen</button>
+      </div>
     </div>
 
     <label class="field">
@@ -326,8 +336,16 @@
   <a class="dl-link" id="sub-download" href="calendar.ics" download>Stattdessen einmalig als .ics herunterladen</a>
 </dialog>
 
+<!-- 6. Poster lightbox — the fallback for whatever OCR could not read -->
+<dialog class="lightbox" id="dlg-lightbox">
+  <form method="dialog"><button class="lightbox-close" aria-label="Schließen">✕</button></form>
+  <img id="lightbox-img" alt="Poster in voller Größe">
+</dialog>
+
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
-<script type="module" src="assets/js/app.js"></script>
+<!-- ?v= is a cache buster: GitHub Pages serves assets with max-age=600, so bump
+     this when shipping a change that must reach open tabs immediately. -->
+<script type="module" src="assets/js/app.js?v=2"></script>
 </body>
 </html>

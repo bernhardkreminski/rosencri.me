@@ -12,3 +12,6 @@ node_modules/
 
 # Claude Code local state — may contain tokens from approved commands
 .claude/settings.local.json
+
+# Third-party sample posters used for OCR testing — not redistributed
+dev/samples/
