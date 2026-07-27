@@ -36,6 +36,9 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          # Runners are UTC; seed events use wall-clock times that must be read
+          # as Rosenheim-local, or the feed drifts 2h from the website.
+          TZ: Europe/Berlin
         run: node scripts/build-ics.mjs
 
       - name: Commit calendar.ics if it changed

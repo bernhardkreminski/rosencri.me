@@ -24,6 +24,15 @@ import { createHash } from 'node:crypto';
 import { eventsToICS } from '../assets/js/ical.js';
 import { resolveSeedDates } from '../assets/js/seed.js';
 
+// Seed events express their start as a wall-clock time ("dayOffset 0, 20:00").
+// `resolveSeedDates` turns that into a Date with setHours(), which resolves in
+// the *process* timezone. GitHub Actions runners are UTC, so without this the
+// feed placed every seed 2h later than the website showed it (20:00 -> 22:00).
+// The board is Rosenheim-local, so Europe/Berlin is the correct frame of
+// reference for a bare "20:00". Real events are unaffected either way: they
+// carry an explicit UTC offset.
+process.env.TZ ??= 'Europe/Berlin';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DEFAULT_SEED_PATH = path.join(REPO_ROOT, 'data', 'seed-events.json');
