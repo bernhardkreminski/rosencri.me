@@ -760,9 +760,8 @@ function toast(message, kind = 'info') {
   }, 3600);
 }
 
-// Escape closes the topmost dialog; <dialog> already handles this, but Safari
-// needs the explicit cleanup of object URLs when the form sheet goes away.
-ui.dlgForm?.addEventListener?.('close', () => {});
+// <dialog> handles Escape itself; we only need to release the poster preview's
+// object URL when the form sheet goes away, however it was closed.
 document.addEventListener('close', (e) => {
   if (e.target === ui.dlgForm && state.draft?.previewUrl) {
     URL.revokeObjectURL(state.draft.previewUrl);

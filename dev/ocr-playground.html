@@ -411,6 +411,67 @@ const TEST_CASES = [
     ],
   },
   {
+    name: 'SOLIKONZERT: weekday-abbr stripping must be word-anchored',
+    // Regression test: leading "SO" was being stripped as the Sonntag
+    // abbreviation, corrupting the title to "Likonzert".
+    lines: [
+      { text: 'SOLIKONZERT', confidence: 93, height: 69, top: 0, left: 20 },
+      { text: 'Freitag, 14.08.2026', confidence: 90, height: 30, top: 100, left: 20 },
+      { text: 'Beginn 20:00 Uhr', confidence: 88, height: 20, top: 150, left: 20 },
+      { text: 'Ort: Kulturzentrum Asta, Rosenheim', confidence: 88, height: 16, top: 200, left: 20 },
+      { text: 'Punk aus Muenchen', confidence: 88, height: 16, top: 240, left: 20 },
+      { text: 'www.asta-rosenheim.de', confidence: 88, height: 16, top: 280, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['title === "Solikonzert"', fields.title === 'Solikonzert', fields.title],
+      ['tags include "soli"', fields.tags.includes('soli'), fields.tags.join(', ')],
+      ['tags include "punk"', fields.tags.includes('punk'), fields.tags.join(', ')],
+      ['location === "Kulturzentrum Asta, Rosenheim"', fields.location === 'Kulturzentrum Asta, Rosenheim', fields.location],
+      ['start === "2026-08-14T20:00"', fields.start === '2026-08-14T20:00', fields.start],
+    ],
+  },
+  {
+    name: 'Weekday/month token stripping survives compound words',
+    lines: [
+      { text: 'MITTWOCHSCLUB', confidence: 90, height: 60, top: 0, left: 20 },
+      { text: '01.09.2026', confidence: 88, height: 16, top: 70, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['MITTWOCHSCLUB -> "Mittwochsclub"', fields.title === 'Mittwochsclub', fields.title],
+    ],
+  },
+  {
+    name: 'FRÜHSCHOPPEN survives (umlaut counts as a letter)',
+    lines: [
+      { text: 'FRÜHSCHOPPEN', confidence: 90, height: 60, top: 0, left: 20 },
+      { text: '12.09.2026', confidence: 88, height: 16, top: 70, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['FRÜHSCHOPPEN -> "Frühschoppen"', fields.title === 'Frühschoppen', fields.title],
+    ],
+  },
+  {
+    name: 'MAIFEIER / DEZEMBERFEST survive (month-abbr hazard)',
+    lines: [
+      { text: 'MAIFEIER', confidence: 90, height: 60, top: 0, left: 20 },
+      { text: '01.05.2026', confidence: 88, height: 16, top: 70, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['MAIFEIER -> "Maifeier"', fields.title === 'Maifeier', fields.title],
+    ],
+  },
+  {
+    name: 'Legit weekday stripping still works (regression guard)',
+    lines: [
+      { text: 'SOMMERFEST', confidence: 90, height: 60, top: 0, left: 20 },
+      { text: 'Samstag, 25.07.2026', confidence: 88, height: 20, top: 70, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['SOMMERFEST -> "Sommerfest"', fields.title === 'Sommerfest', fields.title],
+      ['date after weekday still parses', fields.start?.endsWith('-07-25T20:00'), fields.start],
+    ],
+  },
+  {
     name: 'Robustness: malformed input never throws',
     lines: [null, undefined, { text: 123 }, {}, { text: '   ' }],
     assertions: (fields) => [

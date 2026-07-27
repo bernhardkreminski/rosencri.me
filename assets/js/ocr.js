@@ -276,9 +276,16 @@ const WEEKDAY_NAMES = [
 ];
 const WEEKDAY_ABBR = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
+// Weekday token must stand alone (optionally followed by "." or ","), never be
+// a prefix/infix of a longer word — e.g. "SOLIKONZERT" must NOT lose its
+// leading "SO" (Sonntag abbreviation), nor "MITTWOCHSCLUB" its "Mittwoch".
+// A plain `\b` isn't enough here: JS's default (non-unicode) word boundary
+// treats German umlauts as non-word characters, so `\b` would (wrongly) see
+// a boundary between "FR" and the "Ü" in "FRÜHSCHOPPEN". Using a unicode-aware
+// negative lookahead for "not a letter/number" instead of `\b` avoids that.
 const WEEKDAY_PREFIX_RE = new RegExp(
-  `^(?:${WEEKDAY_NAMES.join('|')}|${WEEKDAY_ABBR.join('|')})\\.?,?\\s*`,
-  'i',
+  `^(?:${WEEKDAY_NAMES.join('|')}|${WEEKDAY_ABBR.join('|')})(?![\\p{L}\\p{N}])[.,]?\\s*`,
+  'iu',
 );
 
 function monthFromToken(token) {
@@ -728,7 +735,9 @@ const TAG_DEFINITIONS = [
   ['workshop', /\bworkshop/i],
   ['voku', /\bvok[üu]/i],
   ['kufa', /\bk[üu]fa\b/i],
-  ['soli', /\bsoli\b/i],
+  // No trailing boundary (like 'kinder'/'konzert' below): "soli" is commonly
+  // a compound-word prefix on posters (e.g. "Solikonzert" = solidarity gig).
+  ['soli', /\bsoli/i],
   ['open-air', /\bopen[\s-]?air/i],
   ['biergarten', /\bbiergarten/i],
   ['kinder', /\bkinder/i],
