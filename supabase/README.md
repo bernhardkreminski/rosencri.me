@@ -25,12 +25,24 @@ This creates:
 - A view `events_with_counts` (events + like/going/comment counts).
 - A public storage bucket named `posters` (5 MB limit, image mime types only).
 
+Note there is intentionally **no anon SELECT policy on `storage.objects`**. The
+bucket is public, so posters are already readable at
+`/storage/v1/object/public/posters/<name>` without any policy; adding one would
+only let anyone call the list endpoint and enumerate every poster ever
+uploaded. Uploads and public reads both work without it.
+
 ## 3. Copy your project keys
 
-In the dashboard: **Project Settings → API**.
+In the dashboard: **Project Settings → API Keys**.
 
 - **Project URL** — looks like `https://xxxxxxxxxxxx.supabase.co`
-- **anon / public key** — a long JWT-looking string
+- The public key. Supabase is mid-migration on naming here:
+  - newer projects show a **publishable key**, `sb_publishable_…`
+  - older ones show an **anon / public** key, a long JWT starting `eyJ…`
+
+  Either works — both are accepted in the `apikey` and `Authorization: Bearer`
+  headers that `store.js` sends. Never use the **secret** / **service_role**
+  key: it bypasses RLS entirely.
 
 ## 4. Wire the site to your project
 

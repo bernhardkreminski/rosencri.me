@@ -8,15 +8,17 @@
 /* ------------------------------------------------------------------------- *
  * Backend (Supabase)
  *
- * Paste your project URL and the *anon public* key here. Both are safe to ship
- * in a public repository: the anon key only ever grants what the Row Level
- * Security policies in `supabase/schema.sql` allow.
+ * Paste your project URL and the public API key here — labelled *anon public*
+ * on older projects, *publishable* (`sb_publishable_…`) on newer ones. Both are
+ * safe to ship in a public repository: this key only ever grants what the Row
+ * Level Security policies in `supabase/schema.sql` allow. The *secret* /
+ * *service_role* key bypasses RLS and must never appear in this file.
  *
  * Leave them empty and the site transparently falls back to browser-local
  * storage — everything still works, but data stays on the device.
  * ------------------------------------------------------------------------- */
-export const SUPABASE_URL = '';
-export const SUPABASE_ANON_KEY = '';
+export const SUPABASE_URL = 'https://pyftcvikhuzleqxjsecn.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_Nc8I0WcFkrfZKqoRGEBYJQ_1opGv3oG';
 
 /** Storage bucket that poster photos are uploaded to. */
 export const SUPABASE_BUCKET = 'posters';

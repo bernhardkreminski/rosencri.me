@@ -251,11 +251,17 @@ values (
 )
 on conflict (id) do nothing;
 
+-- Deliberately NO anon SELECT policy on storage.objects.
+--
+-- The bucket is public, so files are already served to everyone through
+--   /storage/v1/object/public/posters/<name>
+-- which bypasses RLS. A `for select ... using (bucket_id = 'posters')` policy
+-- adds nothing to that, but it *does* let anyone call the list endpoint and
+-- enumerate every poster ever uploaded. Verified against a live project:
+-- with the policy, `POST /storage/v1/object/list/posters` returns the full
+-- file listing to an anonymous caller; without it the listing is empty while
+-- public reads and anonymous uploads both still return 200.
 drop policy if exists "posters_public_read" on storage.objects;
-create policy "posters_public_read"
-  on storage.objects for select
-  to anon
-  using (bucket_id = 'posters');
 
 drop policy if exists "posters_anon_upload" on storage.objects;
 create policy "posters_anon_upload"
