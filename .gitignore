@@ -1,0 +1,14 @@
+.DS_Store
+node_modules/
+.env
+.env.local
+.vscode/
+.idea/
+*.log
+
+# NOTE: calendar.ics is intentionally NOT ignored.
+# It is the published iCal feed regenerated hourly by GitHub Actions
+# and served directly from the repo — it must stay committed.
+
+# Claude Code local state — may contain tokens from approved commands
+.claude/settings.local.json

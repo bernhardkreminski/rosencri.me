@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>rosencri.me — Subkultur-Events in Rosenheim</title>
+<meta name="description" content="Konzerte, Vokü, Flohmärkte, Lesungen: der offene Terminkalender für die Rosenheimer Subkultur. Poster abfotografieren, Event landet im Kalender.">
+<meta name="theme-color" content="#e1483c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="rosencri.me — Subkultur-Events in Rosenheim">
+<meta property="og:description" content="Poster abfotografieren, Event landet im Kalender. Der offene Terminkalender für die Rosenheimer Subkultur.">
+<meta property="og:url" content="https://bernhardkreminski.github.io/rosencri.me/">
+
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="alternate" type="text/calendar" href="calendar.ics" title="rosencri.me Kalender">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><path d="M16 3l3.6 7.6 8.4 1.1-6.2 5.7 1.6 8.3L16 21.8 8.6 25.7l1.6-8.3L4 11.7l8.4-1.1z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <strong>rosencri<span class="brand-dot">.</span>me</strong>
+        <small>Subkultur in Rosenheim</small>
+      </span>
+    </a>
+
+    <nav class="viewswitch" role="tablist" aria-label="Ansicht">
+      <button class="viewswitch-btn is-active" role="tab" aria-selected="true" data-view="list" id="tab-list">Liste</button>
+      <button class="viewswitch-btn" role="tab" aria-selected="false" data-view="calendar" id="tab-calendar">Kalender</button>
+    </nav>
+
+    <button class="btn btn-ghost btn-subscribe" id="btn-subscribe" title="Kalender abonnieren">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+      <span>Abonnieren</span>
+    </button>
+  </div>
+</header>
+
+<div class="banner" id="banner" hidden></div>
+
+<main id="main">
+
+  <!-- ------------------------------- LIST ------------------------------- -->
+  <section class="view view-list is-active" id="view-list" role="tabpanel" aria-labelledby="tab-list">
+
+    <div class="wrap">
+      <div class="hero">
+        <h1 class="hero-title">Was geht in <span class="hl">Rosenheim</span>?</h1>
+        <p class="hero-sub">Konzerte, Vokü, Flohmärkte, Lesungen — von der Szene für die Szene.
+          Poster gesehen? Abfotografieren, fertig.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" id="btn-add-hero">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Event hinzufügen
+          </button>
+          <a class="btn btn-ghost" href="calendar.ics" id="link-ics-hero">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+            Kalender abonnieren
+          </a>
+        </div>
+      </div>
+
+      <div class="filters" id="filters">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input type="search" id="search" placeholder="Suchen: Band, Ort, Stichwort …" autocomplete="off" aria-label="Events durchsuchen">
+        </div>
+        <div class="chips" id="tag-filters" role="group" aria-label="Nach Tag filtern"></div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <section class="section section-now" id="section-now" hidden>
+        <h2 class="section-title"><span class="pulse" aria-hidden="true"></span> Jetzt &amp; heute</h2>
+        <div class="cards cards-hot" id="list-now"></div>
+      </section>
+
+      <section class="section" id="section-upcoming">
+        <h2 class="section-title">Demnächst</h2>
+        <div class="cards" id="list-upcoming"></div>
+      </section>
+
+      <section class="section section-past" id="section-past" hidden>
+        <details id="past-details">
+          <summary class="section-title section-title-toggle">
+            Vorbei <span class="count" id="past-count"></span>
+          </summary>
+          <div class="cards cards-past" id="list-past"></div>
+        </details>
+      </section>
+
+      <div class="empty" id="empty-state" hidden>
+        <p class="empty-emoji" aria-hidden="true">🫥</p>
+        <h2>Noch nichts los</h2>
+        <p>Sei die erste Person, die hier ein Event einträgt.</p>
+        <button class="btn btn-primary" id="btn-add-empty">Event hinzufügen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ----------------------------- CALENDAR ----------------------------- -->
+  <section class="view view-calendar" id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
+    <div class="wrap">
+      <div class="cal-head">
+        <button class="iconbtn" id="cal-prev" aria-label="Vorheriger Monat">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <h2 class="cal-title" id="cal-title" aria-live="polite">—</h2>
+        <button class="iconbtn" id="cal-next" aria-label="Nächster Monat">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn btn-ghost btn-sm" id="cal-today">Heute</button>
+      </div>
+
+      <div class="cal-grid" id="cal-grid" role="grid" aria-labelledby="cal-title"></div>
+
+      <div class="cal-legend">
+        <span><i class="dot dot-live"></i> läuft gerade</span>
+        <span><i class="dot dot-soon"></i> in den nächsten 24 h</span>
+        <span><i class="dot dot-up"></i> geplant</span>
+        <span><i class="dot dot-past"></i> vorbei</span>
+      </div>
+
+      <section class="cal-day" id="cal-day" hidden>
+        <h3 class="cal-day-title" id="cal-day-title"></h3>
+        <div class="cards" id="cal-day-list"></div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p><strong>rosencri.me</strong> — offener Terminkalender für die Rosenheimer Subkultur.
+      Kein Login, keine Werbung, kein Algorithmus.</p>
+    <p class="footer-meta">
+      <a href="calendar.ics" id="link-ics-footer">Kalender-Feed</a> ·
+      <a href="https://github.com/bernhardkreminski/rosencri.me" target="_blank" rel="noopener">Quellcode</a> ·
+      <span id="storage-mode" class="storage-mode"></span>
+    </p>
+  </div>
+</footer>
+
+<!-- Floating action button -->
+<button class="fab" id="fab" aria-label="Event hinzufügen">
+  <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  <span class="fab-label">Event</span>
+</button>
+
+<!-- ============================== DIALOGS ============================== -->
+
+<!-- 1. Choose how to add -->
+<dialog class="sheet" id="dlg-add">
+  <form method="dialog" class="sheet-close-form"><button class="sheet-close" aria-label="Schließen">✕</button></form>
+  <h2 class="sheet-title">Event hinzufügen</h2>
+  <p class="sheet-sub">Am schnellsten geht’s mit dem Poster.</p>
+
+  <div class="addopts">
+    <label class="addopt addopt-primary" id="opt-camera">
+      <input type="file" accept="image/*" capture="environment" id="file-camera" hidden>
+      <span class="addopt-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13.5" r="3.6"/></svg>
+      </span>
+      <span class="addopt-text">
+        <strong>Poster fotografieren</strong>
+        <small>Kamera öffnen — Text wird automatisch ausgelesen</small>
+      </span>
+    </label>
+
+    <label class="addopt" id="opt-upload">
+      <input type="file" accept="image/*" id="file-upload" hidden>
+      <span class="addopt-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+      </span>
+      <span class="addopt-text">
+        <strong>Bild hochladen</strong>
+        <small>Foto oder Screenshot aus der Galerie</small>
+      </span>
+    </label>
+
+    <button class="addopt" id="opt-manual" type="button">
+      <span class="addopt-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.1 2.1 0 00-3-3L5 17z"/><path d="M14 6l4 4"/></svg>
+      </span>
+      <span class="addopt-text">
+        <strong>Manuell eintragen</strong>
+        <small>Alles selbst ausfüllen</small>
+      </span>
+    </button>
+  </div>
+  <p class="hint">Die Texterkennung läuft komplett auf deinem Gerät — das Bild wird dafür nirgends hochgeladen.</p>
+</dialog>
+
+<!-- 2. OCR progress -->
+<dialog class="sheet sheet-scan" id="dlg-scan">
+  <h2 class="sheet-title">Poster wird gelesen …</h2>
+  <div class="scan-body">
+    <div class="scan-preview"><img id="scan-img" alt="Vorschau des gewählten Posters"></div>
+    <div class="scan-status">
+      <p class="scan-msg" id="scan-msg" aria-live="polite">Bild wird vorbereitet …</p>
+      <div class="progress"><div class="progress-bar" id="scan-bar" style="width:0%"></div></div>
+      <p class="hint">Beim ersten Mal dauert es etwas länger — die Texterkennung wird geladen.</p>
+      <button class="btn btn-ghost btn-sm" id="scan-cancel" type="button">Abbrechen</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- 3. Review / edit form -->
+<dialog class="sheet sheet-form" id="dlg-form">
+  <form method="dialog" class="sheet-close-form"><button class="sheet-close" aria-label="Schließen">✕</button></form>
+  <h2 class="sheet-title" id="form-title">Event prüfen</h2>
+  <p class="sheet-sub" id="form-sub">Wir haben das aus dem Poster gelesen. Bitte kurz kontrollieren.</p>
+
+  <form id="event-form" class="form" novalidate>
+    <div class="form-poster" id="form-poster" hidden>
+      <img id="form-poster-img" alt="Gewähltes Poster">
+      <button type="button" class="btn btn-ghost btn-sm" id="form-poster-remove">Bild entfernen</button>
+    </div>
+
+    <label class="field">
+      <span class="field-label">Titel <em>*</em></span>
+      <input name="title" required maxlength="200" placeholder="z. B. Konzert im Klanglabor" autocomplete="off">
+      <span class="field-flag" data-flag="title" hidden>⚠︎ bitte prüfen</span>
+    </label>
+
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">Beginn <em>*</em></span>
+        <input type="datetime-local" name="start" required>
+        <span class="field-flag" data-flag="start" hidden>⚠︎ bitte prüfen</span>
+      </label>
+      <label class="field">
+        <span class="field-label">Ende <small>optional</small></span>
+        <input type="datetime-local" name="end">
+      </label>
+    </div>
+
+    <label class="field">
+      <span class="field-label">Ort</span>
+      <input name="location" maxlength="160" placeholder="z. B. Kulturzentrum Asta, Rosenheim" autocomplete="off">
+      <span class="field-flag" data-flag="location" hidden>⚠︎ bitte prüfen</span>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Beschreibung</span>
+      <textarea name="description" rows="4" maxlength="4000" placeholder="Bands, Eintritt, Infos …"></textarea>
+    </label>
+
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">Link <small>optional</small></span>
+        <input type="url" name="url" placeholder="https://…" autocomplete="off">
+      </label>
+      <label class="field">
+        <span class="field-label">Tags <small>Komma-getrennt</small></span>
+        <input name="tags" placeholder="punk, konzert" autocomplete="off">
+      </label>
+    </div>
+
+    <label class="field">
+      <span class="field-label">Dein Name <small>optional, erscheint als „eingetragen von“</small></span>
+      <input name="authorName" maxlength="40" placeholder="anonym" autocomplete="nickname">
+    </label>
+
+    <p class="form-error" id="form-error" hidden></p>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-ghost" id="form-cancel">Abbrechen</button>
+      <button type="submit" class="btn btn-primary" id="form-submit">In den Kalender eintragen</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 4. Event detail -->
+<dialog class="sheet sheet-detail" id="dlg-detail" aria-labelledby="detail-title">
+  <form method="dialog" class="sheet-close-form"><button class="sheet-close" aria-label="Schließen">✕</button></form>
+  <div id="detail-body"></div>
+</dialog>
+
+<!-- 5. Subscribe -->
+<dialog class="sheet" id="dlg-subscribe">
+  <form method="dialog" class="sheet-close-form"><button class="sheet-close" aria-label="Schließen">✕</button></form>
+  <h2 class="sheet-title">Kalender abonnieren</h2>
+  <p class="sheet-sub">Alle Events landen automatisch in deinem Kalender und aktualisieren sich stündlich.</p>
+
+  <a class="btn btn-primary btn-block" id="sub-webcal" href="#">
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+    Jetzt abonnieren
+  </a>
+  <p class="hint">Öffnet Apple Kalender, Outlook oder deine Kalender-App.</p>
+
+  <label class="field">
+    <span class="field-label">Feed-Adresse zum Kopieren</span>
+    <span class="copyrow">
+      <input id="sub-url" readonly>
+      <button class="btn btn-ghost btn-sm" id="sub-copy" type="button">Kopieren</button>
+    </span>
+  </label>
+
+  <details class="howto">
+    <summary>Anleitung pro App</summary>
+    <ul>
+      <li><strong>iPhone / iPad:</strong> „Jetzt abonnieren“ tippen → Abonnieren bestätigen.</li>
+      <li><strong>macOS:</strong> Kalender → Ablage → Neues Kalenderabonnement → Adresse einfügen.</li>
+      <li><strong>Google Kalender:</strong> Einstellungen → Kalender hinzufügen → Per URL → Adresse einfügen.</li>
+      <li><strong>Outlook:</strong> Kalender hinzufügen → Aus dem Internet abonnieren → Adresse einfügen.</li>
+    </ul>
+  </details>
+
+  <a class="dl-link" id="sub-download" href="calendar.ics" download>Stattdessen einmalig als .ics herunterladen</a>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

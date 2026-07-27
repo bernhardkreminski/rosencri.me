@@ -1,0 +1,14 @@
+{
+  "name": "rosencri.me — Subkultur-Events in Rosenheim",
+  "short_name": "rosencri.me",
+  "description": "Offener Terminkalender für die Rosenheimer Subkultur. Poster abfotografieren, Event landet im Kalender.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbf4e2",
+  "theme_color": "#e1483c",
+  "lang": "de",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

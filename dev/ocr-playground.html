@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OCR Playground — rosencri.me</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #0f1115;
+    --fg: #e8e8ea;
+    --muted: #9aa0aa;
+    --accent: #ff5a3c;
+    --panel: #181b21;
+    --border: #2a2e37;
+    --ok: #4caf7d;
+    --bad: #e0565a;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f6f6f4; --fg: #16181d; --muted: #5b6270; --panel: #ffffff; --border: #dcdfe4; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    padding: 1.5rem;
+    line-height: 1.4;
+  }
+  h1 { font-size: 1.3rem; margin: 0 0 0.25rem; }
+  h2 { font-size: 1rem; margin: 1.5rem 0 0.5rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.9rem; }
+  .layout { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.4fr); gap: 1.5rem; align-items: start; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  #dropzone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  #dropzone.drag { border-color: var(--accent); color: var(--fg); }
+  #dropzone input { display: none; }
+  #preview { max-width: 100%; max-height: 260px; border-radius: 8px; margin-top: 0.75rem; display: none; }
+  .progress-wrap { margin-top: 1rem; }
+  .progress-bar-track { height: 10px; border-radius: 5px; background: var(--border); overflow: hidden; }
+  .progress-bar-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.2s; }
+  .progress-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.35rem; }
+  button {
+    font: inherit;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--fg);
+    cursor: pointer;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  pre {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    overflow: auto;
+    max-height: 320px;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .status-pass { color: var(--ok); font-weight: 700; }
+  .status-fail { color: var(--bad); font-weight: 700; }
+  .test-summary { margin: 0.5rem 0; font-weight: 600; }
+  .error-box { color: var(--bad); background: rgba(224, 86, 90, 0.1); border: 1px solid var(--bad); border-radius: 8px; padding: 0.75rem; margin-top: 1rem; }
+  code { font-size: 0.85em; }
+</style>
+</head>
+<body>
+<h1>OCR Playground</h1>
+<p class="sub">Standalone test page for <code>assets/js/ocr.js</code> — poster photo → event field extraction, plus a headless parser unit-test harness.</p>
+
+<div class="layout">
+  <div class="panel">
+    <h2>Poster image</h2>
+    <div id="dropzone">
+      <p>Drop a poster photo here or click to choose a file.</p>
+      <input id="fileInput" type="file" accept="image/*" />
+    </div>
+    <img id="preview" alt="Poster preview" />
+    <div class="progress-wrap">
+      <div class="progress-bar-track"><div id="progressFill" class="progress-bar-fill"></div></div>
+      <div id="progressLabel" class="progress-label">Idle.</div>
+    </div>
+    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button id="extractBtn" class="primary" disabled>Extract event data</button>
+      <button id="cancelBtn" disabled>Cancel</button>
+    </div>
+    <div id="errorBox" class="error-box" style="display:none;"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Extracted fields</h2>
+    <pre id="fieldsOut">{}</pre>
+    <h2>Raw OCR text</h2>
+    <pre id="rawTextOut">(none yet)</pre>
+  </div>
+</div>
+
+<h2>Parser unit tests</h2>
+<div class="panel">
+  <p class="sub" style="margin-bottom: 0.75rem;">
+    Runs <code>parsePosterText()</code> against ~12 synthetic line-sets (no OCR/network involved) and asserts expected fields.
+  </p>
+  <button id="runTestsBtn" class="primary">Run parser unit tests</button>
+  <div id="testSummary" class="test-summary"></div>
+  <table id="testTable" style="display:none;">
+    <thead><tr><th>#</th><th>Case</th><th>Assertion</th><th>Status</th><th>Detail</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script type="module">
+import { extractFromImage, parsePosterText, downscaleImage, OCR_AVAILABLE } from '../assets/js/ocr.js';
+
+// ---------------------------------------------------------------------------
+// Poster extraction UI wiring
+// ---------------------------------------------------------------------------
+
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const extractBtn = document.getElementById('extractBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const fieldsOut = document.getElementById('fieldsOut');
+const rawTextOut = document.getElementById('rawTextOut');
+const errorBox = document.getElementById('errorBox');
+
+let currentFile = null;
+let currentController = null;
+
+if (!OCR_AVAILABLE) {
+  extractBtn.disabled = true;
+}
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.classList.remove('drag');
+  const file = e.dataTransfer.files?.[0];
+  if (file) setFile(file);
+});
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files?.[0];
+  if (file) setFile(file);
+});
+
+function setFile(file) {
+  currentFile = file;
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+  extractBtn.disabled = false;
+  errorBox.style.display = 'none';
+  setProgress(0, 'Ready to extract.');
+}
+
+function setProgress(fraction, label) {
+  progressFill.style.width = `${Math.round(Math.min(1, Math.max(0, fraction)) * 100)}%`;
+  progressLabel.textContent = label;
+}
+
+extractBtn.addEventListener('click', async () => {
+  if (!currentFile) return;
+  errorBox.style.display = 'none';
+  fieldsOut.textContent = '(running…)';
+  rawTextOut.textContent = '(running…)';
+  extractBtn.disabled = true;
+  cancelBtn.disabled = false;
+
+  currentController = new AbortController();
+  const stageWeight = { prepare: 0.1, load: 0.15, recognize: 0.65, parse: 0.1 };
+  const stageBase = { prepare: 0, load: 0.1, recognize: 0.25, parse: 0.9 };
+
+  try {
+    const result = await extractFromImage(currentFile, {
+      signal: currentController.signal,
+      onProgress: ({ stage, progress, message }) => {
+        const base = stageBase[stage] ?? 0;
+        const weight = stageWeight[stage] ?? 0.1;
+        setProgress(base + weight * progress, `[${stage}] ${message}`);
+      },
+    });
+    setProgress(1, 'Done.');
+    fieldsOut.textContent = JSON.stringify({ fields: result.fields, confidence: result.confidence, durationMs: result.durationMs }, null, 2);
+    rawTextOut.textContent = result.rawText || '(empty)';
+  } catch (err) {
+    if (err?.name === 'AbortError') {
+      setProgress(0, 'Cancelled.');
+    } else {
+      errorBox.style.display = 'block';
+      errorBox.textContent = err?.message ?? String(err);
+      setProgress(0, 'Failed.');
+    }
+    fieldsOut.textContent = '(failed — see error above)';
+    rawTextOut.textContent = '(failed)';
+  } finally {
+    extractBtn.disabled = false;
+    cancelBtn.disabled = true;
+    currentController = null;
+  }
+});
+
+cancelBtn.addEventListener('click', () => {
+  currentController?.abort();
+});
+
+// ---------------------------------------------------------------------------
+// Parser unit tests — synthetic line-sets, no OCR/network involved.
+// ---------------------------------------------------------------------------
+
+function inNextFewYears(monthDay, iso) {
+  // Accepts any year for the given month/day, since "no year" cases resolve
+  // relative to whenever the test actually runs.
+  return new RegExp(`^\\d{4}-${monthDay}T`).test(iso ?? '');
+}
+
+const TEST_CASES = [
+  {
+    name: 'JAHRESFEST reference poster',
+    lines: [
+      { text: 'JAHRESFEST', confidence: 92, height: 60, top: 0, left: 20 },
+      { text: 'Samstag, 25.07.2026', confidence: 90, height: 20, top: 70, left: 20 },
+      { text: 'vetternWIRTSCHAFT', confidence: 88, height: 18, top: 5, left: 300 },
+      { text: 'ab 16 Uhr', confidence: 91, height: 18, top: 100, left: 20 },
+      { text: 'Live Musik', confidence: 89, height: 16, top: 130, left: 20 },
+      { text: 'weakboys      Post-Punk Garage-Rock München', confidence: 85, height: 16, top: 160, left: 20 },
+      { text: 'Monokini      Surf - Hilpoltstein', confidence: 85, height: 16, top: 185, left: 20 },
+      { text: 'Biergarten - Fassbrause - Steckerlfisch', confidence: 84, height: 15, top: 210, left: 20 },
+      { text: 'Grillen - Salatbar - Cocktailbar', confidence: 84, height: 15, top: 235, left: 20 },
+      { text: 'Kinderaktionen - Kasperltheater', confidence: 84, height: 15, top: 260, left: 20 },
+      { text: 'www.vfbk.net    Gefördert durch Stadt Rosenheim', confidence: 83, height: 14, top: 290, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['title === "Jahresfest"', fields.title === 'Jahresfest', fields.title],
+      ['start === "2026-07-25T16:00"', fields.start === '2026-07-25T16:00', fields.start],
+      ['url === "https://www.vfbk.net"', fields.url === 'https://www.vfbk.net', fields.url],
+      ...['live-musik', 'post-punk', 'garage', 'rock', 'surf', 'biergarten', 'kinder'].map((tag) => [
+        `tags include "${tag}"`, fields.tags.includes(tag), fields.tags.join(', '),
+      ]),
+      ['location is "" or "vetternWIRTSCHAFT"', fields.location === '' || fields.location === 'vetternWIRTSCHAFT', fields.location],
+    ],
+  },
+  {
+    name: 'Date without year (infer next occurrence)',
+    lines: [
+      { text: 'SUMMER BASH', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: '25.07.', confidence: 88, height: 16, top: 60, left: 20 },
+      { text: '20 Uhr', confidence: 88, height: 16, top: 80, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['start matches YYYY-07-25T20:00', inNextFewYears('07-25', fields.start) && fields.start?.endsWith('20:00'), fields.start],
+    ],
+  },
+  {
+    name: 'Month-name date, no year',
+    lines: [
+      { text: 'HERBSTFEST', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: 'Freitag 1. August', confidence: 88, height: 16, top: 60, left: 20 },
+      { text: 'Beginn 19:30', confidence: 88, height: 16, top: 80, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['start matches YYYY-08-01T19:30', inNextFewYears('08-01', fields.start) && fields.start?.endsWith('19:30'), fields.start],
+    ],
+  },
+  {
+    name: 'Time range',
+    lines: [
+      { text: 'OPEN AIR KINO', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: '15.08.2026', confidence: 88, height: 16, top: 60, left: 20 },
+      { text: '20:00 - 23:00', confidence: 88, height: 16, top: 80, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['start === "2026-08-15T20:00"', fields.start === '2026-08-15T20:00', fields.start],
+      ['end === "2026-08-15T23:00"', fields.end === '2026-08-15T23:00', fields.end],
+    ],
+  },
+  {
+    name: 'Einlass + Beginn (prefer Beginn)',
+    lines: [
+      { text: 'GRINDCORE ABEND', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: '12.09.2026', confidence: 88, height: 16, top: 60, left: 20 },
+      { text: 'Einlass 19:00 / Beginn 20:00', confidence: 88, height: 16, top: 80, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['start uses Beginn time (20:00)', fields.start === '2026-09-12T20:00', fields.start],
+    ],
+  },
+  {
+    name: 'Only Einlass present',
+    lines: [
+      { text: 'KELLERPARTY', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: '03.10.2026', confidence: 88, height: 16, top: 60, left: 20 },
+      { text: 'Einlass 21:00', confidence: 88, height: 16, top: 80, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['start uses Einlass time (21:00)', fields.start === '2026-10-03T21:00', fields.start],
+    ],
+  },
+  {
+    name: 'No time at all (default 20:00)',
+    lines: [
+      { text: 'ZINE MARKT', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: '01.11.2026', confidence: 88, height: 16, top: 60, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['start defaults to 20:00', fields.start === '2026-11-01T20:00', fields.start],
+    ],
+  },
+  {
+    name: 'URL: www.example.de',
+    lines: [{ text: 'www.example.de', confidence: 90, height: 10, top: 0, left: 0 }],
+    assertions: (fields) => [
+      ['url === "https://www.example.de"', fields.url === 'https://www.example.de', fields.url],
+    ],
+  },
+  {
+    name: 'URL: bare domain',
+    lines: [{ text: 'Mehr Infos: example.de', confidence: 90, height: 10, top: 0, left: 0 }],
+    assertions: (fields) => [
+      ['url === "https://example.de"', fields.url === 'https://example.de', fields.url],
+    ],
+  },
+  {
+    name: 'URL: @handle -> instagram',
+    lines: [{ text: 'Folgt uns @coolclubrosenheim', confidence: 90, height: 10, top: 0, left: 0 }],
+    assertions: (fields) => [
+      ['url === "https://instagram.com/coolclubrosenheim"', fields.url === 'https://instagram.com/coolclubrosenheim', fields.url],
+    ],
+  },
+  {
+    name: 'All-caps title spanning two lines',
+    lines: [
+      { text: 'WILDE', confidence: 90, height: 55, top: 0, left: 20 },
+      { text: 'NAECHTE', confidence: 90, height: 52, top: 60, left: 20 },
+      { text: '10.12.2026', confidence: 88, height: 16, top: 130, left: 20 },
+      { text: '21 Uhr', confidence: 88, height: 16, top: 150, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['title === "Wilde Naechte"', fields.title === 'Wilde Naechte', fields.title],
+    ],
+  },
+  {
+    name: 'Postcode + city -> Rosenheim location',
+    lines: [
+      { text: 'STADTFEST', confidence: 90, height: 50, top: 0, left: 20 },
+      { text: '05.06.2027', confidence: 88, height: 16, top: 60, left: 20 },
+      { text: '83022 Rosenheim', confidence: 88, height: 14, top: 80, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['location === "Rosenheim"', fields.location === 'Rosenheim', fields.location],
+    ],
+  },
+  {
+    name: 'Robustness: malformed input never throws',
+    lines: [null, undefined, { text: 123 }, {}, { text: '   ' }],
+    assertions: (fields) => [
+      ['title === ""', fields.title === '', fields.title],
+      ['start === null', fields.start === null, fields.start],
+      ['tags is an array', Array.isArray(fields.tags), JSON.stringify(fields.tags)],
+    ],
+  },
+];
+
+function runTests() {
+  const tbody = document.querySelector('#testTable tbody');
+  tbody.innerHTML = '';
+  let pass = 0;
+  let fail = 0;
+
+  TEST_CASES.forEach((testCase, caseIndex) => {
+    let fields;
+    let caseError = null;
+    try {
+      fields = parsePosterText(testCase.lines);
+    } catch (err) {
+      caseError = err;
+      fields = { title: '', start: null, end: null, location: '', description: '', url: '', tags: [] };
+    }
+
+    const assertions = caseError
+      ? [[`did not throw`, false, String(caseError)]]
+      : testCase.assertions(fields);
+
+    assertions.forEach(([label, ok, detail]) => {
+      if (ok) pass += 1; else fail += 1;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${caseIndex + 1}</td>
+        <td>${testCase.name}</td>
+        <td>${label}</td>
+        <td class="${ok ? 'status-pass' : 'status-fail'}">${ok ? 'PASS' : 'FAIL'}</td>
+        <td>${detail === undefined ? '' : String(detail)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+
+  document.getElementById('testTable').style.display = 'table';
+  document.getElementById('testSummary').textContent = `${pass} passed, ${fail} failed (${pass + fail} assertions across ${TEST_CASES.length} cases)`;
+  document.getElementById('testSummary').style.color = fail > 0 ? 'var(--bad)' : 'var(--ok)';
+}
+
+document.getElementById('runTestsBtn').addEventListener('click', runTests);
+</script>
+</body>
+</html>

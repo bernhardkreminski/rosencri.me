@@ -1,0 +1,148 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//rosencri.me//Rosenheim Subculture Events//DE
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:rosencri.me — Subkultur in Rosenheim
+X-WR-CALDESC:Offener Terminkalender für die Rosenheimer Subkultur: Konzert
+ e\, Vokü\, Flohmärkte\, Lesungen.
+X-WR-TIMEZONE:Europe/Berlin
+NAME:rosencri.me — Subkultur in Rosenheim
+DESCRIPTION:Offener Terminkalender für die Rosenheimer Subkultur: Konzerte
+ \, Vokü\, Flohmärkte\, Lesungen.
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-PUBLISHED-TTL:PT1H
+SOURCE;VALUE=URI:https://bernhardkreminski.github.io/rosencri.me/calendar.i
+ cs
+BEGIN:VTIMEZONE
+TZID:Europe/Berlin
+X-LIC-LOCATION:Europe/Berlin
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19700329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19701025T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+UID:seed-5@rosencri.me
+DTSTAMP:20260727T110943Z
+CREATED:20260727T110943Z
+LAST-MODIFIED:20260727T110943Z
+DTSTART;TZID=Europe/Berlin:20260718T160000
+DTEND;TZID=Europe/Berlin:20260719T000000
+SUMMARY:Jahresfest der vetternWIRTSCHAFT
+DESCRIPTION:Live Musik mit weakboys (Post-Punk Garage-Rock aus München) un
+ d Monokini (Surf aus Hilpoltstein). Dazu Biergarten\, Fassbrause\, Stecker
+ lfisch\, Grillen\, Salatbar und Cocktailbar.\nKinderaktionen und Kasperlth
+ eater den ganzen Nachmittag über.\n\nTags: punk\, post-punk\, open-air\, 
+ biergarten\n\nhttps://bernhardkreminski.github.io/rosencri.me/#/event/seed
+ -5
+LOCATION:vetternWIRTSCHAFT\, Wasserwerkstraße 5\, Rosenheim
+URL:https://www.vfbk.net
+CATEGORIES:punk,post-punk,open-air,biergarten
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Jahresfest der vetternWIRTSCHAFT
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:seed-2@rosencri.me
+DTSTAMP:20260727T110943Z
+CREATED:20260727T110943Z
+LAST-MODIFIED:20260727T110943Z
+DTSTART;TZID=Europe/Berlin:20260727T100943
+DTEND;TZID=Europe/Berlin:20260727T150943
+SUMMARY:Vokü & Küfa im Jugendzentrum
+DESCRIPTION:Veganes Vokü-Buffet gegen Spende\, danach offene Bühne. Alle 
+ sind willkommen\, Geschirr bitte selbst mitbringen oder abwaschen.\n\nTags
+ : vokü\, küfa\, soli\n\nhttps://bernhardkreminski.github.io/rosencri.me/
+ #/event/seed-2
+LOCATION:Jugendzentrum Rosenheim\, Kaiserstraße 12\, Rosenheim
+CATEGORIES:vokü,küfa,soli
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Vokü & Küfa im Jugendzentrum
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:seed-1@rosencri.me
+DTSTAMP:20260727T110943Z
+CREATED:20260727T110943Z
+LAST-MODIFIED:20260727T110943Z
+DTSTART;TZID=Europe/Berlin:20260727T200000
+DTEND;TZID=Europe/Berlin:20260728T020000
+SUMMARY:Grindcore-Abend im Klanglabor
+DESCRIPTION:Drei Bands\, ein Verstärker\, viel zu wenig Platz: Lokalmatado
+ re und zwei Gäste aus München machen den Backstage-Keller unsicher.\nEin
+ lass ab 19 Uhr\, Spenden für die Anlage willkommen.\n\nTags: hardcore\, m
+ etal\, konzert\n\nhttps://bernhardkreminski.github.io/rosencri.me/#/event/
+ seed-1
+LOCATION:Klanglabor\, Kufsteiner Straße 8\, Rosenheim
+CATEGORIES:hardcore,metal,konzert
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Grindcore-Abend im Klanglabor
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:seed-3@rosencri.me
+DTSTAMP:20260727T110943Z
+CREATED:20260727T110943Z
+LAST-MODIFIED:20260727T110943Z
+DTSTART;TZID=Europe/Berlin:20260731T140000
+DTEND;TZID=Europe/Berlin:20260731T200000
+SUMMARY:Zine- und Flohmarkt in der Alten Spinnerei
+DESCRIPTION:Kleinverlage\, selbstgedruckte Hefte\, Second-Hand-Klamotten un
+ d Vinyl aus zweiter Hand. Standgebühr entfällt\, einfach vorbeikommen un
+ d aufbauen.\n\nTags: flohmarkt\, diy\, ausstellung\n\nhttps://bernhardkrem
+ inski.github.io/rosencri.me/#/event/seed-3
+LOCATION:Alte Spinnerei\, Pfaffenhofener Straße 3\, Rosenheim
+CATEGORIES:flohmarkt,diy,ausstellung
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Zine- und Flohmarkt in der Alten Spinnerei
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:seed-4@rosencri.me
+DTSTAMP:20260727T110943Z
+CREATED:20260727T110943Z
+LAST-MODIFIED:20260727T110943Z
+DTSTART;TZID=Europe/Berlin:20260810T200000
+DTEND;TZID=Europe/Berlin:20260811T000000
+SUMMARY:Kneipenquiz im Beat Club
+DESCRIPTION:Sechs Runden\, ein Pokal aus Pappmaché\, keine Gnade. Teams bi
+ s 5 Personen\, Anmeldung nicht nötig.\n\nTags: party\, indie\n\nhttps://b
+ ernhardkreminski.github.io/rosencri.me/#/event/seed-4
+LOCATION:Beat Club\, Innstraße 21\, Rosenheim
+CATEGORIES:party,indie
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Kneipenquiz im Beat Club
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
