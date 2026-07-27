@@ -29,7 +29,7 @@ export const SUPABASE_BUCKET = 'posters';
  * Set to `false` to remove the five example events from the site. That is the
  * whole removal procedure — no other change needed. See README.md.
  * ------------------------------------------------------------------------- */
-export const SHOW_SEED_EVENTS = true;
+export const SHOW_SEED_EVENTS = false;
 
 /* ------------------------------------------------------------------------- *
  * Site

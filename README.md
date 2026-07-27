@@ -65,16 +65,16 @@ export const SHOW_SEED_EVENTS = true;
 
 If `SUPABASE_URL` / `SUPABASE_ANON_KEY` are left empty, the app falls back to browser-local storage — it still works, but data won't sync between devices or visitors. See `supabase/README.md` for backend setup.
 
-## Removing the demo events
+## Demo events
 
-**The five events shipped in `data/seed-events.json` are placeholder demo data — remove them before treating the board as live.**
+The board originally shipped with five placeholder events in
+`data/seed-events.json`. **They have been removed** — the file is deleted and
+`SHOW_SEED_EVENTS` is `false` in `assets/js/config.js`.
 
-- Fastest: set `SHOW_SEED_EVENTS = false` in `assets/js/config.js` — a one-line change that hides them instantly.
-- Cleanup: delete `data/seed-events.json` entirely.
-- If seed events were ever pushed into Supabase (e.g. via a script or manual import), also run:
-  ```sql
-  DELETE FROM events WHERE is_seed = true;
-  ```
+To bring demo data back, restore that file from git history and flip the flag
+to `true`. Note that `scripts/build-ics.mjs` reads the seed file directly and
+does *not* honour the flag, so deleting the file is what keeps demo events out
+of the published `calendar.ics`.
 
 ## Deployment
 
