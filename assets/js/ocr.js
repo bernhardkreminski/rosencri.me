@@ -1133,10 +1133,19 @@ function analyzePoster(lines, now = new Date()) {
 
   // Deduplicate near-identical survivors (the same fragment read by more than
   // one ensemble pass), keeping the longer text — and on a tie, the more
-  // confident one.
+  // confident one. Two kinds of duplicate: genuinely near-identical text
+  // (edit distance), or one being wholly a substring of the other (e.g. a
+  // leftover "uenchen" fragment next to the full "...Garage-Rock Muenchen"
+  // line it was torn from) — plain edit distance alone misses that second
+  // case since the strings differ in length by a lot.
   const dedupedLines = [];
   for (const candidate of candidateLines) {
-    const dupIndex = dedupedLines.findIndex((existing) => normalizedLevenshtein(existing.text, candidate.text) < 0.25);
+    const dupIndex = dedupedLines.findIndex((existing) => {
+      const normExisting = normaliseForDedupe(existing.text);
+      const normCandidate = normaliseForDedupe(candidate.text);
+      if (normExisting.includes(normCandidate) || normCandidate.includes(normExisting)) return true;
+      return normalizedLevenshtein(existing.text, candidate.text) < 0.25;
+    });
     if (dupIndex === -1) {
       dedupedLines.push(candidate);
       continue;
@@ -1556,6 +1565,15 @@ export async function extractFromImage(file, options = {}) {
   let worker = null;
   const passesRun = [];
   const allLines = [];
+  // Widest possible evidence for tags: every pass's raw recognised text,
+  // completely unfiltered — collected separately from `allLines` so that
+  // height-guarding/joining/noise-filtering (all needed to keep the
+  // *description* clean) can never silently narrow which genre/keyword hits
+  // are considered. A garbled fragment unfit to publish in a description
+  // (e.g. "post-Punk KOOYD..") is still perfectly good evidence that
+  // "Post-Punk" appears on the poster — tag matching is substring-based, so
+  // surrounding garbage doesn't hurt it.
+  const rawPassTexts = [];
   try {
     worker = await Tesseract.createWorker(TESSERACT_LANGS, 1, {
       workerPath: TESSERACT_SCRIPT_URL.replace('tesseract.min.js', 'worker.min.js'),
@@ -1599,6 +1617,7 @@ export async function extractFromImage(file, options = {}) {
         assertNotAborted(signal);
         const { data } = await worker.recognize(blob);
         allLines.push(...flattenLines(data));
+        if (data?.text) rawPassTexts.push(data.text);
         passesRun.push(`${variant.name}/${variant.psm}`);
       } catch (err) {
         if (err?.name === 'AbortError') throw err;
@@ -1625,6 +1644,11 @@ export async function extractFromImage(file, options = {}) {
 
     onProgress({ stage: 'parse', progress: 0, message: 'Extrahiere Felder…' });
     const { fields, confidence } = analyzePoster(lines);
+    // Tags specifically get re-derived from the union of every pass's raw
+    // text (see `rawPassTexts` above) rather than the narrow, cleaned `lines`
+    // just used for the rest of the fields — description stays on the
+    // narrow set unchanged.
+    fields.tags = findTags(rawPassTexts.join('\n'));
     onProgress({ stage: 'parse', progress: 1, message: 'Fertig.' });
 
     const durationMs = nowMs() - startedAt;
