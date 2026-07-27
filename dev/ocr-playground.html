@@ -376,6 +376,41 @@ const TEST_CASES = [
     ],
   },
   {
+    name: 'Venue keyword inside enumeration is rejected as location',
+    // Regression test for the real-poster bug where "Biergarten" inside a
+    // food/drink list line got picked as the venue. The line should be
+    // rejected (2+ " - " separators) and the food/drink content should still
+    // land in the description.
+    lines: [
+      { text: 'JAHRESFEST', confidence: 92, height: 60, top: 0, left: 20 },
+      { text: 'Samstag, 25.07.2026', confidence: 90, height: 20, top: 70, left: 20 },
+      { text: 'ab 16 Uhr', confidence: 91, height: 18, top: 100, left: 20 },
+      { text: 'Biergarten - Fassbrause - Steckerlfisch', confidence: 84, height: 15, top: 130, left: 20 },
+      { text: 'Grillen - Salatbar - Cocktailbar', confidence: 84, height: 15, top: 155, left: 20 },
+      { text: 'www.vfbk.net', confidence: 83, height: 14, top: 180, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['location is NOT the food-list line', fields.location !== 'Biergarten - Fassbrause - Steckerlfisch', fields.location],
+      ['location is "" (no genuine venue signal)', fields.location === '', fields.location],
+      ['description still mentions Biergarten/Grillen', /Biergarten|Grillen/.test(fields.description), fields.description],
+    ],
+  },
+  {
+    name: 'Title supplied by a merged sparse-pass line',
+    // Simulates the post-merge line list that extractFromImage produces when
+    // the default-PSM pass drops an oversized headline but the SPARSE_TEXT
+    // (PSM 11) second pass catches it and mergeLines splices it back in as
+    // the tallest, topmost line.
+    lines: [
+      { text: 'JAHRESFEST', confidence: 92, height: 80, top: 0, left: 20 },
+      { text: 'Samstag, 25.07.2026', confidence: 90, height: 20, top: 90, left: 20 },
+      { text: 'ab 16 Uhr', confidence: 91, height: 18, top: 120, left: 20 },
+    ],
+    assertions: (fields) => [
+      ['title === "Jahresfest"', fields.title === 'Jahresfest', fields.title],
+    ],
+  },
+  {
     name: 'Robustness: malformed input never throws',
     lines: [null, undefined, { text: 123 }, {}, { text: '   ' }],
     assertions: (fields) => [
