@@ -103,13 +103,20 @@ async function loadDrawable(file) {
 }
 
 /**
- * Computes output dimensions constrained to `maxDimension` on the longest side.
+ * Computes output dimensions constrained to `maxDimension` on the longest
+ * side. By default this only ever shrinks (matches the old behaviour, used
+ * for preview downscaling); pass `allowUpscale` to also enlarge small photos
+ * up to `maxDimension` — small/low-res poster photos measurably OCR better
+ * upscaled first, since Tesseract's layout analysis needs enough pixels per
+ * character to segment mixed font sizes/colours correctly.
  * @param {number} width
  * @param {number} height
  * @param {number} maxDimension
+ * @param {boolean} [allowUpscale=false]
  */
-function fitDimensions(width, height, maxDimension) {
-  const scale = Math.min(1, maxDimension / Math.max(width, height));
+function fitDimensions(width, height, maxDimension, allowUpscale = false) {
+  const ratio = maxDimension / Math.max(width, height);
+  const scale = allowUpscale ? ratio : Math.min(1, ratio);
   return {
     width: Math.max(1, Math.round(width * scale)),
     height: Math.max(1, Math.round(height * scale)),
@@ -187,30 +194,216 @@ function applyGreyscaleContrast(data) {
 }
 
 /**
- * Prepares a poster photo for OCR: downscale to <=1600px, greyscale, mild
- * contrast stretch. Falls back to returning the original file when no DOM is
- * available (shouldn't happen in practice — `extractFromImage` is browser-only).
- * @param {File|Blob} file
- * @returns {Promise<Blob>}
+ * Converts sRGB (0-255 each) to HSV. Hue in degrees [0,360), saturation and
+ * value in [0,1]. Used to build colour-selective ink masks — hand-lettered
+ * posters routinely put text in a flat saturated colour (or a pale colour on
+ * a dark background), and isolating that colour as black-on-white gives
+ * Tesseract a normal-looking print image instead of a low-contrast photo.
  */
-async function preprocessForOcr(file) {
-  if (typeof document === 'undefined') return file;
+function rgbToHsv(r, g, b) {
+  const rN = r / 255;
+  const gN = g / 255;
+  const bN = b / 255;
+  const max = Math.max(rN, gN, bN);
+  const min = Math.min(rN, gN, bN);
+  const delta = max - min;
+  let h = 0;
+  if (delta !== 0) {
+    if (max === rN) h = 60 * (((gN - bN) / delta) % 6);
+    else if (max === gN) h = 60 * ((bN - rN) / delta + 2);
+    else h = 60 * ((rN - gN) / delta + 4);
+    if (h < 0) h += 360;
+  }
+  const s = max === 0 ? 0 : delta / max;
+  return { h, s, v: max };
+}
+
+/** Circular distance between two hues in degrees, result in [0,180]. */
+function hueDistance(a, b) {
+  const d = Math.abs(a - b) % 360;
+  return d > 180 ? 360 - d : d;
+}
+
+/**
+ * Black-ink-on-white mask for pale/cream ("light ink") pixels, regardless of
+ * what colour surrounds them — this is what recovers light-on-dark poster
+ * text that a plain greyscale conversion renders as low-contrast grey-on-grey.
+ * @param {ImageData} imageData
+ * @returns {ImageData}
+ */
+function buildLightInkMask(imageData) {
+  const { data, width, height } = imageData;
+  const out = new Uint8ClampedArray(data.length);
+  for (let i = 0; i < data.length; i += 4) {
+    const { s, v } = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+    const val = v > 0.8 && s < 0.22 ? 0 : 255;
+    out[i] = val;
+    out[i + 1] = val;
+    out[i + 2] = val;
+    out[i + 3] = 255;
+  }
+  return new ImageData(out, width, height);
+}
+
+/**
+ * Black-ink-on-white mask for sufficiently saturated pixels within
+ * `toleranceDeg` of `centerHue` (circular) — isolates one dominant poster ink
+ * colour as flat black shapes on white.
+ * @param {ImageData} imageData
+ * @param {number} centerHue
+ * @param {number} [toleranceDeg=20]
+ * @param {number} [satThreshold=0.3]
+ * @returns {ImageData}
+ */
+function buildHueMask(imageData, centerHue, toleranceDeg = 20, satThreshold = 0.3) {
+  const { data, width, height } = imageData;
+  const out = new Uint8ClampedArray(data.length);
+  for (let i = 0; i < data.length; i += 4) {
+    const { h, s } = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+    const val = s > satThreshold && hueDistance(h, centerHue) <= toleranceDeg ? 0 : 255;
+    out[i] = val;
+    out[i + 1] = val;
+    out[i + 2] = val;
+    out[i + 3] = 255;
+  }
+  return new ImageData(out, width, height);
+}
+
+/**
+ * Finds up to 2 dominant hue clusters among sufficiently saturated pixels via
+ * a coarse circular histogram (10° bins) with greedy peak-picking + ±20°
+ * suppression between passes. This derives colour masks generically from
+ * whatever colours the poster actually uses, rather than hardcoding specific
+ * hues — a differently-coloured poster gets its own clusters.
+ * @param {ImageData} imageData
+ * @param {number} [satThreshold=0.3]
+ * @returns {{clusters: {hue: number, count: number}[], saturatedCount: number}}
+ *   `clusters` sorted by pixel count, descending; `saturatedCount` is exposed
+ *   so callers can also gate the "light ink" mask on whether the image has
+ *   any real colour in it at all (see `buildOcrVariants`).
+ */
+function findHueClusters(imageData, satThreshold = 0.3) {
+  const { data } = imageData;
+  const BIN_DEG = 10;
+  const BIN_COUNT = 360 / BIN_DEG;
+  const hist = new Float64Array(BIN_COUNT);
+  let saturatedCount = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    const { h, s } = rgbToHsv(data[i], data[i + 1], data[i + 2]);
+    if (s > satThreshold) {
+      hist[Math.floor(h / BIN_DEG) % BIN_COUNT] += 1;
+      saturatedCount += 1;
+    }
+  }
+  if (saturatedCount < 200) return { clusters: [], saturatedCount }; // not enough colour signal to bother
+
+  const clusters = [];
+  for (let pass = 0; pass < 2; pass += 1) {
+    let bestBin = -1;
+    let bestCount = 0;
+    for (let b = 0; b < BIN_COUNT; b += 1) {
+      if (hist[b] > bestCount) {
+        bestCount = hist[b];
+        bestBin = b;
+      }
+    }
+    if (bestBin < 0 || bestCount < saturatedCount * 0.03) break; // too small to be a real cluster
+    const center = bestBin * BIN_DEG + BIN_DEG / 2;
+    clusters.push({ hue: center, count: bestCount });
+    for (let b = 0; b < BIN_COUNT; b += 1) {
+      const binCenter = b * BIN_DEG + BIN_DEG / 2;
+      if (hueDistance(binCenter, center) <= 20) hist[b] = 0;
+    }
+  }
+  return { clusters, saturatedCount };
+}
+
+const REF_TEAL_HUE = 180;
+
+/**
+ * Builds the prioritised ensemble of preprocessed image variants to try, per
+ * measured value-ordering on a real hand-lettered multi-colour poster:
+ * greyscale and a "light ink" mask are cheap and broadly useful on their own;
+ * up to two dominant poster ink colours are derived generically from the
+ * image's own hue histogram (see `findHueClusters`) rather than hardcoded.
+ * Each colour cluster is labelled "cool-like"/"warm-like" purely by hue
+ * distance to reference teal/red points, to decide which PSM tends to suit
+ * that kind of region — a heuristic generalisation of what was measured on
+ * the reference poster (cooler/flatter colour fields read better with full
+ * auto-layout PSM 3; warmer/busier ones needed sparse-text PSM 11), not a
+ * guarantee for every colour scheme.
+ * Blobs are produced lazily via `getBlob()` so a pass skipped by the time/
+ * budget guard never pays the PNG-encode cost.
+ * @param {File|Blob} file
+ * @param {number} [maxDimension=2600]
+ * @returns {Promise<{name: string, psm: string, getBlob: () => Promise<Blob>}[]>}
+ */
+async function buildOcrVariants(file, maxDimension = 2600) {
+  if (typeof document === 'undefined') {
+    return [{ name: 'original', psm: '3', getBlob: async () => file }];
+  }
+
   const drawable = await loadDrawable(file);
   const srcW = drawable.width ?? drawable.naturalWidth;
   const srcH = drawable.height ?? drawable.naturalHeight;
-  const { width, height } = fitDimensions(srcW, srcH, 1600);
+  const { width, height } = fitDimensions(srcW, srcH, maxDimension, true);
 
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(drawable, 0, 0, width, height);
+  const sourceCanvas = document.createElement('canvas');
+  sourceCanvas.width = width;
+  sourceCanvas.height = height;
+  const sourceCtx = sourceCanvas.getContext('2d');
+  sourceCtx.drawImage(drawable, 0, 0, width, height);
+  const sourceImageData = sourceCtx.getImageData(0, 0, width, height);
 
-  const imageData = ctx.getImageData(0, 0, width, height);
-  applyGreyscaleContrast(imageData.data);
-  ctx.putImageData(imageData, 0, 0);
+  async function toBlob(imageData) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext('2d').putImageData(imageData, 0, 0);
+    return canvasToBlob(canvas, 'image/png', 1);
+  }
 
-  return canvasToBlob(canvas, 'image/jpeg', 0.92);
+  const greyData = new ImageData(new Uint8ClampedArray(sourceImageData.data), width, height);
+  applyGreyscaleContrast(greyData.data);
+  const { clusters, saturatedCount } = findHueClusters(sourceImageData);
+
+  // The "light ink" mask only makes sense when the poster actually has some
+  // colour in it (that's the whole premise: pale/cream text against a
+  // differently-coloured background). On a genuinely monochrome image there
+  // is no such background to separate out, so the mask degenerates into a
+  // plain photographic negative of the whole page — verified this
+  // empirically: Tesseract read the inverted image *confidently wrong*
+  // (misread "vfbk" as "vibk" at ~85-89% confidence, beating the correct
+  // greyscale reading's much lower confidence in the vote). Skipping it
+  // outright when there's no colour signal avoids that risk for free.
+  const hasColorSignal = saturatedCount >= 200;
+  const lightMaskData = hasColorSignal ? buildLightInkMask(sourceImageData) : null;
+
+  const variants = [{ name: 'grey', imageData: greyData, psm: '3' }];
+  if (hasColorSignal) variants.push({ name: 'light', imageData: lightMaskData, psm: '3' });
+
+  if (clusters.length > 0) {
+    const byCoolness = [...clusters].sort(
+      (a, b) => hueDistance(a.hue, REF_TEAL_HUE) - hueDistance(b.hue, REF_TEAL_HUE),
+    );
+    const [coolCluster, warmCluster] = byCoolness;
+    variants.push({ name: 'cool-cluster', imageData: buildHueMask(sourceImageData, coolCluster.hue), psm: '3' });
+    if (warmCluster) {
+      variants.push({ name: 'warm-cluster', imageData: buildHueMask(sourceImageData, warmCluster.hue), psm: '11' });
+    }
+  }
+
+  if (hasColorSignal) {
+    variants.push(
+      { name: 'light', imageData: lightMaskData, psm: '11' },
+      { name: 'grey', imageData: greyData, psm: '11' },
+      { name: 'light', imageData: lightMaskData, psm: '6' },
+    );
+  } else {
+    variants.push({ name: 'grey', imageData: greyData, psm: '11' }, { name: 'grey', imageData: greyData, psm: '6' });
+  }
+
+  return variants.map((v) => ({ name: v.name, psm: v.psm, getBlob: () => toBlob(v.imageData) }));
 }
 
 // ---------------------------------------------------------------------------
@@ -484,6 +677,83 @@ function isPureDateTimeLine(text) {
     .filter((w) => !BOILERPLATE_WORDS.has(foldGerman(w)))
     .filter((w) => !/^[\W_]+$/.test(w));
   return stripped.length === 0;
+}
+
+/**
+ * True when a line looks like OCR noise rather than genuine poster text —
+ * used to keep garbled ensemble leftovers (repeated-dot decorative rules,
+ * single-word fragments with barely any real letters, etc.) out of the
+ * public-facing description.
+ * @param {string} text
+ */
+function isNoiseLine(text) {
+  const trimmed = text.trim();
+  if (trimmed.length < 4) return true;
+  const letterSpaceCount = (trimmed.match(/[A-Za-zÀ-ÖØ-öø-ÿ ]/g) || []).length;
+  if (letterSpaceCount / trimmed.length < 0.55) return true;
+  if (!/[aeiouAEIOUäöüÄÖÜ]/.test(trimmed)) return true; // no vowel at all
+  if (/(.)\1{3,}/.test(trimmed)) return true; // run of 4+ identical chars
+  // Punctuation ratio counts only non-alphanumeric, non-whitespace characters
+  // (whitespace is excluded from the numerator) — a price line like
+  // "Eintritt 5 € / 3 € ermäßigt" is mostly letters/spaces and should pass.
+  const punctuationCount = (trimmed.match(/[^A-Za-z0-9À-ÖØ-öø-ÿ\s]/g) || []).length;
+  if (punctuationCount / trimmed.length > 0.3) return true;
+
+  const tokens = trimmed.split(/\s+/).filter(Boolean);
+  // A stray single-character NON-alphanumeric "word" (an underscore, "|",
+  // "\", "©", ...) is a strong tell for a garbled/fused OCR read. A single
+  // alphanumeric character ("U", "M", a digit) is completely normal poster
+  // shorthand ("U 18", "M 1") and must NOT be rejected here. Common
+  // separator/unit symbols (hyphen variants, "&", "/", currency signs) are
+  // also legitimate on their own ("5 € / 3 € ermäßigt", "Biergarten - ...").
+  const ALLOWED_SINGLE_CHAR_SYMBOLS = /[-–—&/€$£¥]/;
+  if (
+    tokens.some(
+      (tok) => tok.length === 1 && !/[A-Za-z0-9À-ÖØ-öø-ÿ]/.test(tok) && !ALLOWED_SINGLE_CHAR_SYMBOLS.test(tok),
+    )
+  ) {
+    return true;
+  }
+
+  // Real poster sentences have at least two substantial (3+ letter) words;
+  // short fragments like "ol S" or "©=|" don't, even though they might
+  // otherwise slip past the checks above. Exception: a line that is just ONE
+  // token total is allowed through as long as that token is a genuinely long
+  // word (>=5 letters) — single-word band-name lines ("weakboys", "Monokini")
+  // are exactly this shape and must survive. The 5-letter bar matters: a
+  // *short* lone word (e.g. a bare "Surf" left behind when a cross-column OCR
+  // merge garbles the rest of "Surf - Hilpoltstein") is much more likely to
+  // be an orphaned fragment than deliberate standalone content, so it's still
+  // rejected here.
+  const singleWordLetterCount = tokens.length === 1 ? (tokens[0].match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length : 0;
+  const isSingleSubstantialWord = tokens.length === 1 && singleWordLetterCount >= 5;
+  const substantialWordCount = tokens.filter(
+    (tok) => (tok.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length >= 3,
+  ).length;
+  if (substantialWordCount < 2 && !isSingleSubstantialWord) return true;
+
+  return false;
+}
+
+/**
+ * True when `text` is redundant with one of the already-extracted fields'
+ * raw strings (title / matched date / matched or normalised url / location)
+ * — either fully contains it or is fully contained by it — so it doesn't
+ * leak a near-duplicate of a field into the description (e.g. a stray
+ * "Samstag, 25.07.2026" line surviving alongside the chosen date line).
+ * @param {string} text
+ * @param {(string|null|undefined)[]} fieldTexts
+ */
+function isConsumedByFieldText(text, fieldTexts) {
+  const folded = normaliseForDedupe(text);
+  if (!folded) return true;
+  for (const field of fieldTexts) {
+    if (!field) continue;
+    const foldedField = normaliseForDedupe(field);
+    if (!foldedField) continue;
+    if (folded.includes(foldedField) || foldedField.includes(folded)) return true;
+  }
+  return false;
 }
 
 /**
@@ -837,7 +1107,12 @@ function analyzePoster(lines, now = new Date()) {
     ...(locationInfo?.consumesLine ? [locationInfo.lineIndex] : []),
   ]);
 
-  const descriptionLines = [];
+  // Raw strings of the already-extracted fields, used below to keep a stray
+  // near-duplicate (e.g. a second date-shaped line the date parser didn't
+  // happen to pick) out of the description.
+  const fieldTexts = [titleInfo?.text, dateInfo?.matchText, urlInfo?.matchText, urlInfo?.text, locationInfo?.text];
+
+  const candidateLines = [];
   safeLines.forEach((line, index) => {
     if (consumedIndexes.has(index)) return;
     let text = line.text;
@@ -850,8 +1125,35 @@ function analyzePoster(lines, now = new Date()) {
     const foldedLine = foldGerman(text);
     if (BOILERPLATE_WORDS.has(foldedLine)) return;
     if (isPureDateTimeLine(text)) return;
-    descriptionLines.push(text);
+    if (isNoiseLine(text)) return;
+    if (isConsumedByFieldText(text, fieldTexts)) return;
+    if (titleInfo && normalizedLevenshtein(text, titleInfo.text) < 0.4) return;
+    candidateLines.push({ text, confidence: line.confidence });
   });
+
+  // Deduplicate near-identical survivors (the same fragment read by more than
+  // one ensemble pass), keeping the longer text — and on a tie, the more
+  // confident one.
+  const dedupedLines = [];
+  for (const candidate of candidateLines) {
+    const dupIndex = dedupedLines.findIndex((existing) => normalizedLevenshtein(existing.text, candidate.text) < 0.25);
+    if (dupIndex === -1) {
+      dedupedLines.push(candidate);
+      continue;
+    }
+    const existing = dedupedLines[dupIndex];
+    const candidateIsBetter =
+      candidate.text.length > existing.text.length ||
+      (candidate.text.length === existing.text.length && candidate.confidence > existing.confidence);
+    if (candidateIsBetter) dedupedLines[dupIndex] = candidate;
+  }
+
+  // Prefer confident lines (this is a multi-pass ensemble, so per-line
+  // confidence is meaningful); only relax the bar if it would leave nothing.
+  let descriptionLines = dedupedLines.filter((l) => l.confidence >= 65).map((l) => l.text);
+  if (descriptionLines.length === 0) {
+    descriptionLines = dedupedLines.filter((l) => l.confidence >= 50).map((l) => l.text);
+  }
 
   let description = descriptionLines.join('\n');
   if (description.length > 400) {
@@ -959,56 +1261,280 @@ function isSamePhysicalLine(a, b) {
   return vOverlap > 0.6 && hOverlap > 0.6;
 }
 
-/**
- * Merges a default-PSM pass with a SPARSE_TEXT (PSM 11) pass. Tesseract's
- * default page segmentation can drop an oversized poster headline when it's
- * mixed with a lot of smaller body text; a sparse-text second pass reliably
- * catches it, but is noisier overall, so low-confidence/very-short
- * sparse-only lines are dropped rather than merged in. On a duplicate, keeps
- * whichever line has higher confidence, but always keeps the larger height
- * (height drives title selection, so a good box shouldn't shrink because a
- * lower-confidence pass measured it tighter). Result is sorted by `top`.
- * @param {(PosterLine & {right: number, bottom: number})[]} primary default-PSM lines
- * @param {(PosterLine & {right: number, bottom: number})[]} secondary sparse-PSM lines
- */
-function mergeLines(primary, secondary) {
-  const merged = primary.map((l) => ({ ...l }));
-  for (const candidate of secondary) {
-    const matchIndex = merged.findIndex((existing) => isSamePhysicalLine(existing, candidate));
-    if (matchIndex >= 0) {
-      const existing = merged[matchIndex];
-      const winner = candidate.confidence > existing.confidence ? candidate : existing;
-      merged[matchIndex] = { ...winner, height: Math.max(existing.height, candidate.height) };
-    } else if (candidate.confidence >= 60 && candidate.text.trim().length >= 2) {
-      merged.push({ ...candidate });
-    }
-    // else: sparse-only noise below the confidence/length bar — dropped.
-  }
-  merged.sort((a, b) => a.top - b.top);
-  return merged;
-}
-
 /** Strips the internal `right`/`bottom` bbox-extent fields for public output. */
 function toPublicLine({ text, confidence, height, top, left }) {
   return { text, confidence, height, top, left };
 }
 
+/** Classic Levenshtein edit distance (small strings — poster lines). */
+function levenshteinDistance(a, b) {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = new Array(n + 1);
+  for (let j = 0; j <= n; j += 1) dp[j] = j;
+  for (let i = 1; i <= m; i += 1) {
+    let prev = dp[0];
+    dp[0] = i;
+    for (let j = 1; j <= n; j += 1) {
+      const temp = dp[j];
+      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+      prev = temp;
+    }
+  }
+  return dp[n];
+}
+
+/** Levenshtein distance normalised to [0,1] by the longer (case/whitespace-folded) string. */
+function normalizedLevenshtein(a, b) {
+  const s1 = normaliseForDedupe(a);
+  const s2 = normaliseForDedupe(b);
+  if (s1 === s2) return 0;
+  if (!s1.length || !s2.length) return 1;
+  return levenshteinDistance(s1, s2) / Math.max(s1.length, s2.length);
+}
+
+/**
+ * Joins horizontally-adjacent same-row fragments into one line — this is what
+ * turns a colour mask's "JAHRE" + "SFEST" (the same word, split because the
+ * mask only catches part of the letterforms) into "JAHRESFEST". Two boxes
+ * join when they overlap vertically by >60% and the horizontal gap between
+ * them is small relative to their estimated character width: a near-zero gap
+ * (<=40% of a character) means a broken word and joins with no separator; a
+ * larger gap (up to 150% of a character) means adjacent words and joins with
+ * a space. Runs to a fixed point (repeated single merges) since a title can
+ * be split into more than 2 fragments.
+ * @param {(PosterLine & {right: number, bottom: number})[]} lines
+ * @returns {(PosterLine & {right: number, bottom: number})[]}
+ */
+function joinableGap(a, b) {
+  const vOverlap = overlapFraction(a.top, a.bottom, b.top, b.bottom);
+  if (vOverlap <= 0.6) return null;
+  // Fragments of the same split word/title are nearly the same physical
+  // size (verified against the real reference poster: 385-435px, ratio
+  // 0.88-0.90) — requiring the smaller height to be within 25% of the
+  // larger guards against joining two unrelated same-row-band lines that
+  // happen to differ mainly in font size (a risk with no height check at
+  // all), without being tight enough to reject genuine fragments.
+  if (Math.min(a.height, b.height) / Math.max(a.height, b.height) < 0.75) return null;
+  const left = a.left <= b.left ? a : b;
+  const right = a.left <= b.left ? b : a;
+  const gap = right.left - left.right;
+  const charWidth =
+    ((left.right - left.left) / Math.max(1, left.text.trim().length) +
+      (right.right - right.left) / Math.max(1, right.text.trim().length)) /
+      2 || 12;
+  if (gap >= charWidth * 1.5 || gap <= -charWidth * 0.6) return null; // not adjacent, or duplicate overlap
+  return { left, right, separator: gap <= charWidth * 0.4 ? '' : ' ' };
+}
+
+/**
+ * Additive: proposes a joined candidate for every adjacent pair, without
+ * removing the originals. Non-destructive on purpose — a fragment's OWN
+ * best join partner is sometimes garbage (e.g. one pass's "JAHRE" sitting
+ * next to that SAME pass's badly-misread tail), so keeping the un-joined
+ * fragment alive lets `findTextOverlapSplice` recombine it with a *different*
+ * pass's better-quality overlapping read instead. Confidence is a
+ * length-weighted average of the two fragments (not `Math.min`): a short
+ * garbled tail next to a long, high-confidence fragment shouldn't tank the
+ * whole joined candidate's confidence to that tail's — it should barely
+ * move it. Runs a few rounds so chains of 3+ fragments can build up.
+ * @param {(PosterLine & {right: number, bottom: number})[]} lines
+ * @returns {(PosterLine & {right: number, bottom: number})[]}
+ */
+function joinLineFragments(lines) {
+  let pool = lines.map((l) => ({ ...l }));
+  for (let round = 0; round < 3; round += 1) {
+    const seen = new Set(pool.map((l) => `${normaliseForDedupe(l.text)}|${Math.round(l.top)}|${Math.round(l.left)}`));
+    const additions = [];
+    for (let i = 0; i < pool.length; i += 1) {
+      for (let j = i + 1; j < pool.length; j += 1) {
+        const joinable = joinableGap(pool[i], pool[j]);
+        if (!joinable) continue;
+        const { left, right, separator } = joinable;
+        const leftLen = Math.max(1, left.text.trim().length);
+        const rightLen = Math.max(1, right.text.trim().length);
+        const top = Math.min(left.top, right.top);
+        const bottom = Math.max(left.bottom, right.bottom);
+        const text = `${left.text.trim()}${separator}${right.text.trim()}`.replace(/\s+/g, ' ').trim();
+        const key = `${normaliseForDedupe(text)}|${Math.round(top)}|${Math.round(Math.min(left.left, right.left))}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        additions.push({
+          text,
+          confidence: (left.confidence * leftLen + right.confidence * rightLen) / (leftLen + rightLen),
+          top,
+          left: Math.min(left.left, right.left),
+          right: Math.max(left.right, right.right),
+          bottom,
+          height: bottom - top,
+        });
+      }
+    }
+    if (additions.length === 0) break;
+    pool = pool.concat(additions);
+  }
+  return pool;
+}
+
+/**
+ * Finds a genuine suffix/prefix overlap between two candidates' text (e.g.
+ * "JAHRE" and "AHRESFEST" share "AHRE") and splices them into the union —
+ * this is what lets a fragment that uniquely has the poster's leading
+ * letter(s) (but a garbled tail) combine with a different pass's more
+ * complete-but-truncated read of the same region, recovering the full word.
+ * Only proposes a splice when the overlap is at least 3 characters and
+ * neither side is already a plain substring of the other (that's a
+ * duplicate/vote case, handled separately, not a fusion case).
+ * @param {{text:string, confidence:number}} a
+ * @param {{text:string, confidence:number}} b
+ * @returns {{text:string, confidence:number}|null}
+ */
+function findTextOverlapSplice(a, b) {
+  const normA = normaliseForDedupe(a.text);
+  const normB = normaliseForDedupe(b.text);
+  if (!normA || !normB || normA.includes(normB) || normB.includes(normA)) return null;
+
+  const MIN_OVERLAP = 3;
+  function suffixPrefixOverlap(x, y) {
+    const maxLen = Math.min(x.length, y.length, 10);
+    for (let len = maxLen; len >= MIN_OVERLAP; len -= 1) {
+      if (x.slice(-len) === y.slice(0, len)) return len;
+    }
+    return 0;
+  }
+
+  const abLen = suffixPrefixOverlap(normA, normB); // a's tail == b's head -> "a"+"b"
+  const baLen = suffixPrefixOverlap(normB, normA); // b's tail == a's head -> "b"+"a"
+  if (abLen === 0 && baLen === 0) return null;
+
+  const useAB = abLen >= baLen;
+  const first = useAB ? a : b;
+  const second = useAB ? b : a;
+  const overlapLen = useAB ? abLen : baLen;
+
+  const prefixLen = Math.max(0, first.text.length - overlapLen);
+  return {
+    text: `${first.text.slice(0, prefixLen)}${second.text}`,
+    confidence: (first.confidence + second.confidence) / 2,
+    top: Math.min(first.top, second.top),
+    left: Math.min(first.left, second.left),
+    right: Math.max(first.right, second.right),
+    bottom: Math.max(first.bottom, second.bottom),
+    height: Math.max(first.height, second.height),
+  };
+}
+
+/**
+ * Groups recognised lines from every ensemble pass into clusters representing
+ * the same physical printed line (bbox overlap or identical text — reuses
+ * `isSamePhysicalLine`), then votes within each cluster: readings are first
+ * sub-grouped by text similarity (normalised Levenshtein distance < 0.34 —
+ * e.g. "25.09.2026" vs "25.07.2026" land in the same sub-group), each
+ * sub-group's vote weight is its members' summed confidence, the sub-group
+ * with the highest vote wins, and its own highest-confidence member is kept.
+ * This is what resolves conflicting reads of the same region across variants
+ * (different masks disagreeing on a digit, etc.) in favour of the reading
+ * more variants agree on, weighted by confidence — a plain "just take the
+ * single highest-confidence line" would let one noisy-but-confident outlier
+ * override several corroborating passes. Before voting, every pair within a
+ * cluster is also tried through `findTextOverlapSplice` — this is what lets
+ * e.g. "JAHRE" (has the poster's leading letter, but only that pass's own
+ * badly-misread tail to join with) and "AHRESFEST" (a different pass's more
+ * complete but truncated read) fuse into "JAHRESFEST" and compete in the vote
+ * on equal footing. The cluster's height is always the largest seen among the
+ * *real* (non-spliced) reads, so a tighter box from a noisier pass never
+ * shrinks the title's height signal. Result is sorted by `top`.
+ * @param {(PosterLine & {right: number, bottom: number})[]} lines
+ * @returns {(PosterLine & {right: number, bottom: number})[]}
+ */
+function clusterLines(lines) {
+  const spatialClusters = [];
+  for (const line of lines) {
+    // Require overlap with EVERY existing member, not just one ("some" would
+    // let a single noisy wide/tall joined candidate transitively bridge two
+    // otherwise-unrelated physical lines — e.g. the title and the date line
+    // below it — into one cluster, silently discarding whichever loses that
+    // cluster's vote).
+    const target = spatialClusters.find((cluster) => cluster.every((member) => isSamePhysicalLine(member, line)));
+    if (target) target.push(line);
+    else spatialClusters.push([line]);
+  }
+
+  const results = spatialClusters.map((cluster) => {
+    const spliced = [];
+    for (let i = 0; i < cluster.length; i += 1) {
+      for (let j = i + 1; j < cluster.length; j += 1) {
+        const candidate = findTextOverlapSplice(cluster[i], cluster[j]);
+        if (candidate) spliced.push(candidate);
+      }
+    }
+    const candidates = [...cluster, ...spliced];
+
+    const textGroups = [];
+    for (const line of candidates) {
+      const group = textGroups.find((g) => normalizedLevenshtein(g[0].text, line.text) < 0.34);
+      if (group) group.push(line);
+      else textGroups.push([line]);
+    }
+
+    let winningGroup = textGroups[0];
+    let winningScore = -Infinity;
+    for (const group of textGroups) {
+      const score = group.reduce((sum, l) => sum + l.confidence, 0);
+      if (score > winningScore) {
+        winningScore = score;
+        winningGroup = group;
+      }
+    }
+
+    let winner = winningGroup[0];
+    for (const candidate of winningGroup) {
+      if (candidate.confidence > winner.confidence) winner = candidate;
+    }
+    const maxHeight = Math.max(...cluster.map((c) => c.height)); // real reads only, not spliced pseudo-candidates
+    return { ...winner, height: maxHeight };
+  });
+
+  results.sort((a, b) => a.top - b.top);
+  return results;
+}
+
+function nowMs() {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
+
 /**
  * Main entry point: runs OCR on a poster photo and returns extracted event
  * fields.
+ *
+ * Runs a small ensemble of preprocessed image variants (greyscale, a
+ * light-ink mask, and up to two dominant-colour masks — see
+ * `buildOcrVariants`) through a single reused Tesseract worker, each at
+ * whichever PSM tends to suit that variant, merges every pass's lines
+ * (joining split title fragments, then voting on conflicting reads of the
+ * same region — see `joinLineFragments`/`clusterLines`), and parses the
+ * result. Hand-lettered multi-colour posters routinely defeat a single
+ * greyscale pass — layout analysis drops oversized/differently-coloured
+ * headlines — so this trades some wall-clock time for a much better chance
+ * of recovering them, budgeted per below since it also has to run on phones.
  * @param {File|Blob} file
- * @param {{onProgress?: (p: {stage: string, progress: number, message: string}) => void, signal?: AbortSignal}} [options]
- * @returns {Promise<{rawText: string, lines: PosterLine[], fields: PosterFields, confidence: {title:number,start:number,location:number,url:number,overall:number}, durationMs: number}>}
+ * @param {{onProgress?: (p: {stage: string, progress: number, message: string}) => void, signal?: AbortSignal, budgetMs?: number}} [options]
+ *   `budgetMs` (default 30000): overall wall-clock budget: once exceeded, no
+ *   further passes are *started* (an in-flight one still finishes), and
+ *   whatever's been recognised so far is parsed.
+ * @returns {Promise<{rawText: string, lines: PosterLine[], fields: PosterFields, confidence: {title:number,start:number,location:number,url:number,overall:number}, durationMs: number, passes: string[]}>}
  */
 export async function extractFromImage(file, options = {}) {
-  const { onProgress = () => {}, signal } = options;
-  const startedAt = typeof performance !== 'undefined' ? performance.now() : Date.now();
+  const { onProgress = () => {}, signal, budgetMs = 30000 } = options;
+  const startedAt = nowMs();
 
   onProgress({ stage: 'prepare', progress: 0, message: 'Bereite Bild vor…' });
   assertNotAborted(signal);
-  const processed = await preprocessForOcr(file);
+  const variantSpecs = await buildOcrVariants(file, 2600);
   assertNotAborted(signal);
-  onProgress({ stage: 'prepare', progress: 1, message: 'Bild bereit.' });
+  onProgress({ stage: 'prepare', progress: 1, message: `${variantSpecs.length} Bildvarianten bereit.` });
 
   onProgress({ stage: 'load', progress: 0, message: 'Lade OCR-Engine…' });
   let Tesseract;
@@ -1020,17 +1546,16 @@ export async function extractFromImage(file, options = {}) {
   assertNotAborted(signal);
   onProgress({ stage: 'load', progress: 1, message: 'OCR-Engine geladen.' });
 
-  // Tesseract's default page segmentation (PSM 3, "auto") can drop an
-  // oversized poster headline entirely when it's mixed with a lot of smaller
-  // body text. A second SPARSE_TEXT (PSM 11) pass over the same preprocessed
-  // image reliably catches it. One worker is reused for both passes — a
-  // second worker would double the (slow) model-load time. `recognizePhase`
-  // lets the single shared logger map each pass's own 0..1 progress into a
-  // distinct slice of the overall "recognize" stage.
-  let recognizePhase = 'default';
-  const phaseRanges = { default: [0, 0.7], sparse: [0.7, 0.95] };
+  // One worker is reused for every pass (recreating it would re-pay the slow
+  // model-load cost each time); PSM is switched between passes via
+  // `setParameters`. `passIndex`/`passCount` let the single shared logger
+  // report per-pass progress across the whole ensemble.
+  let passIndex = 0;
+  let passCount = variantSpecs.length;
 
   let worker = null;
+  const passesRun = [];
+  const allLines = [];
   try {
     worker = await Tesseract.createWorker(TESSERACT_LANGS, 1, {
       workerPath: TESSERACT_SCRIPT_URL.replace('tesseract.min.js', 'worker.min.js'),
@@ -1038,46 +1563,71 @@ export async function extractFromImage(file, options = {}) {
       langPath: TESSERACT_LANG_PATH,
       logger: (m) => {
         if (m?.status === 'recognizing text') {
-          const [from, to] = phaseRanges[recognizePhase];
           const p = typeof m.progress === 'number' ? m.progress : 0;
           onProgress({
             stage: 'recognize',
-            progress: from + (to - from) * p,
-            message: recognizePhase === 'sparse' ? 'Suche Überschrift…' : 'Erkenne Text…',
+            progress: Math.min(1, (passIndex + p) / Math.max(1, passCount)),
+            message: `Erkenne Text… (Durchlauf ${passIndex + 1}/${passCount})`,
           });
         }
       },
     });
 
-    assertNotAborted(signal);
-    const { data: defaultData } = await worker.recognize(processed);
-    assertNotAborted(signal);
-    const defaultLines = flattenLines(defaultData);
-
-    let sparseLines = [];
-    recognizePhase = 'sparse';
-    try {
-      await worker.setParameters({ tessedit_pageseg_mode: '11' });
+    let currentPsm = null;
+    for (let i = 0; i < variantSpecs.length; i += 1) {
       assertNotAborted(signal);
-      const { data: sparseData } = await worker.recognize(processed);
-      sparseLines = flattenLines(sparseData);
-      await worker.setParameters({ tessedit_pageseg_mode: '3' }); // restore default
-    } catch (err) {
-      if (err?.name === 'AbortError') throw err;
-      console.warn('[ocr] sparse-text (PSM 11) pass failed, continuing with the default-PSM result only:', err);
+
+      // Wall-clock budget: stop STARTING new passes once exceeded (an
+      // in-flight pass already running would still finish); parse whatever
+      // was recognised so far rather than fail outright.
+      if (i > 0 && nowMs() - startedAt > budgetMs) {
+        console.warn(`[ocr] wall-clock budget (${budgetMs}ms) exceeded — stopping after ${passesRun.length} pass(es).`);
+        break;
+      }
+
+      const variant = variantSpecs[i];
+      passIndex = i;
+      passCount = variantSpecs.length;
+
+      const passStartedAt = nowMs();
+      try {
+        if (currentPsm !== variant.psm) {
+          await worker.setParameters({ tessedit_pageseg_mode: variant.psm });
+          currentPsm = variant.psm;
+        }
+        const blob = await variant.getBlob();
+        assertNotAborted(signal);
+        const { data } = await worker.recognize(blob);
+        allLines.push(...flattenLines(data));
+        passesRun.push(`${variant.name}/${variant.psm}`);
+      } catch (err) {
+        if (err?.name === 'AbortError') throw err;
+        console.warn(`[ocr] pass "${variant.name}/${variant.psm}" failed, skipping:`, err);
+      }
+
+      // First-pass timing guard: a slow first pass means this device/image
+      // combination will be slow throughout (2600px + neural-net recognition
+      // is not cheap on a phone), so cut the ensemble down to the 3 highest-
+      // priority passes rather than risk a very long wait.
+      const passDurationMs = nowMs() - passStartedAt;
+      if (i === 0 && passDurationMs > 4000 && variantSpecs.length > 3) {
+        variantSpecs.length = 3;
+        console.warn(`[ocr] first pass took ${Math.round(passDurationMs)}ms (>4000ms) — truncating ensemble to 3 passes.`);
+      }
     }
-    assertNotAborted(signal);
+
     onProgress({ stage: 'recognize', progress: 1, message: 'Text erkannt.' });
 
-    const mergedLines = mergeLines(defaultLines, sparseLines);
-    const lines = mergedLines.map(toPublicLine);
+    const joinedLines = joinLineFragments(allLines);
+    const clusteredLines = clusterLines(joinedLines);
+    const lines = clusteredLines.map(toPublicLine);
     const rawText = lines.map((l) => l.text).join('\n');
 
     onProgress({ stage: 'parse', progress: 0, message: 'Extrahiere Felder…' });
     const { fields, confidence } = analyzePoster(lines);
     onProgress({ stage: 'parse', progress: 1, message: 'Fertig.' });
 
-    const durationMs = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startedAt;
+    const durationMs = nowMs() - startedAt;
 
     return {
       rawText,
@@ -1085,6 +1635,7 @@ export async function extractFromImage(file, options = {}) {
       fields,
       confidence,
       durationMs,
+      passes: passesRun,
     };
   } catch (err) {
     if (err?.name === 'AbortError') throw err;
