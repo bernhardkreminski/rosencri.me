@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>rosencri.me — Subkultur-Events in Rosenheim</title>
-<meta name="description" content="Konzerte, Vokü, Flohmärkte, Lesungen: der offene Terminkalender für die Rosenheimer Subkultur. Poster abfotografieren, Event landet im Kalender.">
+<meta name="description" content="Konzerte, Küfas, Flohmärkte, Lesungen, Demos und mehr – gesammelt an einem Ort. Der offene Terminkalender für die Rosenheimer Subkultur.">
 <meta name="theme-color" content="#e1483c" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="rosencri.me — Subkultur-Events in Rosenheim">
-<meta property="og:description" content="Poster abfotografieren, Event landet im Kalender. Der offene Terminkalender für die Rosenheimer Subkultur.">
+<meta property="og:description" content="Konzerte, Küfas, Flohmärkte, Lesungen, Demos und mehr – gesammelt an einem Ort. Poster gesehen? Abfotografieren, hochladen, fertig.">
 <meta property="og:url" content="https://rosencri.me/">
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=2">
+<link rel="stylesheet" href="assets/css/style.css?v=3">
 </head>
 <body>
 
@@ -62,8 +62,8 @@
     <div class="wrap">
       <div class="hero">
         <h1 class="hero-title">Was geht in <span class="hl">Rosenheim</span>?</h1>
-        <p class="hero-sub">Konzerte, Vokü, Flohmärkte, Lesungen — von der Szene für die Szene.
-          Poster gesehen? Abfotografieren, fertig.</p>
+        <p class="hero-sub">Konzerte, Küfas, Flohmärkte, Lesungen, Demos und mehr – gesammelt an
+          einem Ort. Poster gesehen? Abfotografieren, hochladen, fertig.</p>
         <div class="hero-actions">
           <button class="btn btn-primary btn-lg" id="btn-add-hero">
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -86,6 +86,11 @@
     </div>
 
     <div class="wrap">
+      <p class="today-line" id="today-line">
+        <span class="today-dot" aria-hidden="true"></span>
+        <span>Heute ist <strong id="today-date">—</strong></span>
+      </p>
+
       <section class="section section-now" id="section-now" hidden>
         <h2 class="section-title"><span class="pulse" aria-hidden="true"></span> Jetzt &amp; heute</h2>
         <div class="cards cards-hot" id="list-now"></div>
@@ -133,7 +138,7 @@
       <div class="cal-legend">
         <span><i class="dot dot-live"></i> läuft gerade</span>
         <span><i class="dot dot-soon"></i> in den nächsten 24 h</span>
-        <span><i class="dot dot-up"></i> geplant</span>
+        <span><i class="dot dot-up"></i> demnächst</span>
         <span><i class="dot dot-past"></i> vorbei</span>
       </div>
 
@@ -346,6 +351,6 @@
 
 <!-- ?v= is a cache buster: GitHub Pages serves assets with max-age=600, so bump
      this when shipping a change that must reach open tabs immediately. -->
-<script type="module" src="assets/js/app.js?v=2"></script>
+<script type="module" src="assets/js/app.js?v=3"></script>
 </body>
 </html>

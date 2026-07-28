@@ -78,6 +78,7 @@ function cacheNodes() {
     sectionUpcoming: $('#section-upcoming'),
     sectionPast: $('#section-past'),
     pastCount: $('#past-count'),
+    todayDate: $('#today-date'),
     empty: $('#empty-state'),
     search: $('#search'),
     tagFilters: $('#tag-filters'),
@@ -202,6 +203,8 @@ function render() {
 
 function renderList() {
   const now = new Date();
+  // Re-stamped on every render (incl. the 60s tick), so it survives midnight.
+  ui.todayDate.textContent = formatDateLong(now);
   const events = visibleEvents();
   const hot = [], upcoming = [], past = [];
 
@@ -248,6 +251,7 @@ function eventCard(ev, { hot = false, past = false } = {}) {
   });
   if (hot || phase === 'live' || phase === 'soon') card.classList.add('is-hot');
   if (phase === 'live') card.classList.add('is-live');
+  if (phase === 'soon') card.classList.add('is-soon');
   if (past || phase === 'past') card.classList.add('is-past');
 
   if (ev.imageUrl) {

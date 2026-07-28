@@ -11,6 +11,10 @@
   --red-dark: #c53a2f;
   --teal: #35b3ad;
   --teal-dark: #2a908b;
+  /* Urgency ramp: red = happening now, amber = within 24h, teal = later.
+     Previously "now" and "within 24h" were both red and indistinguishable. */
+  --amber: #d97b25;
+  --amber-dark: #b5631a;
   --cream: #fbf4e2;
   --paper: #fffdf7;
   --ink: #1c1a17;
@@ -54,6 +58,8 @@
     --paper: #211e17;
     --red: #f0594c;
     --teal: #4ccfc8;
+    --amber: #f0a04b;
+    --amber-dark: #d4842f;
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
     --shadow: 0 2px 6px rgb(0 0 0 / 30%), 0 12px 28px -12px rgb(0 0 0 / 55%);
     --shadow-lg: 0 8px 20px -6px rgb(0 0 0 / 45%), 0 30px 60px -20px rgb(0 0 0 / 70%);
@@ -232,6 +238,20 @@ a { color: var(--red); text-decoration-thickness: 1.5px; text-underline-offset: 
 
 /* ------------------------------- sections ------------------------------ */
 
+/* Anchors the whole list in time — "in 3 Std." and "morgen" only mean
+   something if you know what today is. */
+.today-line {
+  display: flex; align-items: center; gap: 9px;
+  margin: 0 0 22px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: .95rem; color: var(--text-dim);
+}
+.today-line strong { color: var(--text); font-weight: 700; font-family: var(--font-display); }
+.today-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex: none;
+  background: var(--teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 22%, transparent);
+}
+
 .section { margin-bottom: 42px; }
 .section-title {
   display: flex; align-items: center; gap: 9px;
@@ -312,18 +332,26 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
   padding: 4px 10px; border-radius: 999px;
 }
 .badge-live { background: var(--red); color: #fff; }
-.badge-soon { background: color-mix(in srgb, var(--teal) 25%, transparent); color: color-mix(in srgb, var(--teal) 90%, var(--text)); }
+.badge-soon { background: var(--amber); color: #fff; }
 
-/* hot cards — the ones happening now / within 24 h */
+/* Hot cards — happening now, or within the next 24 h. Both are enlarged, but
+   they are deliberately different colours: red reads as "drop everything",
+   amber as "today-ish". Same shape, different urgency. */
 .card.is-hot {
-  border-color: var(--red); border-width: 2px; padding: 20px;
+  --hot: var(--red);
+  border-color: var(--hot); border-width: 2px; padding: 20px;
   background:
-    radial-gradient(120% 100% at 100% 0%, color-mix(in srgb, var(--red) 9%, transparent), transparent 60%),
+    radial-gradient(120% 100% at 100% 0%, color-mix(in srgb, var(--hot) 9%, transparent), transparent 60%),
     var(--surface);
   box-shadow: var(--shadow);
 }
+.card.is-soon { --hot: var(--amber); }
+.card.is-hot .card-date { color: var(--hot); }
 .card.is-hot .card-title { font-size: 1.5rem; }
 @media (min-width: 700px) { .card.is-hot .card-title { font-size: 1.8rem; } }
+
+/* Only the live one pulses — an animated border on every "today" card would
+   make the whole list twitch. */
 .card.is-live::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   border: 2px solid var(--red); animation: breathe 2.6s ease-in-out infinite;
@@ -365,11 +393,20 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
 }
 .cal-cell:hover { background: var(--surface-2); }
 .cal-cell.is-out { opacity: .32; }
-.cal-cell.is-today { background: color-mix(in srgb, var(--teal) 14%, transparent); }
+/* Today gets a tinted cell, a ring, and its number in a filled pill — the
+   familiar calendar convention. A colour tint alone was too easy to miss. */
+.cal-cell.is-today {
+  background: color-mix(in srgb, var(--teal) 12%, transparent);
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
 .cal-cell.is-selected { outline: 2px solid var(--red); outline-offset: -2px; }
 .cal-num { font-size: .78rem; font-weight: 700; color: var(--text-dim); font-variant-numeric: tabular-nums; }
-.cal-cell.is-today .cal-num { color: var(--teal-dark); }
-@media (prefers-color-scheme: dark) { .cal-cell.is-today .cal-num { color: var(--teal); } }
+.cal-cell.is-today .cal-num {
+  align-self: flex-start;
+  display: grid; place-items: center;
+  min-width: 22px; height: 22px; padding: 0 5px;
+  border-radius: 999px; background: var(--teal); color: #05312e; font-weight: 800;
+}
 
 .cal-ev {
   font-size: .66rem; line-height: 1.25; font-weight: 650; padding: 2px 4px; border-radius: 4px;
@@ -378,12 +415,15 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
   color: color-mix(in srgb, var(--teal) 92%, var(--text));
 }
 .cal-ev.is-past { background: var(--surface-2); color: var(--text-dim); }
-.cal-ev.is-soon, .cal-ev.is-live { background: color-mix(in srgb, var(--red) 20%, transparent); color: var(--red); }
+.cal-ev.is-live { background: color-mix(in srgb, var(--red) 20%, transparent); color: var(--red); }
+.cal-ev.is-soon { background: color-mix(in srgb, var(--amber) 22%, transparent); color: var(--amber-dark); }
+@media (prefers-color-scheme: dark) { .cal-ev.is-soon { color: var(--amber); } }
 .cal-more { font-size: .62rem; color: var(--text-dim); padding-left: 4px; }
 
 .cal-dots { display: none; gap: 3px; flex-wrap: wrap; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex: none; }
-.dot-live, .dot-soon { background: var(--red); }
+.dot-live { background: var(--red); }
+.dot-soon { background: var(--amber); }
 .dot-past { background: var(--line-strong); }
 .dot-up { background: var(--teal); }
 

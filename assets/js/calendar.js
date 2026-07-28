@@ -92,9 +92,14 @@ export function renderCalendar(grid, { events, month, selected, onSelect }) {
   return byDay;
 }
 
+/**
+ * Dot class per event phase. `live` and `soon` used to collapse into one class,
+ * which made the legend claim four states the grid never actually drew.
+ */
 function phaseDot(ev, now) {
   const phase = eventPhase(ev, now);
   if (phase === 'past') return 'past';
-  if (phase === 'live' || phase === 'soon') return 'live';
+  if (phase === 'live') return 'live';
+  if (phase === 'soon') return 'soon';
   return 'up';
 }
