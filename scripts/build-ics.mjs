@@ -58,6 +58,9 @@ function mapSupabaseRow(row) {
     source: row.source || 'manual',
     authorName: row.author_name || '',
     isSeed: !!row.is_seed,
+    // Without this the published feed silently loses the repeat: the calendar
+    // would show a recurring event as a single one-off date.
+    rrule: row.rrule || '',
   };
 }
 
