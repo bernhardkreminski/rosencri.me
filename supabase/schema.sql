@@ -33,8 +33,14 @@ create table if not exists public.events (
   author_id     text not null default '',
   author_name   text not null default '',
   is_seed       boolean not null default false,
-  status        text not null default 'published' check (status in ('published', 'hidden'))
+  status        text not null default 'published' check (status in ('published', 'hidden')),
+  -- RFC 5545 RRULE *value* (no "RRULE:" prefix), '' for a one-off event.
+  -- e.g. 'FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY;UNTIL=20261231T220000Z'
+  rrule         text not null default ''
 );
+
+-- Existing installs: add the column without disturbing current rows.
+alter table public.events add column if not exists rrule text not null default '';
 
 create table if not exists public.likes (
   event_id   uuid not null references public.events(id) on delete cascade,

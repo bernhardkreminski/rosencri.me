@@ -15,6 +15,7 @@ import {
 } from './config.js';
 import { uuid, isUuid, toOffsetISO, parseDate } from './util.js';
 import { resolveSeedDates } from './seed.js';
+import { expandAll, seriesIdOf } from './recurrence.js';
 
 const LS = {
   events: 'rc.events',
@@ -112,6 +113,7 @@ function rowToEvent(row) {
     source: row.source || 'manual',
     authorName: row.author_name || '',
     isSeed: Boolean(row.is_seed),
+    rrule: row.rrule || '',
     likeCount: Number(row.like_count || 0),
     goingCount: Number(row.going_count || 0),
     commentCount: Number(row.comment_count || 0),
@@ -134,6 +136,7 @@ function eventToRow(ev, identity) {
     author_id: identity.clientId,
     author_name: ev.authorName || '',
     is_seed: false,
+    rrule: ev.rrule || '',
   };
 }
 
@@ -156,6 +159,7 @@ function normalise(raw, now = new Date()) {
     source: raw.source || 'manual',
     authorName: raw.authorName || '',
     isSeed: Boolean(raw.isSeed),
+    rrule: raw.rrule || '',
     likeCount: Number(raw.likeCount || 0),
     goingCount: Number(raw.goingCount || 0),
     commentCount: Number(raw.commentCount || 0),
@@ -204,7 +208,10 @@ class Store extends EventTarget {
     // Local drafts are kept as a safety net; remote wins on id collision.
     const byId = new Map();
     for (const ev of [...seeds, ...local, ...remote]) byId.set(ev.id, ev);
-    this.events = [...byId.values()].sort(
+    this.series = [...byId.values()];
+    // Recurring events are stored once and materialised per occurrence for the
+    // UI. The .ics deliberately does not do this — it ships the RRULE itself.
+    this.events = expandAll(this.series).sort(
       (a, b) => (parseDate(a.start)?.getTime() || 0) - (parseDate(b.start)?.getTime() || 0),
     );
     this._applyLocalCounts();
@@ -260,8 +267,10 @@ class Store extends EventTarget {
 
   getAll() { return this.events; }
   getById(id) { return this.events.find((e) => e.id === id) || null; }
-  isLiked(id) { return this._myLikes.has(id); }
-  getRsvp(id) { return this._myRsvps.get(id) || null; }
+  /** The stored row behind an occurrence (or the event itself). */
+  getSeries(id) { return (this.series || []).find((e) => e.id === seriesIdOf(id)) || this.getById(id); }
+  isLiked(id) { return this._myLikes.has(seriesIdOf(id)); }
+  getRsvp(id) { return this._myRsvps.get(seriesIdOf(id)) || null; }
 
   setName(name) {
     this.identity = { ...this.identity, name: String(name || '').slice(0, 40) };
@@ -277,17 +286,26 @@ class Store extends EventTarget {
     if (!ev.start) throw new Error('Ein Event braucht ein Datum.');
 
     if (this.mode === 'supabase') {
+      const post = (body) => sb('events', {
+        method: 'POST',
+        headers: { Prefer: 'return=representation' },
+        body,
+      });
       try {
-        const [row] = await sb('events', {
-          method: 'POST',
-          headers: { Prefer: 'return=representation' },
-          body: eventToRow(ev, this.identity),
-        });
+        let row;
+        try {
+          [row] = await post(eventToRow(ev, this.identity));
+        } catch (err) {
+          // A database that predates the recurrence migration rejects the
+          // `rrule` column outright. Saving the event without its repeat rule
+          // is far better than refusing to save it at all, so retry once.
+          if (!/rrule/i.test(String(err.message))) throw err;
+          console.warn('[store] no rrule column yet — saving without the repeat rule');
+          const { rrule, ...withoutRrule } = eventToRow(ev, this.identity);
+          [row] = await post(withoutRrule);
+        }
         const saved = rowToEvent(row);
-        this.events = [...this.events, saved].sort(
-          (a, b) => (parseDate(a.start)?.getTime() || 0) - (parseDate(b.start)?.getTime() || 0),
-        );
-        this.emit('change', { events: this.events });
+        this._ingest(saved);
         return saved;
       } catch (err) {
         console.error('[store] remote insert failed, saving locally', err);
@@ -297,11 +315,21 @@ class Store extends EventTarget {
     const local = read(LS.events, []);
     local.push(ev);
     write(LS.events, local);
-    this.events = [...this.events, ev].sort(
+    this._ingest(ev);
+    return ev;
+  }
+
+  /**
+   * Add a stored event to the in-memory set and re-materialise occurrences, so
+   * a newly created recurring event shows its whole series immediately rather
+   * than only its first date until the next reload.
+   */
+  _ingest(ev) {
+    this.series = [...(this.series || []), ev];
+    this.events = expandAll(this.series).sort(
       (a, b) => (parseDate(a.start)?.getTime() || 0) - (parseDate(b.start)?.getTime() || 0),
     );
     this.emit('change', { events: this.events });
-    return ev;
   }
 
   /**
@@ -333,8 +361,9 @@ class Store extends EventTarget {
     });
   }
 
-  async toggleLike(id) {
-    const ev = this.getById(id);
+  async toggleLike(occurrenceId) {
+    const id = seriesIdOf(occurrenceId);
+    const ev = this.getById(occurrenceId);
     if (!ev) return null;
     const liked = this._myLikes.has(id);
     const remote = this.mode === 'supabase' && isUuid(id);
@@ -365,8 +394,9 @@ class Store extends EventTarget {
   }
 
   /** @param {'going'|'maybe'|null} status */
-  async setRsvp(id, status) {
-    const ev = this.getById(id);
+  async setRsvp(occurrenceId, status) {
+    const id = seriesIdOf(occurrenceId);
+    const ev = this.getById(occurrenceId);
     if (!ev) return null;
     const prev = this._myRsvps.get(id) || null;
     if (prev === status) status = null; // toggling the active choice clears it
@@ -407,7 +437,8 @@ class Store extends EventTarget {
 
   /* ------------------------------- comments ------------------------------ */
 
-  async listComments(id, { force = false } = {}) {
+  async listComments(occurrenceId, { force = false } = {}) {
+    const id = seriesIdOf(occurrenceId);
     if (!force && this._comments.has(id)) return this._comments.get(id);
 
     let list = read(LS.comments, {})[id] || [];
@@ -426,7 +457,8 @@ class Store extends EventTarget {
     return list;
   }
 
-  async addComment(id, body) {
+  async addComment(occurrenceId, body) {
+    const id = seriesIdOf(occurrenceId);
     const text = String(body || '').trim();
     if (!text) throw new Error('Kommentar ist leer.');
     if (text.length > 2000) throw new Error('Kommentar ist zu lang (max. 2000 Zeichen).');

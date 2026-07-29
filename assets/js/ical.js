@@ -12,6 +12,8 @@
 //     id, title, description, location,
 //     start,            // ISO 8601 with offset, e.g. "2026-07-25T16:00:00+02:00"
 //     end,              // same shape or null -> treated as start + 3h
+//     rrule,            // '' for a one-off, else an RFC 5545 RRULE *value*
+//                        // (no "RRULE:" prefix), e.g. "FREQ=WEEKLY"
 //     url, imageUrl, tags, createdAt, source, authorName, isSeed
 //   }
 
@@ -129,6 +131,31 @@ function resolveEnd(start, end) {
   return end;
 }
 
+// Matches a small, known-safe subset of RRULE values: FREQ=<DAILY|WEEKLY|
+// MONTHLY|YEARLY> optionally followed by more ";KEY=VALUE" pairs, using only
+// characters that can never break iCalendar line syntax (no raw newline,
+// no stray colons/semicolons outside of what's already accounted for).
+// RRULE is emitted as a raw, UNESCAPED line (it is not a TEXT property —
+// see the comment at the call site), so anything that fails this check is
+// dropped silently rather than risking a corrupt calendar.
+const RRULE_PATTERN = /^FREQ=(DAILY|WEEKLY|MONTHLY|YEARLY)(;[A-Z]+=[A-Z0-9,=\-+:]*)*$/i;
+
+/**
+ * Validate + lightly normalize an RRULE value (no "RRULE:" prefix).
+ * Returns the sanitized value, or null if it doesn't match the whitelist
+ * above (in which case the caller must omit RRULE entirely — never emit
+ * a partial/garbled rule).
+ */
+function sanitizeRRule(raw) {
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed || !RRULE_PATTERN.test(trimmed)) return null;
+  // UNTIL must be UTC (trailing Z). A naive/local UNTIL paired with a
+  // TZID'd DTSTART is a well-known interop break (notably in Outlook), so
+  // if the rule arrives without a Z we append one rather than reject it.
+  return trimmed.replace(/UNTIL=(\d{8}T\d{6})(?!Z)/gi, 'UNTIL=$1Z');
+}
+
 function buildDescription(event, calUrl) {
   const parts = [];
   if (event.description) parts.push(event.description);
@@ -180,6 +207,14 @@ function buildVEvent(event, opts, now) {
   lines.push(`LAST-MODIFIED:${formatUTC(created)}`);
   lines.push(`DTSTART;TZID=${tz}:${formatLocal(start, tz)}`);
   lines.push(`DTEND;TZID=${tz}:${formatLocal(end, tz)}`);
+  const rrule = sanitizeRRule(event.rrule);
+  if (rrule) {
+    // NOT escaped: RRULE is a RECUR-value property, not TEXT. Running it
+    // through escapeText() would turn "FREQ=WEEKLY;INTERVAL=2" into
+    // "FREQ=WEEKLY\;INTERVAL=2", which every calendar client fails to parse
+    // as a recurrence rule (this is the single easiest way to get this wrong).
+    lines.push(`RRULE:${rrule}`);
+  }
   lines.push(`SUMMARY:${escapeText(title)}`);
   lines.push(`DESCRIPTION:${escapeText(buildDescription(event, opts.calUrl))}`);
   if (event.location) lines.push(`LOCATION:${escapeText(event.location)}`);
@@ -288,15 +323,75 @@ export function googleCalendarUrl(event) {
   }
   const end = resolveEnd(start, parseDate(event.end));
   const description = buildDescription(event, DEFAULTS.calUrl);
-  const params = new URLSearchParams({
+  const paramsObj = {
     action: 'TEMPLATE',
     text: event.title || '',
     dates: `${formatUTC(start)}/${formatUTC(end)}`,
     details: description,
     location: event.location || '',
     ctz: DEFAULTS.timezone,
-  });
+  };
+  const rrule = sanitizeRRule(event.rrule);
+  if (rrule) paramsObj.recur = `RRULE:${rrule}`;
+  const params = new URLSearchParams(paramsObj);
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+// German labels for the four recognized FREQ values, used by describeRRule().
+const FREQ_LABELS_DE = Object.freeze({
+  DAILY: 'Jeden Tag',
+  WEEKLY: 'Jede Woche',
+  MONTHLY: 'Jeden Monat',
+  YEARLY: 'Jedes Jahr',
+});
+const FREQ_UNIT_PLURAL_DE = Object.freeze({
+  DAILY: 'Tage',
+  WEEKLY: 'Wochen',
+  MONTHLY: 'Monate',
+  YEARLY: 'Jahre',
+});
+
+/**
+ * Short, human-readable description of an RRULE value for the UI, e.g.
+ * "Jede Woche", "Alle 2 Wochen", "Jeden Monat bis 31.12.2026".
+ * Returns '' for an empty/unrecognized rule. Dependency-free and never
+ * throws — worst case is an empty string, never an exception reaching the UI.
+ * Only `locale: 'de'` has translations right now; any other value currently
+ * falls back to the same German strings rather than throwing or guessing.
+ */
+export function describeRRule(rrule, locale = 'de') {
+  try {
+    const sanitized = sanitizeRRule(rrule);
+    if (!sanitized) return '';
+
+    const fields = {};
+    for (const part of sanitized.split(';')) {
+      const eq = part.indexOf('=');
+      if (eq === -1) continue;
+      fields[part.slice(0, eq).toUpperCase()] = part.slice(eq + 1);
+    }
+
+    const freq = (fields.FREQ || '').toUpperCase();
+    const interval = parseInt(fields.INTERVAL, 10);
+
+    let label = '';
+    if (interval > 1 && FREQ_UNIT_PLURAL_DE[freq]) {
+      label = `Alle ${interval} ${FREQ_UNIT_PLURAL_DE[freq]}`;
+    } else {
+      label = FREQ_LABELS_DE[freq] || '';
+    }
+    if (!label) return '';
+
+    const until = fields.UNTIL;
+    const m = until && /^(\d{4})(\d{2})(\d{2})T\d{6}Z?$/.exec(until);
+    if (m) {
+      const [, y, mo, d] = m;
+      label += ` bis ${d}.${mo}.${y}`;
+    }
+    return label;
+  } catch {
+    return '';
+  }
 }
 
 /** Convert an https:// (or http://) calendar feed URL into a webcal:// URL. */

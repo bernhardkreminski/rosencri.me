@@ -14,15 +14,16 @@
 <meta property="og:description" content="Konzerte, Küfas, Flohmärkte, Lesungen, Demos und mehr – gesammelt an einem Ort. Poster gesehen? Abfotografieren, hochladen, fertig.">
 <meta property="og:url" content="https://rosencri.me/">
 
-<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/img/favicon.svg">
+<link rel="icon" href="assets/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/img/icon-512.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="alternate" type="text/calendar" href="calendar.ics" title="rosencri.me Kalender">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=3">
+<link rel="stylesheet" href="assets/css/style.css?v=4">
 </head>
 <body>
 
@@ -32,7 +33,7 @@
   <div class="wrap header-inner">
     <a class="brand" href="#/">
       <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" width="28" height="28"><path d="M16 3l3.6 7.6 8.4 1.1-6.2 5.7 1.6 8.3L16 21.8 8.6 25.7l1.6-8.3L4 11.7l8.4-1.1z" fill="currentColor"/></svg>
+        <img src="assets/img/icon-192.png" width="36" height="36" alt="">
       </span>
       <span class="brand-text">
         <strong>rosencri<span class="brand-dot">.</span>me</strong>
@@ -266,6 +267,22 @@
       </label>
     </div>
 
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">Wiederholung</span>
+        <select name="repeat" id="field-repeat">
+          <option value="">Einmalig</option>
+          <option value="FREQ=WEEKLY">Jede Woche</option>
+          <option value="FREQ=WEEKLY;INTERVAL=2">Alle 2 Wochen</option>
+          <option value="FREQ=MONTHLY">Jeden Monat</option>
+        </select>
+      </label>
+      <label class="field" id="field-repeat-until-wrap" hidden>
+        <span class="field-label">Wiederholen bis <small>optional</small></span>
+        <input type="date" name="repeatUntil">
+      </label>
+    </div>
+
     <label class="field">
       <span class="field-label">Ort</span>
       <input name="location" maxlength="160" placeholder="z. B. Kulturzentrum Asta, Rosenheim" autocomplete="off">
@@ -351,6 +368,6 @@
 
 <!-- ?v= is a cache buster: GitHub Pages serves assets with max-age=600, so bump
      this when shipping a change that must reach open tabs immediately. -->
-<script type="module" src="assets/js/app.js?v=3"></script>
+<script type="module" src="assets/js/app.js?v=4"></script>
 </body>
 </html>

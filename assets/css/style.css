@@ -130,7 +130,8 @@ a { color: var(--red); text-decoration-thickness: 1.5px; text-underline-offset: 
 }
 
 .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--text); margin-right: auto; }
-.brand-mark { color: var(--red); display: grid; place-items: center; transition: transform .4s var(--ease); }
+.brand-mark { display: grid; place-items: center; transition: transform .4s var(--ease); flex: none; }
+.brand-mark img { width: 36px; height: 36px; display: block; }
 .brand:hover .brand-mark { transform: rotate(72deg); }
 .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
 .brand-text strong { font-family: var(--font-display); font-size: 1.12rem; letter-spacing: -.03em; }
@@ -186,7 +187,7 @@ a { color: var(--red); text-decoration-thickness: 1.5px; text-underline-offset: 
   .header-inner { gap: 8px; }
   .brand-text small { display: none; }
   .brand-text strong { font-size: 1rem; }
-  .brand-mark svg { width: 24px; height: 24px; }
+  .brand-mark img { width: 30px; height: 30px; }
   .viewswitch-btn { padding: 6px 11px; font-size: .82rem; }
   .btn-subscribe { padding: 9px 12px; }
 }
@@ -543,10 +544,25 @@ dialog.sheet[open] { animation: dlg-in .3s var(--ease); }
 .field-label { font-size: .82rem; font-weight: 700; color: var(--text-dim); display: flex; gap: 6px; align-items: baseline; }
 .field-label em { color: var(--red); font-style: normal; }
 .field-label small { font-weight: 500; opacity: .8; }
-.field input, .field textarea {
+.field input, .field textarea, .field select {
   width: 100%; padding: 11px 13px; border-radius: var(--radius-sm);
   border: 1.5px solid var(--line); background: var(--bg); outline: none;
   transition: border-color .16s, box-shadow .16s; font-size: 1rem;
+}
+.field select { appearance: none; cursor: pointer; padding-right: 34px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+.field select:focus { border-color: var(--teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 16%, transparent); }
+
+/* Repeat marker shown on cards and in the detail view. */
+.repeat-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .02em;
+  padding: 2px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--teal) 18%, transparent);
+  color: color-mix(in srgb, var(--teal) 92%, var(--text));
 }
 .field textarea { resize: vertical; min-height: 84px; font-family: inherit; }
 .field input:focus, .field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 16%, transparent); }

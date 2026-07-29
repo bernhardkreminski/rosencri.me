@@ -26,6 +26,8 @@ const state = {
 
 const ui = {};
 let icalModule = null;
+/** Filled in once ical.js loads; until then cards simply omit the repeat tag. */
+let describeRRule = () => '';
 
 /* --------------------------------- boot --------------------------------- */
 
@@ -58,6 +60,7 @@ async function init() {
   }
 
   render();
+  loadIcal().catch(() => {});   // also primes the repeat labels
   applyRoute();
   window.addEventListener('hashchange', applyRoute);
 
@@ -272,8 +275,12 @@ function eventCard(ev, { hot = false, past = false } = {}) {
   if (phase !== 'live') meta.append(el('span', {}, [icon('clock'), relativeTime(start, now)]));
   if (meta.childElementCount) card.append(meta);
 
-  if (ev.tags?.length) {
-    card.append(el('span.card-tags', {}, ev.tags.slice(0, 3).map((t) => el('span.tag', { text: t }))));
+  const repeatLabel = describeRRule(ev.rrule);
+  if (ev.tags?.length || repeatLabel) {
+    card.append(el('span.card-tags', {}, [
+      repeatLabel && el('span.repeat-tag', {}, ['\u27f3 ', repeatLabel]),
+      ...ev.tags.slice(0, 3).map((t) => el('span.tag', { text: t })),
+    ]));
   }
 
   const stats = el('span.card-stats', {}, [
@@ -346,6 +353,9 @@ function bindAddFlow() {
   $('#form-poster-remove').addEventListener('click', () => {
     if (state.draft) state.draft.blob = null;
     ui.formPoster.hidden = true;
+  });
+  $('#field-repeat').addEventListener('change', (e) => {
+    $('#field-repeat-until-wrap').hidden = !e.target.value;
   });
   $('#form-poster-view').addEventListener('click', () => {
     $('#lightbox-img').src = ui.formPosterImg.src;
@@ -438,6 +448,9 @@ function openForm(draft) {
   form.url.value = f.url || '';
   form.tags.value = (f.tags || []).join(', ');
   form.authorName.value = store.identity.name || '';
+  form.repeat.value = '';
+  form.repeatUntil.value = '';
+  $('#field-repeat-until-wrap').hidden = true;
 
   for (const flag of form.querySelectorAll('.field-flag')) {
     const key = flag.dataset.flag;
@@ -491,6 +504,15 @@ async function onSubmitEvent(e) {
       }
     }
 
+    let rrule = form.repeat.value;
+    if (rrule && form.repeatUntil.value) {
+      const [y, m, d] = form.repeatUntil.value.split('-').map(Number);
+      const untilLocal = new Date(y, m - 1, d, 23, 59, 59);
+      const p = (n) => String(n).padStart(2, '0');
+      rrule += `;UNTIL=${untilLocal.getUTCFullYear()}${p(untilLocal.getUTCMonth() + 1)}${p(untilLocal.getUTCDate())}`
+             + `T${p(untilLocal.getUTCHours())}${p(untilLocal.getUTCMinutes())}${p(untilLocal.getUTCSeconds())}Z`;
+    }
+
     const authorName = form.authorName.value.trim();
     if (authorName) store.setName(authorName);
 
@@ -504,6 +526,7 @@ async function onSubmitEvent(e) {
       tags: form.tags.value.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean).slice(0, 8),
       authorName,
       imageUrl,
+      rrule,
       source: state.draft?.previewUrl ? 'poster' : 'manual',
     });
 
@@ -547,6 +570,8 @@ async function openDetail(id) {
 
   const meta = el('div.detail-meta');
   meta.append(el('div', {}, [icon('cal'), el('strong', { text: formatRange(ev.start, ev.end) })]));
+  const repeatText = describeRRule(ev.rrule);
+  if (repeatText) meta.append(el('div', {}, [icon('repeat'), el('strong', { text: repeatText })]));
   if (ev.location) meta.append(el('div', {}, [icon('pin'), el('strong', { text: ev.location })]));
   if (ev.url) {
     meta.append(el('div', {}, [
@@ -591,7 +616,11 @@ async function openDetail(id) {
     type: 'button',
     onClick: async () => {
       const ical = await loadIcal();
-      ical.downloadICS([ev], `${(ev.title || 'event').replace(/[^\w-]+/g, '-').slice(0, 40)}.ics`, {
+      // The dialog shows one occurrence, so export just that date. Keeping the
+      // RRULE here would import a whole series starting from this occurrence,
+      // silently shifting the repeat the user actually subscribed to.
+      const single = { ...ev, rrule: '' };
+      ical.downloadICS([single], `${(ev.title || 'event').replace(/[^\w-]+/g, '-').slice(0, 40)}.ics`, {
         calName: ev.title, calUrl: SITE_URL,
       });
       toast('Termin heruntergeladen.', 'ok');
@@ -703,7 +732,13 @@ async function shareEvent(ev) {
 /* ------------------------------- subscribe ------------------------------ */
 
 async function loadIcal() {
-  if (!icalModule) icalModule = await import('./ical.js');
+  if (!icalModule) {
+    icalModule = await import('./ical.js');
+    if (typeof icalModule.describeRRule === 'function') {
+      describeRRule = icalModule.describeRRule;
+      render();
+    }
+  }
   return icalModule;
 }
 
@@ -738,6 +773,7 @@ const ICONS = {
   cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>',
   link: '<path d="M10 13a5 5 0 007.1 0l2.4-2.4a5 5 0 10-7.1-7.1L11 4.9"/><path d="M14 11a5 5 0 00-7.1 0l-2.4 2.4a5 5 0 107.1 7.1L13 19.1"/>',
   user: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0114 0"/>',
+  repeat: '<path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 014-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 01-4 4H4"/>',
 };
 
 function icon(name) {
