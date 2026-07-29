@@ -57,12 +57,28 @@ export function renderCalendar(grid, { events, month, selected, onSelect }) {
     const outside = day.getMonth() !== month.getMonth();
     const isToday = sameDay(day, today);
 
+    // The visual "today" ring means nothing to a screen reader; aria-current
+    // is what actually conveys it. Phase words are spelled out too, because on
+    // narrow screens the dots are the only remaining cue and a dot has no
+    // accessible name.
+    const phases = dayEvents.map((ev) => eventPhase(ev, now));
+    const label = [
+      isToday ? 'Heute, ' : '',
+      `${day.getDate()}. ${MONTHS_DE[day.getMonth()]}`,
+      dayEvents.length
+        ? `, ${dayEvents.length} Event${dayEvents.length === 1 ? '' : 's'}`
+        : ', keine Events',
+      phases.includes('live') ? ', läuft gerade' : '',
+      phases.includes('soon') ? ', in den nächsten 24 Stunden' : '',
+    ].join('');
+
     const cell = el('button.cal-cell', {
       type: 'button',
       role: 'gridcell',
-      'aria-label': `${day.getDate()}. ${MONTHS_DE[day.getMonth()]}, ${dayEvents.length} Event${dayEvents.length === 1 ? '' : 's'}`,
+      'aria-label': label,
       onClick: () => onSelect(day),
     });
+    if (isToday) cell.setAttribute('aria-current', 'date');
     if (outside) cell.classList.add('is-out');
     if (isToday) cell.classList.add('is-today');
     if (selected && sameDay(day, selected)) cell.classList.add('is-selected');
@@ -71,7 +87,7 @@ export function renderCalendar(grid, { events, month, selected, onSelect }) {
 
     // Compact dot row for narrow screens.
     if (dayEvents.length) {
-      const dots = el('span.cal-dots');
+      const dots = el('span.cal-dots', { 'aria-hidden': 'true' });
       for (const ev of dayEvents.slice(0, 4)) {
         dots.append(el(`i.dot.dot-${phaseDot(ev, now)}`));
       }

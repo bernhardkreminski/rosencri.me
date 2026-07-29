@@ -15,6 +15,11 @@
      Previously "now" and "within 24h" were both red and indistinguishable. */
   --amber: #d97b25;
   --amber-dark: #b5631a;
+  /* Solid fills that carry white text. The display hues above fail 4.5:1
+     (red 4.04, amber 3.08), so anything with a label on it uses these. */
+  --red-solid: #d34338;
+  --amber-solid: #ab611d;
+  --teal-solid: #26827e;
   --cream: #fbf4e2;
   --paper: #fffdf7;
   --ink: #1c1a17;
@@ -345,8 +350,8 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
   font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
   padding: 4px 10px; border-radius: 999px;
 }
-.badge-live { background: var(--red); color: #fff; }
-.badge-soon { background: var(--amber); color: #fff; }
+.badge-live { background: var(--red-solid); color: #fff; }
+.badge-soon { background: var(--amber-solid); color: #fff; }
 
 /* Hot cards — happening now, or within the next 24 h. Both are enlarged, but
    they are deliberately different colours: red reads as "drop everything",
@@ -435,11 +440,19 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
 .cal-more { font-size: .62rem; color: var(--text-dim); padding-left: 4px; }
 
 .cal-dots { display: none; gap: 3px; flex-wrap: wrap; }
-.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex: none; }
-.dot-live { background: var(--red); }
-.dot-soon { background: var(--amber); }
-.dot-past { background: var(--line-strong); }
-.dot-up { background: var(--teal); }
+.dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--teal); flex: none; box-sizing: border-box;
+}
+/* Each phase gets its own SHAPE as well as its own hue, so the four states
+   stay tellable apart in greyscale and with colour vision deficiency. */
+/* One rule per phase: colour AND shape together, so the later duplicates that
+   previously reset the background can't undo the shape cue. */
+.dot-live { background: var(--red); border-radius: 50%;
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 35%, transparent); }
+.dot-soon { background: var(--amber); border-radius: 2px; }            /* square  = imminent */
+.dot-up   { background: transparent; border: 2px solid var(--teal); }  /* hollow  = later */
+.dot-past { background: var(--line-strong); border-radius: 50%; transform: scale(.72); }
 
 @media (max-width: 640px) {
   .cal-cell { min-height: 46px; padding: 4px 3px; }
