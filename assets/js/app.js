@@ -21,6 +21,7 @@ const state = {
   month: startOfDay(new Date()),
   selectedDay: null,
   draft: null,          // { fields, confidence, blob, previewUrl }
+  editing: null,        // event being edited, null when adding
   scanAbort: null,
 };
 
@@ -350,6 +351,7 @@ function bindAddFlow() {
   });
 
   $('#form-cancel').addEventListener('click', () => ui.dlgForm.close());
+  $('#confirm-cancel').addEventListener('click', () => $('#dlg-confirm').close());
   $('#form-poster-remove').addEventListener('click', () => {
     if (state.draft) state.draft.blob = null;
     ui.formPoster.hidden = true;
@@ -430,27 +432,54 @@ async function handleImage(file) {
   }
 }
 
-function openForm(draft) {
+/**
+ * @param {object|null} draft   OCR/manual draft, or null for a blank form
+ * @param {object} [editing]    existing event (or occurrence) being edited
+ */
+function openForm(draft, editing = null) {
   state.draft = draft;
+  state.editing = editing;
   const f = draft?.fields || {};
   const c = draft?.confidence || {};
   const form = ui.form;
   form.reset();
 
-  ui.formTitle.textContent = draft ? 'Event prüfen' : 'Event eintragen';
-  ui.formSub.textContent = draft?.note || 'Nur Titel und Beginn sind Pflicht.';
+  const isRepeating = Boolean(editing?.rrule);
+  ui.formTitle.textContent = editing ? 'Event bearbeiten' : draft ? 'Event prüfen' : 'Event eintragen';
+  ui.formSub.textContent = editing
+    ? (isRepeating
+        ? 'Änderungen gelten für die ganze Serie — alle Termine dieses Events.'
+        : 'Änderungen sind sofort für alle sichtbar.')
+    : draft?.note || 'Nur Titel und Beginn sind Pflicht.';
 
-  form.title.value = f.title || '';
-  form.start.value = f.start || defaultStart();
-  form.end.value = f.end || '';
-  form.location.value = f.location || '';
-  form.description.value = f.description || '';
-  form.url.value = f.url || '';
-  form.tags.value = (f.tags || []).join(', ');
-  form.authorName.value = store.identity.name || '';
-  form.repeat.value = '';
-  form.repeatUntil.value = '';
-  $('#field-repeat-until-wrap').hidden = true;
+  if (editing) {
+    // Edit the stored row, not the occurrence: a series has one start date.
+    const row = store.getSeries(editing.id) || editing;
+    form.title.value = row.title || '';
+    form.start.value = row.start ? toLocalInput(row.start) : defaultStart();
+    form.end.value = row.end ? toLocalInput(row.end) : '';
+    form.location.value = row.location || '';
+    form.description.value = row.description || '';
+    form.url.value = row.url || '';
+    form.tags.value = (row.tags || []).join(', ');
+    form.authorName.value = row.authorName || store.identity.name || '';
+    const [freq, until] = splitRRule(row.rrule || '');
+    form.repeat.value = freq;
+    form.repeatUntil.value = until;
+    $('#field-repeat-until-wrap').hidden = !freq;
+  } else {
+    form.title.value = f.title || '';
+    form.start.value = f.start || defaultStart();
+    form.end.value = f.end || '';
+    form.location.value = f.location || '';
+    form.description.value = f.description || '';
+    form.url.value = f.url || '';
+    form.tags.value = (f.tags || []).join(', ');
+    form.authorName.value = store.identity.name || '';
+    form.repeat.value = '';
+    form.repeatUntil.value = '';
+    $('#field-repeat-until-wrap').hidden = true;
+  }
 
   for (const flag of form.querySelectorAll('.field-flag')) {
     const key = flag.dataset.flag;
@@ -462,8 +491,21 @@ function openForm(draft) {
   if (draft?.previewUrl) ui.formPosterImg.src = draft.previewUrl;
   ui.formError.hidden = true;
 
+  $('#form-submit').textContent = editing ? 'Änderungen speichern' : 'In den Kalender eintragen';
   ui.dlgForm.showModal();
   setTimeout(() => form.title.focus(), 120);
+}
+
+/**
+ * Split a stored RRULE back into the two form controls.
+ * @returns {[string, string]} [value for the repeat select, yyyy-mm-dd or '']
+ */
+function splitRRule(rrule) {
+  if (!rrule) return ['', ''];
+  const m = /;?UNTIL=(\d{4})(\d{2})(\d{2})/i.exec(rrule);
+  const base = rrule.replace(/;?UNTIL=[^;]*/i, '');
+  const known = ['FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY'];
+  return [known.includes(base) ? base : '', m ? `${m[1]}-${m[2]}-${m[3]}` : ''];
 }
 
 function defaultStart() {
@@ -516,7 +558,7 @@ async function onSubmitEvent(e) {
     const authorName = form.authorName.value.trim();
     if (authorName) store.setName(authorName);
 
-    const saved = await store.addEvent({
+    const fields = {
       title,
       start,
       end,
@@ -525,15 +567,28 @@ async function onSubmitEvent(e) {
       url: form.url.value.trim(),
       tags: form.tags.value.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean).slice(0, 8),
       authorName,
-      imageUrl,
       rrule,
-      source: state.draft?.previewUrl ? 'poster' : 'manual',
-    });
+    };
+
+    let saved;
+    if (state.editing) {
+      // Keep the existing poster unless a new one was picked.
+      if (imageUrl) fields.imageUrl = imageUrl;
+      saved = await store.updateEvent(state.editing.id, fields);
+    } else {
+      saved = await store.addEvent({
+        ...fields,
+        imageUrl,
+        source: state.draft?.previewUrl ? 'poster' : 'manual',
+      });
+    }
 
     ui.dlgForm.close();
     if (state.draft?.previewUrl) URL.revokeObjectURL(state.draft.previewUrl);
+    const wasEditing = Boolean(state.editing);
     state.draft = null;
-    toast('Event eingetragen 🎉', 'ok');
+    state.editing = null;
+    toast(wasEditing ? 'Änderungen gespeichert.' : 'Event eingetragen 🎉', 'ok');
     render();
     openDetail(saved.id);
   } catch (err) {
@@ -541,7 +596,7 @@ async function onSubmitEvent(e) {
     fail(err.message || 'Speichern fehlgeschlagen.');
   } finally {
     submit.disabled = false;
-    submit.textContent = 'In den Kalender eintragen';
+    submit.textContent = state.editing ? 'Änderungen speichern' : 'In den Kalender eintragen';
   }
 }
 
@@ -635,6 +690,20 @@ async function openDetail(id) {
   actions.append(likeBtn, goingBtn, calBtn, shareBtn);
   body.append(actions);
 
+  // Anyone may edit or delete anything — deliberate open-board choice, see
+  // supabase/schema.sql. Kept visually separate from the social actions.
+  const manage = el('div.detail-manage', {}, [
+    el('button.actbtn', {
+      type: 'button',
+      onClick: () => { ui.dlgDetail.close(); openForm(null, ev); },
+    }, ['✎ Bearbeiten']),
+    el('button.actbtn.actbtn-danger', {
+      type: 'button',
+      onClick: () => confirmDelete(ev),
+    }, ['🗑 Löschen']),
+  ]);
+  body.append(manage);
+
   /* comments */
   const live = phase === 'live' || phase === 'soon';
   const comments = el(`section.comments${live ? '.is-live' : ''}`);
@@ -713,6 +782,38 @@ async function paintComments(container, id, live) {
       ]),
     ]));
   }
+}
+
+/** Ask before deleting; a recurring event takes its whole series with it. */
+function confirmDelete(ev) {
+  const repeating = Boolean(describeRRule(ev.rrule));
+  $('#confirm-title').textContent = repeating ? 'Ganze Serie löschen?' : 'Event löschen?';
+  $('#confirm-text').textContent = repeating
+    ? `„${ev.title}" wiederholt sich — gelöscht werden alle Termine der Serie, nicht nur dieser eine.`
+    : `„${ev.title}" wird für alle entfernt.`;
+
+  const ok = $('#confirm-ok');
+  const clone = ok.cloneNode(true);          // drop listeners from a prior open
+  ok.replaceWith(clone);
+  clone.addEventListener('click', async () => {
+    clone.disabled = true;
+    clone.textContent = 'Löschen …';
+    try {
+      await store.deleteEvent(ev.id);
+      $('#dlg-confirm').close();
+      ui.dlgDetail.close();
+      history.replaceState(null, '', location.pathname + location.search);
+      toast(repeating ? 'Serie gelöscht.' : 'Event gelöscht.', 'ok');
+      render();
+    } catch (err) {
+      console.error(err);
+      toast(err.message || 'Löschen fehlgeschlagen.', 'error');
+    } finally {
+      clone.disabled = false;
+      clone.textContent = 'Endgültig löschen';
+    }
+  });
+  $('#dlg-confirm').showModal();
 }
 
 async function shareEvent(ev) {
@@ -811,10 +912,12 @@ function toast(message, kind = 'info') {
 // <dialog> handles Escape itself; we only need to release the poster preview's
 // object URL when the form sheet goes away, however it was closed.
 document.addEventListener('close', (e) => {
-  if (e.target === ui.dlgForm && state.draft?.previewUrl) {
-    URL.revokeObjectURL(state.draft.previewUrl);
-    state.draft = null;
-  }
+  if (e.target !== ui.dlgForm) return;
+  if (state.draft?.previewUrl) URL.revokeObjectURL(state.draft.previewUrl);
+  state.draft = null;
+  // Must be cleared on cancel too — a leftover `editing` would turn the next
+  // "Event hinzufügen" into an overwrite of the event that was being edited.
+  state.editing = null;
 }, true);
 
 export { store, state };

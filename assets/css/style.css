@@ -169,6 +169,19 @@ a { color: var(--red); text-decoration-thickness: 1.5px; text-underline-offset: 
 .btn-lg { padding: 13px 24px; font-size: 1rem; }
 .btn-sm { padding: 6px 13px; font-size: .82rem; }
 .btn-block { width: 100%; }
+.btn-danger { --btn-bg: var(--red); color: #fff; }
+.btn-danger:hover { --btn-bg: var(--red-dark); }
+
+/* Edit/delete sit apart from the social actions so "löschen" is never a
+   neighbour of the like button. */
+.detail-manage {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+  margin: -6px 0 18px;
+}
+.detail-manage .actbtn { font-size: .82rem; padding: 7px 13px; }
+.detail-manage .actbtn-danger { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, transparent); }
+.detail-manage .actbtn-danger:hover { background: color-mix(in srgb, var(--red) 10%, transparent); }
+dialog.sheet-confirm { width: min(440px, 100%); }
 
 .iconbtn {
   display: grid; place-items: center; width: 38px; height: 38px; flex: none;

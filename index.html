@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=4">
+<link rel="stylesheet" href="assets/css/style.css?v=5">
 </head>
 <body>
 
@@ -358,6 +358,17 @@
   <a class="dl-link" id="sub-download" href="calendar.ics" download>Stattdessen einmalig als .ics herunterladen</a>
 </dialog>
 
+<!-- 7. Delete confirmation -->
+<dialog class="sheet sheet-confirm" id="dlg-confirm">
+  <h2 class="sheet-title" id="confirm-title">Event löschen?</h2>
+  <p class="sheet-sub" id="confirm-text"></p>
+  <p class="hint">Das lässt sich nicht rückgängig machen. Kommentare, Likes und Zusagen werden mitgelöscht.</p>
+  <div class="form-actions">
+    <button type="button" class="btn btn-ghost" id="confirm-cancel">Abbrechen</button>
+    <button type="button" class="btn btn-danger" id="confirm-ok">Endgültig löschen</button>
+  </div>
+</dialog>
+
 <!-- 6. Poster lightbox — the fallback for whatever OCR could not read -->
 <dialog class="lightbox" id="dlg-lightbox">
   <form method="dialog"><button class="lightbox-close" aria-label="Schließen">✕</button></form>
@@ -368,6 +379,6 @@
 
 <!-- ?v= is a cache buster: GitHub Pages serves assets with max-age=600, so bump
      this when shipping a change that must reach open tabs immediately. -->
-<script type="module" src="assets/js/app.js?v=4"></script>
+<script type="module" src="assets/js/app.js?v=5"></script>
 </body>
 </html>

@@ -332,6 +332,96 @@ class Store extends EventTarget {
     this.emit('change', { events: this.events });
   }
 
+  /** Re-materialise occurrences from the current series set. */
+  _reexpand() {
+    this.events = expandAll(this.series || []).sort(
+      (a, b) => (parseDate(a.start)?.getTime() || 0) - (parseDate(b.start)?.getTime() || 0),
+    );
+    this._applyLocalCounts();
+    this.emit('change', { events: this.events });
+  }
+
+  /**
+   * Edit an event. Recurring events are stored as one row, so editing any
+   * occurrence edits the whole series — there is no per-occurrence override.
+   *
+   * @param {string} occurrenceId id of the event or one of its occurrences
+   * @param {object} patch app-shaped fields to change
+   */
+  async updateEvent(occurrenceId, patch) {
+    const id = seriesIdOf(occurrenceId);
+    const current = (this.series || []).find((e) => e.id === id);
+    if (!current) throw new Error('Event nicht gefunden.');
+
+    const next = normalise({ ...current, ...patch, id, createdAt: current.createdAt });
+    if (!next.start) throw new Error('Ein Event braucht ein Datum.');
+
+    if (this.mode === 'supabase' && isUuid(id)) {
+      const row = eventToRow(next, this.identity);
+      // created_at / author_id belong to the original submission.
+      delete row.id; delete row.author_id;
+      const send = (body) => sb(`events?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { Prefer: 'return=representation' },
+        body,
+      });
+      let saved;
+      try {
+        [saved] = await send(row);
+      } catch (err) {
+        if (!/rrule/i.test(String(err.message))) throw err;
+        const { rrule, ...withoutRrule } = row;
+        [saved] = await send(withoutRrule);
+      }
+      // RLS filters silently: with no UPDATE policy PostgREST returns 200 and
+      // an empty array rather than an error, which would otherwise look like a
+      // successful save until the next reload undid it.
+      if (!saved) throw new Error('Bearbeiten ist auf dem Server nicht freigeschaltet.');
+      const mapped = rowToEvent(saved);
+      this.series = this.series.map((e) => (e.id === id ? mapped : e));
+      this._reexpand();
+      return mapped;
+    }
+
+    const local = read(LS.events, []).map((e) => (e.id === id ? { ...e, ...patch } : e));
+    write(LS.events, local);
+    this.series = this.series.map((e) => (e.id === id ? next : e));
+    this._reexpand();
+    return next;
+  }
+
+  /** Delete an event. For a recurring event this removes the whole series. */
+  async deleteEvent(occurrenceId) {
+    const id = seriesIdOf(occurrenceId);
+
+    if (this.mode === 'supabase' && isUuid(id)) {
+      // Likes/rsvps/comments cascade via the foreign keys. Ask for the deleted
+      // rows back: without a DELETE policy RLS matches nothing and returns 204,
+      // which is indistinguishable from success unless we check.
+      const gone = await sb(`events?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: { Prefer: 'return=representation' },
+      });
+      if (!Array.isArray(gone) || gone.length === 0) {
+        throw new Error('Löschen ist auf dem Server nicht freigeschaltet.');
+      }
+    } else {
+      write(LS.events, read(LS.events, []).filter((e) => e.id !== id));
+      const all = read(LS.comments, {});
+      delete all[id];
+      write(LS.comments, all);
+    }
+
+    this.series = (this.series || []).filter((e) => e.id !== id);
+    this._comments.delete(id);
+    this._myLikes.delete(id);
+    this._myRsvps.delete(id);
+    write(LS.likes, [...this._myLikes]);
+    write(LS.rsvps, Object.fromEntries(this._myRsvps));
+    this._reexpand();
+    return true;
+  }
+
   /**
    * Upload a poster image. Returns a public URL in Supabase mode, or a data URL
    * locally (so the preview survives a reload without a backend).

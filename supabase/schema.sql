@@ -131,9 +131,10 @@ grant select on public.events_with_counts to anon;
 -- Without it, current_setting('request.headers', ...) is empty and the
 -- delete policy will simply never match (delete becomes a no-op, not an
 -- error).
--- Moderation of events/comments (hiding spam, editing typos, etc.) is done
--- by an admin through the Supabase dashboard, using the privileged
--- service_role key — never the anon key — which bypasses RLS entirely.
+-- Events are additionally editable and deletable by anyone (see the policies
+-- below) — an explicit operator decision, not an oversight. Comments remain
+-- insert-only, so moderating those still means the Supabase dashboard with the
+-- privileged service_role key — never the anon key — which bypasses RLS.
 -- ---------------------------------------------------------------------
 
 alter table public.events   enable row level security;
@@ -146,13 +147,14 @@ alter table public.comments enable row level security;
 -- schema doesn't silently depend on that project-level default. GRANT is
 -- idempotent — re-running it is a no-op, and it does nothing without a
 -- matching RLS policy (both a GRANT and a passing policy are required).
-grant select, insert on public.events to anon;
+grant select, insert, update, delete on public.events to anon;
 grant select, insert, delete on public.likes to anon;
 grant select, insert, delete on public.rsvps to anon;
 grant select, insert on public.comments to anon;
 
 -- events: public read of published events; public insert (new events go
--- straight in as 'published' by default); no UPDATE/DELETE for anon.
+-- straight in as 'published' by default); UPDATE/DELETE are open to anon too
+-- (see the note above events_update_anon below).
 drop policy if exists "events_select_published" on public.events;
 create policy "events_select_published"
   on public.events for select
@@ -164,6 +166,25 @@ create policy "events_insert_anon"
   on public.events for insert
   to anon
   with check (true);
+
+-- Open-board model, chosen deliberately by the operator: ANY visitor may edit
+-- or delete ANY event. There is no login, so a change cannot be attributed and
+-- a deletion cannot be undone — the trade-off is that the scene can fix its own
+-- typos, duplicates and bad poster scans without going through the dashboard.
+-- Comments stay insert-only; likes/rsvps keep their client_id fence.
+-- To lock this down again, drop the two policies below.
+drop policy if exists "events_update_anon" on public.events;
+create policy "events_update_anon"
+  on public.events for update
+  to anon
+  using (status = 'published')
+  with check (status = 'published');
+
+drop policy if exists "events_delete_anon" on public.events;
+create policy "events_delete_anon"
+  on public.events for delete
+  to anon
+  using (status = 'published');
 
 -- likes: public read, public insert, delete only your own (client_id-scoped).
 drop policy if exists "likes_select_all" on public.likes;
