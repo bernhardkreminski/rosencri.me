@@ -86,6 +86,7 @@ function cacheNodes() {
     empty: $('#empty-state'),
     search: $('#search'),
     tagFilters: $('#tag-filters'),
+    filters: $('#filters'),
     calGrid: $('#cal-grid'),
     calTitle: $('#cal-title'),
     calDay: $('#cal-day'),
@@ -161,6 +162,34 @@ function bindFilters() {
     state.query = e.target.value.trim().toLowerCase();
     render();
   }, 160));
+
+  $('#btn-search-toggle').addEventListener('click', () => toggleFilters());
+  $('#btn-search-close').addEventListener('click', () => toggleFilters(false));
+  // Escape closes the panel the same way the close button does.
+  ui.search.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); toggleFilters(false); }
+  });
+}
+
+/**
+ * Show/hide the search + tag filters.
+ *
+ * Closing resets the query and tag selection: a hidden filter that is still
+ * applied would silently shrink the list with nothing on screen to explain it.
+ */
+function toggleFilters(force) {
+  const open = force ?? ui.filters.hidden;
+  ui.filters.hidden = !open;
+  $('#btn-search-toggle').setAttribute('aria-expanded', String(open));
+
+  if (open) {
+    setTimeout(() => ui.search.focus(), 60);
+  } else if (state.query || state.tags.size) {
+    ui.search.value = '';
+    state.query = '';
+    state.tags.clear();
+    render();
+  }
 }
 
 /* ------------------------------- filtering ------------------------------ */
@@ -360,8 +389,7 @@ function bindAddFlow() {
     $('#field-repeat-until-wrap').hidden = !e.target.value;
   });
   $('#form-poster-view').addEventListener('click', () => {
-    $('#lightbox-img').src = ui.formPosterImg.src;
-    $('#dlg-lightbox').showModal();
+    openLightbox(ui.formPosterImg.src, 'Poster in voller Größe');
   });
   // Tapping the image itself (not just the close button) dismisses the lightbox.
   $('#dlg-lightbox').addEventListener('click', (e) => {
@@ -612,7 +640,19 @@ async function openDetail(id) {
   const body = clear(ui.detailBody);
 
   if (ev.imageUrl) {
-    body.append(el('div.detail-hero', {}, [el('img', { src: ev.imageUrl, alt: `Poster: ${ev.title}` })]));
+    // The banner is cropped to keep the dialog usable; posters carry details
+    // (times, venue, line-up) that the crop cuts off, so it opens in full.
+    body.append(el('button.detail-hero', {
+      type: 'button',
+      title: 'Bild vollständig anzeigen',
+      onClick: () => openLightbox(ev.imageUrl, `Poster: ${ev.title}`),
+    }, [
+      el('img', { src: ev.imageUrl, alt: `Poster: ${ev.title}` }),
+      el('span.detail-hero-zoom', {}, [
+        el('span', { html: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>' }),
+        'Ganzes Bild ansehen',
+      ]),
+    ]));
   }
 
   const kicker = el('div.detail-kicker');
@@ -814,6 +854,14 @@ function confirmDelete(ev) {
     }
   });
   $('#dlg-confirm').showModal();
+}
+
+/** Show an image uncropped, at full size, over the whole screen. */
+function openLightbox(src, alt = 'Bild in voller Größe') {
+  const img = $('#lightbox-img');
+  img.src = src;
+  img.alt = alt;
+  $('#dlg-lightbox').showModal();
 }
 
 async function shareEvent(ev) {
