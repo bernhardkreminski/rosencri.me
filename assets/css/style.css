@@ -354,6 +354,9 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
 
 .card-title { font-size: 1.16rem; letter-spacing: -.02em; }
 
+/* Span of a series, so a tile says how long the run lasts, not just its own date. */
+.card-span { font-size: .78rem; font-weight: 650; color: var(--text-dim); }
+
 .card-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .86rem; color: var(--text-dim); }
 .card-meta span { display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
 .card-meta .ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

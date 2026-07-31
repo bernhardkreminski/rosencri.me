@@ -6,6 +6,7 @@
 import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js';
 import { store } from './store.js';
 import { renderCalendar, monthLabel, groupByDay } from './calendar.js';
+import { seriesSpan } from './recurrence.js';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
@@ -27,6 +28,19 @@ const state = {
 
 const ui = {};
 let icalModule = null;
+
+/**
+ * 05.08.2026 — no weekday, for date ranges where it would be noise.
+ *
+ * Deliberately local rather than exported from util.js: only app.js carries a
+ * ?v= cache buster, so its static imports can resolve to a stale cached copy
+ * of a sibling module for up to Pages' 10-minute max-age. Adding a new export
+ * there and consuming it here breaks the whole page with a module error during
+ * that window, rather than degrading. Shared helpers must ship at least one
+ * deploy before anything imports them.
+ */
+const fmtDateShort = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const formatDateShort = (d) => (parseDate(d) ? fmtDateShort.format(parseDate(d)) : '');
 /** Filled in once ical.js loads; until then cards simply omit the repeat tag. */
 let describeSchedule = () => '';
 
@@ -318,7 +332,19 @@ function eventCard(ev, { hot = false, past = false } = {}) {
   if (phase !== 'live') meta.append(el('span', {}, [icon('clock'), relativeTime(start, now)]));
   if (meta.childElementCount) card.append(meta);
 
-  const repeatLabel = describeSchedule(ev);
+  // Always describe the stored series, never the occurrence: an occurrence's
+  // own start matches one of its rdates, which the de-duplication then drops,
+  // making a 4-date series read as "3 Termine" on every card but the first.
+  const seriesRow = store.getSeries(ev.id) || ev;
+  const span = seriesSpan(seriesRow);
+  if (span) {
+    card.append(el('span.card-span', {}, [
+      span.last
+        ? `von ${formatDateShort(span.first)} bis ${formatDateShort(span.last)}`
+        : `ab ${formatDateShort(span.first)}`,
+    ]));
+  }
+  const repeatLabel = describeSchedule(seriesRow);
   if (ev.tags?.length || repeatLabel) {
     card.append(el('span.card-tags', {}, [
       repeatLabel && el('span.repeat-tag', {}, ['\u27f3 ', repeatLabel]),
@@ -716,8 +742,18 @@ async function openDetail(id) {
 
   const meta = el('div.detail-meta');
   meta.append(el('div', {}, [icon('cal'), el('strong', { text: formatRange(ev.start, ev.end) })]));
-  const repeatText = describeSchedule(ev);
-  if (repeatText) meta.append(el('div', {}, [icon('repeat'), el('strong', { text: repeatText })]));
+  // Describe the stored series, not the occurrence — see the note in eventCard.
+  const detailSeries = store.getSeries(ev.id) || ev;
+  const repeatText = describeSchedule(detailSeries);
+  if (repeatText) {
+    const span = seriesSpan(detailSeries);
+    const range = span
+      ? (span.last
+          ? ` · von ${formatDateLong(span.first)} bis ${formatDateLong(span.last)}`
+          : ` · ab ${formatDateLong(span.first)}`)
+      : '';
+    meta.append(el('div', {}, [icon('repeat'), el('strong', { text: repeatText + range })]));
+  }
   if (ev.location) meta.append(el('div', {}, [icon('pin'), el('strong', { text: ev.location })]));
   if (ev.url) {
     meta.append(el('div', {}, [

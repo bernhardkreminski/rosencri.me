@@ -184,6 +184,32 @@ function withExplicitDates(event, start, rdates) {
   return out;
 }
 
+/**
+ * First and last date of a series, for a "von … bis …" label.
+ *
+ * @returns {{first: Date, last: Date|null}|null}
+ *   null when the event is not a series at all. `last` is null for an
+ *   open-ended rule (weekly with no UNTIL never stops, so claiming an end
+ *   date would be a lie).
+ */
+export function seriesSpan(event) {
+  const first = event?.start ? new Date(event.start) : null;
+  if (!first || Number.isNaN(first.getTime())) return null;
+
+  const extras = (Array.isArray(event?.rdates) ? event.rdates : [])
+    .filter((d) => d instanceof Date || (typeof d === 'string' && d.trim() !== ''))
+    .map((d) => new Date(d))
+    .filter((d) => !Number.isNaN(d.getTime()) && d.getFullYear() > 1970);
+
+  const rule = parseRRule(event?.rrule);
+  if (!rule && !extras.length) return null;
+
+  let last = extras.length ? new Date(Math.max(...extras.map((d) => d.getTime()))) : null;
+  if (rule) last = rule.until ? new Date(Math.max(rule.until.getTime(), last?.getTime() || 0)) : null;
+  if (last && last < first) last = null;
+  return { first, last };
+}
+
 /** Expand a list, preserving one-off events as-is. */
 export function expandAll(events, opts = {}) {
   const out = [];
