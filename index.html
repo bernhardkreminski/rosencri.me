@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=10">
+<link rel="stylesheet" href="assets/css/style.css?v=20260731T0401">
 </head>
 <body>
 
@@ -390,8 +390,11 @@
 
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
 
-<!-- ?v= is a cache buster: GitHub Pages serves assets with max-age=600, so bump
-     this when shipping a change that must reach open tabs immediately. -->
-<script type="module" src="assets/js/app.js?v=10"></script>
+<!-- ?v= is a cache buster. Do NOT edit by hand: run `node scripts/bump-assets.mjs`,
+     which stamps the same version here AND on every relative import inside
+     assets/js/. Versioning only this entry point serves a fresh app.js whose
+     imports still resolve to cached modules — if the new code uses an export
+     the cached module lacks, the page renders nothing at all. -->
+<script type="module" src="assets/js/app.js?v=20260731T0401"></script>
 </body>
 </html>

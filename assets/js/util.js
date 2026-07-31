@@ -3,7 +3,7 @@
  * No dependencies, no side effects on import.
  */
 
-import { SOON_WINDOW_HOURS, DEFAULT_DURATION_HOURS } from './config.js';
+import { SOON_WINDOW_HOURS, DEFAULT_DURATION_HOURS } from './config.js?v=20260731T0401';
 
 /* --------------------------------- DOM ---------------------------------- */
 
