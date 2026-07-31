@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260731T0401';
-import { store } from './store.js?v=20260731T0401';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260731T0401';
-import { seriesSpan } from './recurrence.js?v=20260731T0401';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260731T1314';
+import { store } from './store.js?v=20260731T1314';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260731T1314';
+import { seriesSpan } from './recurrence.js?v=20260731T1314';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260731T0401';
+} from './util.js?v=20260731T1314';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -29,16 +29,7 @@ const state = {
 const ui = {};
 let icalModule = null;
 
-/**
- * 05.08.2026 — no weekday, for date ranges where it would be noise.
- *
- * Deliberately local rather than exported from util.js: only app.js carries a
- * ?v= cache buster, so its static imports can resolve to a stale cached copy
- * of a sibling module for up to Pages' 10-minute max-age. Adding a new export
- * there and consuming it here breaks the whole page with a module error during
- * that window, rather than degrading. Shared helpers must ship at least one
- * deploy before anything imports them.
- */
+/** 05.08.2026 — no weekday, for date ranges where it would be noise. */
 const fmtDateShort = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 const formatDateShort = (d) => (parseDate(d) ? fmtDateShort.format(parseDate(d)) : '');
 /** Filled in once ical.js loads; until then cards simply omit the repeat tag. */
@@ -343,6 +334,16 @@ function eventCard(ev, { hot = false, past = false } = {}) {
         ? `von ${formatDateShort(span.first)} bis ${formatDateShort(span.last)}`
         : `ab ${formatDateShort(span.first)}`,
     ]));
+  } else if ((phase === 'live' || phase === 'soon') && parseDate(ev.end)) {
+    // For something running now, "until when" is the thing you actually want to
+    // know. Only shown with a real end — eventEnd() invents a +3h fallback, and
+    // guessing a closing time on a card would be worse than saying nothing.
+    const endDate = parseDate(ev.end);
+    card.append(el('span.card-span', {}, [
+      sameDay(start, endDate)
+        ? `von ${formatTime(start).replace(' Uhr', '')} bis ${formatTime(endDate)}`
+        : `von ${formatDateShort(start)} bis ${formatDateShort(endDate)}`,
+    ]));
   }
   const repeatLabel = describeSchedule(seriesRow);
   if (ev.tags?.length || repeatLabel) {
@@ -462,7 +463,7 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260731T0401');
+    const ocr = await import('./ocr.js?v=20260731T1314');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
@@ -969,7 +970,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260731T0401');
+    icalModule = await import('./ical.js?v=20260731T1314');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();

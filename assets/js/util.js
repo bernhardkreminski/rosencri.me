@@ -3,7 +3,7 @@
  * No dependencies, no side effects on import.
  */
 
-import { SOON_WINDOW_HOURS, DEFAULT_DURATION_HOURS } from './config.js?v=20260731T0401';
+import { SOON_WINDOW_HOURS, DEFAULT_DURATION_HOURS } from './config.js?v=20260731T1314';
 
 /* --------------------------------- DOM ---------------------------------- */
 
@@ -96,7 +96,15 @@ export function toOffsetISO(date) {
   );
 }
 
+/**
+ * Parse to a Date, or null.
+ *
+ * The empty-value guard is load-bearing: `new Date(null)` and `new Date(0)`
+ * are the epoch, not invalid dates, so without it a missing end time parses
+ * as 01.01.1970 and renders as a real date.
+ */
 export const parseDate = (value) => {
+  if (value == null || value === '') return null;
   const d = value instanceof Date ? value : new Date(value);
   return Number.isNaN(d.getTime()) ? null : d;
 };
