@@ -114,6 +114,7 @@ function rowToEvent(row) {
     authorName: row.author_name || '',
     isSeed: Boolean(row.is_seed),
     rrule: row.rrule || '',
+    rdates: (Array.isArray(row.rdates) ? row.rdates : []).map((d) => toOffsetISO(new Date(d))).filter(Boolean),
     likeCount: Number(row.like_count || 0),
     goingCount: Number(row.going_count || 0),
     commentCount: Number(row.comment_count || 0),
@@ -137,6 +138,7 @@ function eventToRow(ev, identity) {
     author_name: ev.authorName || '',
     is_seed: false,
     rrule: ev.rrule || '',
+    rdates: Array.isArray(ev.rdates) ? ev.rdates : [],
   };
 }
 
@@ -160,6 +162,7 @@ function normalise(raw, now = new Date()) {
     authorName: raw.authorName || '',
     isSeed: Boolean(raw.isSeed),
     rrule: raw.rrule || '',
+    rdates: Array.isArray(raw.rdates) ? raw.rdates.filter(Boolean) : [],
     likeCount: Number(raw.likeCount || 0),
     goingCount: Number(raw.goingCount || 0),
     commentCount: Number(raw.commentCount || 0),

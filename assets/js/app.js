@@ -28,7 +28,7 @@ const state = {
 const ui = {};
 let icalModule = null;
 /** Filled in once ical.js loads; until then cards simply omit the repeat tag. */
-let describeRRule = () => '';
+let describeSchedule = () => '';
 
 /* --------------------------------- boot --------------------------------- */
 
@@ -147,6 +147,19 @@ function bindHeader() {
     tab.addEventListener('click', () => switchView(tab.dataset.view));
   }
   $('#btn-subscribe').addEventListener('click', openSubscribe);
+
+  // Clicking the wordmark reloads the site.
+  //
+  // Assigning location.href here does NOT work: when the new URL differs only
+  // by its fragment it is a same-document navigation, so the subsequent
+  // reload() still fires against the old "#/event/..." URL and the hash comes
+  // back. replaceState rewrites the URL without navigating, so the reload
+  // that follows genuinely starts from the bare page.
+  $('#brand-home').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.replaceState(null, '', location.pathname + location.search);
+    location.reload();
+  });
   for (const id of ['#btn-add-hero', '#btn-add-empty', '#fab']) {
     $(id)?.addEventListener('click', () => ui.dlgAdd.showModal());
   }
@@ -305,7 +318,7 @@ function eventCard(ev, { hot = false, past = false } = {}) {
   if (phase !== 'live') meta.append(el('span', {}, [icon('clock'), relativeTime(start, now)]));
   if (meta.childElementCount) card.append(meta);
 
-  const repeatLabel = describeRRule(ev.rrule);
+  const repeatLabel = describeSchedule(ev);
   if (ev.tags?.length || repeatLabel) {
     card.append(el('span.card-tags', {}, [
       repeatLabel && el('span.repeat-tag', {}, ['\u27f3 ', repeatLabel]),
@@ -385,9 +398,8 @@ function bindAddFlow() {
     if (state.draft) state.draft.blob = null;
     ui.formPoster.hidden = true;
   });
-  $('#field-repeat').addEventListener('change', (e) => {
-    $('#field-repeat-until-wrap').hidden = !e.target.value;
-  });
+  $('#field-repeat').addEventListener('change', (e) => syncRepeatMode(e.target.value));
+  $('#btn-add-date').addEventListener('click', () => addDateRow(''));
   $('#form-poster-view').addEventListener('click', () => {
     openLightbox(ui.formPosterImg.src, 'Poster in voller Größe');
   });
@@ -491,10 +503,13 @@ function openForm(draft, editing = null) {
     form.url.value = row.url || '';
     form.tags.value = (row.tags || []).join(', ');
     form.authorName.value = row.authorName || store.identity.name || '';
+    clear($('#extra-dates'));
     const [freq, until] = splitRRule(row.rrule || '');
-    form.repeat.value = freq;
+    const extras = Array.isArray(row.rdates) ? row.rdates : [];
+    form.repeat.value = extras.length && !freq ? 'dates' : freq;
     form.repeatUntil.value = until;
-    $('#field-repeat-until-wrap').hidden = !freq;
+    for (const d of extras) addDateRow(toLocalInput(d));
+    syncRepeatMode(form.repeat.value);
   } else {
     form.title.value = f.title || '';
     form.start.value = f.start || defaultStart();
@@ -506,7 +521,8 @@ function openForm(draft, editing = null) {
     form.authorName.value = store.identity.name || '';
     form.repeat.value = '';
     form.repeatUntil.value = '';
-    $('#field-repeat-until-wrap').hidden = true;
+    clear($('#extra-dates'));
+    syncRepeatMode('');
   }
 
   for (const flag of form.querySelectorAll('.field-flag')) {
@@ -522,6 +538,30 @@ function openForm(draft, editing = null) {
   $('#form-submit').textContent = editing ? 'Änderungen speichern' : 'In den Kalender eintragen';
   ui.dlgForm.showModal();
   setTimeout(() => form.title.focus(), 120);
+}
+
+/**
+ * Show the controls that belong to the chosen repeat mode.
+ * 'dates' = explicit list; anything else non-empty = a rule with an end date.
+ */
+function syncRepeatMode(value) {
+  $('#field-dates-wrap').hidden = value !== 'dates';
+  $('#field-repeat-until-wrap').hidden = !value || value === 'dates';
+  if (value === 'dates' && !$('#extra-dates').children.length) addDateRow('');
+}
+
+/** One more date for an irregular series. */
+function addDateRow(value = '') {
+  const input = el('input', { type: 'datetime-local', name: 'extraDate', value });
+  const row = el('div.extra-date', {}, [
+    input,
+    el('button.extra-date-remove', {
+      type: 'button', 'aria-label': 'Termin entfernen',
+      onClick: (e) => e.currentTarget.parentElement.remove(),
+    }, ['✕']),
+  ]);
+  $('#extra-dates').append(row);
+  return input;
 }
 
 /**
@@ -575,6 +615,16 @@ async function onSubmitEvent(e) {
     }
 
     let rrule = form.repeat.value;
+    let rdates = [];
+    if (rrule === 'dates') {
+      // Explicit list rather than a rule.
+      rrule = '';
+      rdates = [...ui.form.querySelectorAll('input[name="extraDate"]')]
+        .map((i) => fromLocalInput(i.value))
+        .filter(Boolean);
+      const seen = new Set([start]);
+      rdates = rdates.filter((d) => !seen.has(d) && seen.add(d));
+    }
     if (rrule && form.repeatUntil.value) {
       const [y, m, d] = form.repeatUntil.value.split('-').map(Number);
       const untilLocal = new Date(y, m - 1, d, 23, 59, 59);
@@ -596,6 +646,7 @@ async function onSubmitEvent(e) {
       tags: form.tags.value.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean).slice(0, 8),
       authorName,
       rrule,
+      rdates,
     };
 
     let saved;
@@ -665,7 +716,7 @@ async function openDetail(id) {
 
   const meta = el('div.detail-meta');
   meta.append(el('div', {}, [icon('cal'), el('strong', { text: formatRange(ev.start, ev.end) })]));
-  const repeatText = describeRRule(ev.rrule);
+  const repeatText = describeSchedule(ev);
   if (repeatText) meta.append(el('div', {}, [icon('repeat'), el('strong', { text: repeatText })]));
   if (ev.location) meta.append(el('div', {}, [icon('pin'), el('strong', { text: ev.location })]));
   if (ev.url) {
@@ -826,7 +877,7 @@ async function paintComments(container, id, live) {
 
 /** Ask before deleting; a recurring event takes its whole series with it. */
 function confirmDelete(ev) {
-  const repeating = Boolean(describeRRule(ev.rrule));
+  const repeating = Boolean(ev.rrule || (ev.rdates || []).length);
   $('#confirm-title').textContent = repeating ? 'Ganze Serie löschen?' : 'Event löschen?';
   $('#confirm-text').textContent = repeating
     ? `„${ev.title}" wiederholt sich — gelöscht werden alle Termine der Serie, nicht nur dieser eine.`
@@ -883,8 +934,8 @@ async function shareEvent(ev) {
 async function loadIcal() {
   if (!icalModule) {
     icalModule = await import('./ical.js');
-    if (typeof icalModule.describeRRule === 'function') {
-      describeRRule = icalModule.describeRRule;
+    if (typeof icalModule.describeSchedule === 'function') {
+      describeSchedule = icalModule.describeSchedule;
       render();
     }
   }

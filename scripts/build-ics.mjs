@@ -58,9 +58,11 @@ function mapSupabaseRow(row) {
     source: row.source || 'manual',
     authorName: row.author_name || '',
     isSeed: !!row.is_seed,
-    // Without this the published feed silently loses the repeat: the calendar
-    // would show a recurring event as a single one-off date.
+    // Without these the published feed silently loses the repeat: the calendar
+    // would show a recurring event as a single one-off date. mapSupabaseRow is
+    // an explicit allowlist, so every new column must be added here too.
     rrule: row.rrule || '',
+    rdates: Array.isArray(row.rdates) ? row.rdates : [],
   };
 }
 

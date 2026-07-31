@@ -14,6 +14,11 @@
 //     end,              // same shape or null -> treated as start + 3h
 //     rrule,            // '' for a one-off, else an RFC 5545 RRULE *value*
 //                        // (no "RRULE:" prefix), e.g. "FREQ=WEEKLY"
+//     rdates,           // [] normally, else extra ISO 8601 (with offset)
+//                        // occurrence starts beyond DTSTART — irregular
+//                        // series that no FREQ/INTERVAL can express.
+//                        // Independent of rrule: an event may have either,
+//                        // both, or neither.
 //     url, imageUrl, tags, createdAt, source, authorName, isSeed
 //   }
 
@@ -156,6 +161,33 @@ function sanitizeRRule(raw) {
   return trimmed.replace(/UNTIL=(\d{8}T\d{6})(?!Z)/gi, 'UNTIL=$1Z');
 }
 
+/**
+ * Validate/normalize an `rdates` array against a series' DTSTART:
+ * parse each entry (dropping anything unparseable), drop any entry equal
+ * to DTSTART itself (a repeated first occurrence makes some clients show
+ * the event twice on that day), dedupe, and sort ascending.
+ * `start` may be null (describeSchedule() can be called for an event whose
+ * own `start` didn't parse) — in that case the "equal to DTSTART" filter
+ * is simply skipped.
+ */
+function sanitizeRDates(raw, start) {
+  if (!Array.isArray(raw)) return [];
+  const startTime = start ? start.getTime() : null;
+  const seen = new Set();
+  const out = [];
+  for (const value of raw) {
+    const d = parseDate(value);
+    if (!d) continue;
+    const t = d.getTime();
+    if (startTime != null && t === startTime) continue;
+    if (seen.has(t)) continue;
+    seen.add(t);
+    out.push(d);
+  }
+  out.sort((a, b) => a.getTime() - b.getTime());
+  return out;
+}
+
 function buildDescription(event, calUrl) {
   const parts = [];
   if (event.description) parts.push(event.description);
@@ -214,6 +246,15 @@ function buildVEvent(event, opts, now) {
     // "FREQ=WEEKLY\;INTERVAL=2", which every calendar client fails to parse
     // as a recurrence rule (this is the single easiest way to get this wrong).
     lines.push(`RRULE:${rrule}`);
+  }
+  const rdates = sanitizeRDates(event.rdates, start);
+  if (rdates.length) {
+    // Same TZID form as DTSTART, and through the same formatLocal() so DST
+    // is resolved identically — an RDATE in a different offset than its
+    // DTSTART is a classic interop break. One grouped, comma-separated
+    // RDATE property (not one line per date); the existing fold() call in
+    // buildCalendar() wraps it across physical lines as needed.
+    lines.push(`RDATE;TZID=${tz}:${rdates.map((d) => formatLocal(d, tz)).join(',')}`);
   }
   lines.push(`SUMMARY:${escapeText(title)}`);
   lines.push(`DESCRIPTION:${escapeText(buildDescription(event, opts.calUrl))}`);
@@ -323,6 +364,13 @@ export function googleCalendarUrl(event) {
   }
   const end = resolveEnd(start, parseDate(event.end));
   const description = buildDescription(event, DEFAULTS.calUrl);
+  // Google's "quick add" template URL supports `recur=RRULE:...` (added
+  // below) but has no way to express RDATE at all. We deliberately leave
+  // `dates` pointing at just the first occurrence (DTSTART/DTEND) rather
+  // than trying to approximate the irregular extra dates — don't "fix"
+  // this by picking one of the rdates or expanding anything here; the full
+  // series is only representable via the subscribed calendar.ics feed
+  // (eventsToICS), which does emit RDATE.
   const paramsObj = {
     action: 'TEMPLATE',
     text: event.title || '',
@@ -389,6 +437,35 @@ export function describeRRule(rrule, locale = 'de') {
       label += ` bis ${d}.${mo}.${y}`;
     }
     return label;
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Full schedule description for an event, combining `rrule` and `rdates`:
+ *   - rrule only:          same as describeRRule(), e.g. "Jede Woche"
+ *   - rdates only:         "N Termine" (N = rdates.length + 1, i.e.
+ *                          including DTSTART) — e.g. 3 extra dates -> "4 Termine"
+ *   - both:                describeRRule() text + " + N weitere Termine"
+ *   - neither / unusable:  ''
+ * Dependency-free and never throws — worst case is ''.
+ */
+export function describeSchedule(event, locale = 'de') {
+  try {
+    if (!event) return '';
+    const start = parseDate(event.start);
+    const ruleText = describeRRule(event.rrule, locale);
+    const extra = sanitizeRDates(event.rdates, start);
+    const extraCount = extra.length;
+
+    if (ruleText && extraCount > 0) {
+      const tail = extraCount === 1 ? '1 weiterer Termin' : `${extraCount} weitere Termine`;
+      return `${ruleText} + ${tail}`;
+    }
+    if (ruleText) return ruleText;
+    if (extraCount > 0) return `${extraCount + 1} Termine`;
+    return '';
   } catch {
     return '';
   }

@@ -90,7 +90,13 @@ function step(base, freq, n) {
 export function expandEvent(event, opts = {}) {
   const rule = parseRRule(event?.rrule);
   const start = event?.start ? new Date(event.start) : null;
-  if (!rule || !start || Number.isNaN(start.getTime())) return [event];
+  const extra = Array.isArray(event?.rdates) ? event.rdates : [];
+  if (!start || Number.isNaN(start.getTime())) return [event];
+  if (!rule && !extra.length) return [event];
+
+  // Explicit dates (RFC 5545 RDATE) cover series that no FREQ/INTERVAL can
+  // describe — e.g. concerts on 05.08., 19.08., 16.09., 30.09.
+  if (!rule) return withExplicitDates(event, start, extra);
 
   const now = opts.now || new Date();
   const from = opts.from || new Date(now.getTime() - WINDOW_BACK_DAYS * 86400000);
@@ -136,6 +142,44 @@ export function expandEvent(event, opts = {}) {
         break;
       }
     }
+  }
+  return out;
+}
+
+/**
+ * Materialise an event that lists its dates explicitly. The first date is the
+ * event's own `start`; `rdates` holds only the additional ones.
+ */
+function withExplicitDates(event, start, rdates) {
+  const end = event.end ? new Date(event.end) : null;
+  const durationMs = end && end > start ? end - start : null;
+
+  const seen = new Set([start.getTime()]);
+  const out = [{ ...event, seriesId: event.id, occurrence: 0 }];
+
+  const parsed = rdates
+    // Reject non-dates BEFORE constructing. new Date(null) and new Date(0) are
+    // both the epoch rather than invalid dates, so a null or a stray 0 would
+    // otherwise surface as a real occurrence on 01.01.1970. rdates always
+    // arrive as ISO strings (Postgres) or Dates, so numbers are not accepted.
+    .filter((d) => d instanceof Date || (typeof d === 'string' && d.trim() !== ''))
+    .map((d) => new Date(d))
+    .filter((d) => !Number.isNaN(d.getTime()) && d.getFullYear() > 1970)
+    .sort((a, b) => a - b);
+
+  let n = 0;
+  for (const occStart of parsed) {
+    // A repeated first date would render the same event twice on that day.
+    if (seen.has(occStart.getTime())) continue;
+    seen.add(occStart.getTime());
+    out.push({
+      ...event,
+      id: `${event.id}${SEP}${occStart.getTime()}`,
+      seriesId: event.id,
+      occurrence: ++n,
+      start: toOffsetISO(occStart),
+      end: durationMs ? toOffsetISO(new Date(occStart.getTime() + durationMs)) : null,
+    });
   }
   return out;
 }

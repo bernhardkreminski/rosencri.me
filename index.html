@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=7">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
 </head>
 <body>
 
@@ -31,7 +31,7 @@
 
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="brand" href="#/">
+    <a class="brand" href="./" id="brand-home" title="Seite neu laden">
       <span class="brand-mark" aria-hidden="true">
         <img src="assets/img/icon-192.png" width="36" height="36" alt="">
       </span>
@@ -274,6 +274,7 @@
         <span class="field-label">Wiederholung</span>
         <select name="repeat" id="field-repeat">
           <option value="">Einmalig</option>
+          <option value="dates">Mehrere Termine (eigene Daten)</option>
           <option value="FREQ=WEEKLY">Jede Woche</option>
           <option value="FREQ=WEEKLY;INTERVAL=2">Alle 2 Wochen</option>
           <option value="FREQ=MONTHLY">Jeden Monat</option>
@@ -283,6 +284,16 @@
         <span class="field-label">Wiederholen bis <small>optional</small></span>
         <input type="date" name="repeatUntil">
       </label>
+    </div>
+
+    <!-- Series on irregular dates: one row per additional occurrence. -->
+    <div class="field" id="field-dates-wrap" hidden>
+      <span class="field-label">Weitere Termine <small>gleiche Uhrzeit wie oben</small></span>
+      <div id="extra-dates" class="extra-dates"></div>
+      <button type="button" class="btn-quiet btn-add-date" id="btn-add-date">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Termin hinzufügen
+      </button>
     </div>
 
     <label class="field">
@@ -381,6 +392,6 @@
 
 <!-- ?v= is a cache buster: GitHub Pages serves assets with max-age=600, so bump
      this when shipping a change that must reach open tabs immediately. -->
-<script type="module" src="assets/js/app.js?v=7"></script>
+<script type="module" src="assets/js/app.js?v=8"></script>
 </body>
 </html>
