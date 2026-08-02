@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T13:21:00.413Z",
+  "updatedAt": "2026-08-02T13:22:42.202Z",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -134,6 +134,20 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-02T13:17:40.898Z"
+    },
+    "e723f277-71ff-43ba-bf40-6fbf7c01c868": {
+      "title": "Test",
+      "starts_at": "2026-08-03T18:00:00.000Z",
+      "ends_at": "",
+      "location": "",
+      "description": "",
+      "url": "",
+      "image_url": "",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-02T13:22:13.160Z"
     },
     "f73057b7-3f69-4ebd-91bc-b9da18cc464e": {
       "title": "Feierabendkonzert mit Fabi Mägel",
