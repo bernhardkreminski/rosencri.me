@@ -4,6 +4,48 @@
    pool-blue teal. Mobile-first, light + dark, no framework.
    ========================================================================= */
 
+/* -------------------------------- fonts -------------------------------- */
+
+/*
+ * Space Grotesk, self-hosted.
+ *
+ * Previously pulled from fonts.googleapis.com, which handed every visitor's IP
+ * address to Google before the page rendered — the fact pattern in LG München I,
+ * 20.01.2022, 3 O 17493/20. Serving it ourselves removes the transfer entirely,
+ * which is why the privacy policy no longer has a Google section, and drops a
+ * render-blocking request to a third-party origin as a side effect.
+ *
+ * One variable file per subset (300–700 in a single face, ~41 KB total) rather
+ * than three static weights. `font-display: swap` keeps text readable while it
+ * loads; the `unicode-range` split means latin-ext is only fetched when a
+ * character actually needs it — German umlauts live in the latin subset.
+ *
+ * Licensed under the SIL Open Font License 1.1 — see assets/fonts/OFL.txt.
+ * Files are immutable, so they carry no `?v=` cache-busting stamp: a different
+ * font would be a different filename.
+ */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../fonts/space-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('../fonts/space-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ------------------------------- tokens -------------------------------- */
 
 :root {
@@ -534,6 +576,40 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
 .fab:active { transform: scale(.95); }
 .fab-label { display: none; }
 @media (min-width: 700px) { .fab-label { display: inline; } .fab { padding: 15px 22px 15px 18px; } }
+
+/* ----------------------------- legal pages ----------------------------- */
+
+/* impressum.html / datenschutz.html — plain prose, no JS, no app shell. */
+.legal { max-width: 720px; padding-block: 30px 60px; }
+.legal h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); margin-bottom: 8px; }
+.legal h2 { font-size: 1.12rem; margin-bottom: 6px; }
+.legal section { margin-top: 30px; }
+.legal p, .legal ul { max-width: 66ch; }
+.legal ul { margin: 0 0 .8em; padding-left: 1.2em; }
+.legal li { margin-bottom: .3em; }
+.legal code {
+  font-size: .88em; padding: 1px 5px; border-radius: 5px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.legal-lead { font-size: 1.06rem; color: var(--text-dim); margin-top: 14px; }
+.legal-address { line-height: 1.7; }
+.legal-meta { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--text-dim); font-size: .9rem; }
+
+/* Anything still needing a real value. Loud on purpose: these pages are
+   worthless — arguably worse than absent — if they ship with placeholders. */
+.todo {
+  background: color-mix(in srgb, var(--red) 16%, transparent);
+  color: var(--red-dark); font-weight: 600;
+  padding: 1px 6px; border-radius: 5px;
+  border: 1px dashed color-mix(in srgb, var(--red) 55%, transparent);
+}
+@media (prefers-color-scheme: dark) { .todo { color: var(--red); } }
+
+.legal-warn {
+  padding: 12px 15px; border-radius: var(--radius-sm);
+  background: var(--surface-2); border-left: 3px solid var(--amber);
+}
 
 /* --------------------------- pull to refresh --------------------------- */
 

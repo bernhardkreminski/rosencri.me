@@ -12,10 +12,10 @@
 import {
   SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_BUCKET,
   SHOW_SEED_EVENTS, MAX_IMAGE_BYTES,
-} from './config.js?v=20260802T1302';
-import { uuid, isUuid, toOffsetISO, parseDate } from './util.js?v=20260802T1302';
-import { resolveSeedDates } from './seed.js?v=20260802T1302';
-import { expandAll, seriesIdOf } from './recurrence.js?v=20260802T1302';
+} from './config.js?v=20260802T1852';
+import { uuid, isUuid, toOffsetISO, parseDate } from './util.js?v=20260802T1852';
+import { resolveSeedDates } from './seed.js?v=20260802T1852';
+import { expandAll, seriesIdOf } from './recurrence.js?v=20260802T1852';
 
 const LS = {
   events: 'rc.events',

@@ -19,6 +19,7 @@ and it lands on a shared board and in a subscribable calendar.
 | [recurrence.md](recurrence.md) | Repeating events and series on fixed dates |
 | [calendar-feed.md](calendar-feed.md) | The subscribable `.ics` feed |
 | [notifications.md](notifications.md) | Email to the operator when an event changes |
+| [legal.md](legal.md) | Impressum and privacy pages — **placeholders to fill before launch** |
 | [deployment.md](deployment.md) | Hosting, domain, releasing changes |
 | [operations.md](operations.md) | Runbook: moderation, migrations, recovery |
 | [decisions.md](decisions.md) | Why things are the way they are |
@@ -39,7 +40,10 @@ and it lands on a shared board and in a subscribable calendar.
 
 ```
 index.html                  Single-page app shell, all dialogs
-assets/css/style.css        All styling (design tokens at the top)
+impressum.html              Impressum + liability notices (static, no JS)
+datenschutz.html            Privacy policy (static, no JS)
+assets/css/style.css        All styling (@font-face + design tokens at the top)
+assets/fonts/               Self-hosted Space Grotesk (OFL) — no CDN, see legal.md
 assets/js/
   config.js                 Backend credentials + feature flags — start here
   store.js                  Data layer: Supabase with a local-storage fallback

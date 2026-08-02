@@ -188,3 +188,21 @@ already appears in the header and the footer.
 
 Closing the panel resets the query and tags: a filter still applied with its UI
 hidden would shrink the list with nothing on screen to explain it.
+
+---
+
+## Self-hosted fonts
+
+Space Grotesk is served from `assets/fonts/`, not from Google's CDN.
+
+The CDN version transmitted every visitor's IP address to Google before the
+first paint, which is the fact pattern LG München I awarded damages for
+(20.01.2022, 3 O 17493/20). A noticeboard for a local scene has no business
+creating that exposure to save 41 KB.
+
+**Cost:** two binary files in the repo and a manual update if the typeface ever
+changes. In exchange the privacy policy lost a whole section, and a
+render-blocking request to a third-party origin disappeared.
+
+**Do not reintroduce a CDN font, embed or analytics snippet** without updating
+[legal.md](legal.md) and the privacy policy in the same change.

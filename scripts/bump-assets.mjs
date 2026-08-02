@@ -46,11 +46,21 @@ for (const file of files) {
   }
 }
 
-const htmlPath = path.join(REPO_ROOT, 'index.html');
-const html = await readFile(htmlPath, 'utf8');
-const nextHtml = html
-  .replace(/(assets\/css\/style\.css)(\?v=[^"']*)?/g, `$1?v=${version}`)
-  .replace(/(assets\/js\/app\.js)(\?v=[^"']*)?/g, `$1?v=${version}`);
-await writeFile(htmlPath, nextHtml);
+// Every HTML page at the repo root, not just index.html. impressum.html and
+// datenschutz.html link the same stylesheet: leaving them on an older `?v=`
+// serves them whatever style.css is cached under that key, which is how a legal
+// page ends up rendering unstyled for ten minutes after a deploy.
+const htmlFiles = (await readdir(REPO_ROOT)).filter((f) => f.endsWith('.html'));
+for (const file of htmlFiles) {
+  const full = path.join(REPO_ROOT, file);
+  const html = await readFile(full, 'utf8');
+  const next = html
+    .replace(/(assets\/css\/style\.css)(\?v=[^"']*)?/g, `$1?v=${version}`)
+    .replace(/(assets\/js\/app\.js)(\?v=[^"']*)?/g, `$1?v=${version}`);
+  if (next !== html) await writeFile(full, next);
+}
 
-console.log(`[bump-assets] version=${version} — ${touched} module file(s) restamped, index.html updated`);
+console.log(
+  `[bump-assets] version=${version} — ${touched} module file(s) restamped, `
+  + `${htmlFiles.length} page(s) updated: ${htmlFiles.join(', ')}`,
+);

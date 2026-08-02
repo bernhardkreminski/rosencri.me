@@ -20,10 +20,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="alternate" type="text/calendar" href="calendar.ics" title="rosencri.me Kalender">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=20260802T1302">
+<link rel="stylesheet" href="assets/css/style.css?v=20260802T1852">
 </head>
 <body>
 
@@ -166,8 +163,14 @@
   <div class="wrap footer-inner">
     <p><strong>rosencri.me</strong> — offener Terminkalender für die Rosenheimer Subkultur.
       Kein Login, keine Werbung, kein Algorithmus.</p>
+    <!-- Impressum and Datenschutz must be "leicht erkennbar, unmittelbar
+         erreichbar und ständig verfügbar" (§ 5 DDG). A footer link on every
+         page is the usual way to satisfy that — do not move them behind a
+         dialog or a menu. -->
     <p class="footer-meta">
       <a href="calendar.ics" id="link-ics-footer">Kalender-Feed</a> ·
+      <a href="impressum.html">Impressum</a> ·
+      <a href="datenschutz.html">Datenschutz</a> ·
       <a href="https://github.com/bernhardkreminski/rosencri.me" target="_blank" rel="noopener">Quellcode</a> ·
       <span id="storage-mode" class="storage-mode"></span>
     </p>
@@ -404,6 +407,6 @@
      assets/js/. Versioning only this entry point serves a fresh app.js whose
      imports still resolve to cached modules — if the new code uses an export
      the cached module lacks, the page renders nothing at all. -->
-<script type="module" src="assets/js/app.js?v=20260802T1302"></script>
+<script type="module" src="assets/js/app.js?v=20260802T1852"></script>
 </body>
 </html>

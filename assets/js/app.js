@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260802T1302';
-import { store } from './store.js?v=20260802T1302';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260802T1302';
-import { seriesSpan } from './recurrence.js?v=20260802T1302';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260802T1852';
+import { store } from './store.js?v=20260802T1852';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260802T1852';
+import { seriesSpan } from './recurrence.js?v=20260802T1852';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260802T1302';
+} from './util.js?v=20260802T1852';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -594,7 +594,7 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260802T1302');
+    const ocr = await import('./ocr.js?v=20260802T1852');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
@@ -1101,7 +1101,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260802T1302');
+    icalModule = await import('./ical.js?v=20260802T1852');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();
