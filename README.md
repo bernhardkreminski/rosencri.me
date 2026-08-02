@@ -13,6 +13,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 - **Month calendar view**, including past events, for browsing by date.
 - **iCal subscription** (`webcal://`) for the whole board, plus a per-event "add to my calendar" link.
 - **Likes, RSVP ("ich bin dabei"), and comments** — comments become more prominent on events that are currently happening, for live updates from the event itself.
+- **Edit and delete** any event, and **repeating events** — weekly/biweekly/monthly, or a series on arbitrary dates.
 
 ## Tech stack
 
@@ -34,9 +35,10 @@ assets/js/ical.js            iCal (.ics) generation for subscribe / add-to-calen
 assets/js/app.js             UI: list, calendar, forms, likes/RSVP/comments
 assets/js/calendar.js        Month-grid rendering
 assets/js/util.js            Date/DOM/formatting helpers, event phase logic
+assets/js/recurrence.js      Expanding repeating events into occurrences
 assets/js/seed.js            Relative-date resolution for the demo events
-data/seed-events.json        Demo events shown when the board is otherwise empty
 scripts/build-ics.mjs        Node script that (re)builds calendar.ics from event data
+scripts/bump-assets.mjs      Cache-busting version stamp — run before shipping
 supabase/schema.sql          Database schema (tables, RLS policies)
 .github/workflows/           CI: hourly calendar.ics rebuild
 calendar.ics                 Generated, committed iCal feed (see .gitignore)
@@ -57,13 +59,10 @@ Then open `http://localhost:8000`. Note: camera capture only works over HTTPS or
 
 Backend and feature flags live in `assets/js/config.js`:
 
-```js
-export const SUPABASE_URL = "";
-export const SUPABASE_ANON_KEY = "";
-export const SHOW_SEED_EVENTS = true;
-```
-
-If `SUPABASE_URL` / `SUPABASE_ANON_KEY` are left empty, the app falls back to browser-local storage — it still works, but data won't sync between devices or visitors. See `supabase/README.md` for backend setup.
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SHOW_SEED_EVENTS`, the site URL, the
+"soon" window and the image size cap. Leaving the credentials empty is
+supported — the app falls back to browser-local storage, still works, but data
+won't sync between devices. See `supabase/README.md` for backend setup.
 
 ## Demo events
 
@@ -76,10 +75,35 @@ to `true`. Note that `scripts/build-ics.mjs` reads the seed file directly and
 does *not* honour the flag, so deleting the file is what keeps demo events out
 of the published `calendar.ics`.
 
+## Documentation
+
+Full documentation lives in [`documentation/`](documentation/README.md):
+
+| | |
+|---|---|
+| [architecture.md](documentation/architecture.md) | Stack, module map, data flow |
+| [data-model.md](documentation/data-model.md) | Event shape, schema, access rules |
+| [features.md](documentation/features.md) | What the site does |
+| [ocr.md](documentation/ocr.md) | Poster scanning and its limits |
+| [recurrence.md](documentation/recurrence.md) | Repeating events and series |
+| [calendar-feed.md](documentation/calendar-feed.md) | The subscribable .ics |
+| [deployment.md](documentation/deployment.md) | Hosting and releasing |
+| [operations.md](documentation/operations.md) | Moderation, migrations, recovery |
+| [decisions.md](documentation/decisions.md) | Why things are the way they are |
+| [pitfalls.md](documentation/pitfalls.md) | Traps already hit — read before changing dates, caching or SQL |
+
+**Before shipping any change under `assets/`:** `node scripts/bump-assets.mjs`
+
 ## Deployment
 
-See [`docs/DEPLOY.md`](docs/DEPLOY.md) for enabling GitHub Pages, configuring secrets, verifying the deploy, and setting up the custom `rosencri.me` domain.
+See [`documentation/deployment.md`](documentation/deployment.md).
 
 ## Privacy / moderation
 
-Events and comments are public and posted anonymously under a self-chosen nickname — there is no login or account system. Moderation (removing spam or inappropriate content) is done manually from the Supabase dashboard.
+Events and comments are public and posted anonymously under a self-chosen
+nickname — there is no login or account system.
+
+**Anyone can edit or delete any event**, deliberately; see
+[`documentation/decisions.md`](documentation/decisions.md#open-permissions) for
+the reasoning and how to reverse it. Comments are insert-only and can only be
+removed from the Supabase dashboard.

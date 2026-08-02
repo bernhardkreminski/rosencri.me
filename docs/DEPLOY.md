@@ -1,3 +1,7 @@
+> **Superseded.** The maintained version of this is
+> [`documentation/deployment.md`](../documentation/deployment.md).
+> This file is kept for its DNS record values.
+
 # Deployment
 
 ## 1. Enable GitHub Pages
