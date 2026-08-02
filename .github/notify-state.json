@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-02T13:21:00.413Z",
+  "events": {
+    "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
+      "title": "Essbaum Viertel Sommerfest",
+      "starts_at": "2026-06-27T08:00:00.000Z",
+      "ends_at": "2026-06-27T20:00:00.000Z",
+      "location": "Fischküche Biergarten",
+      "description": "VIERTEL\nKIND UND REGEL\nSommerfest\nDelizie\nPALAIS VELO\nMUSIK-ACTS\nJazzsinating (Soul Jazz) - 12.” - 14.” Uhr\nCome together - 15 - 17 Uhr\nAuntier - 17-19 Uhr\nJam with Sam - 19.” - 22 Uhr",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785172969811-5f336b08.jpg",
+      "tags": [
+        "jazz",
+        "biergarten"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-27T17:22:50.169Z"
+    },
+    "6f4aaac3-46e7-45a1-9835-a57162b05f8b": {
+      "title": "Rudi and the Scusis",
+      "starts_at": "2026-07-10T18:30:00.000Z",
+      "ends_at": "",
+      "location": "Caritas Buchcafe Reservierung:",
+      "description": "SKA, DIRTY REAGGAE, FUNK UND ROCKSTEADY\nEintritt frei\nSüdtiroler Platz 1a\n83022 Rosenheim caritas",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785173106758-46b32968.jpg",
+      "tags": [
+        "rock"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-27T17:25:07.058Z"
+    },
+    "63f47732-b60b-403f-8f66-9b113208c279": {
+      "title": "Alleycat",
+      "starts_at": "2026-07-12T05:26:00.000Z",
+      "ends_at": "2026-07-12T10:30:00.000Z",
+      "location": "",
+      "description": "",
+      "url": "https://instagram.com/kettenoel_konsens",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785173140992-a00bf689.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-27T17:25:41.389Z"
+    },
+    "03f2c671-92fc-47f8-a3bf-23c6aa6f22f6": {
+      "title": "KinoKulturWoche am Salzstadel",
+      "starts_at": "2026-07-24T17:00:00.000Z",
+      "ends_at": "2026-08-01T20:00:00.000Z",
+      "location": "Salzstadel",
+      "description": "Rosenheim e.V. präsentiert:\nKinoKulturWoche am Salzstadel\nBewirtung ab 19 Uhr\nEintritt Frei\nBLEIBEN\nFSK: ab 12 Jahren",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785173381936-2c2bee4b.jpg",
+      "tags": [
+        "kino",
+        "film"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-27T17:29:42.504Z"
+    },
+    "7afe94d5-57f7-4f0b-96af-d3177e0cbd8a": {
+      "title": "Jahresfest",
+      "starts_at": "2026-07-25T14:00:00.000Z",
+      "ends_at": "",
+      "location": "vetternWIRTSCHAFT",
+      "description": "post-Punk Garag\nBiergarten - Fassbrause - Steckerlfisch\nGrillen - Salatbar - Cocktailbar\nKinderaktionen - Kasperltheater",
+      "url": "https://www.vfbk.net",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785172907874-b8349b5f.jpg",
+      "tags": [
+        "punk",
+        "post-punk",
+        "garage",
+        "surf",
+        "biergarten",
+        "kinder"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-27T17:21:48.200Z"
+    },
+    "edd5dc1e-5791-4c39-8f2d-82f22c9b4762": {
+      "title": "Kultur-Strand",
+      "starts_at": "2026-07-30T18:00:00.000Z",
+      "ends_at": "2026-08-22T05:31:00.000Z",
+      "location": "Innspitz",
+      "description": "rosenheim. jetzt\nx Live-Acts Open Air\nTausch? Genuss",
+      "url": "https://instagram.com/kulturstrand_rosenheim",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785303175794-2407985d.jpg",
+      "tags": [
+        "open-air"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-29T05:32:57.242Z"
+    },
+    "7f25f284-1462-40ea-8d08-a21b950a0153": {
+      "title": "Bachgartn Eröffnung",
+      "starts_at": "2026-08-01T15:00:00.000Z",
+      "ends_at": "",
+      "location": "Am Mühlbach",
+      "description": "bachgartn.rosenheim - kiosk am mühlbach, rosenheim\npop-up kiosk: am muhlbach, rosenheim!\nDrinks & Aperitivo!",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785524976068-aa131187.jpg",
+      "tags": [
+        "bar",
+        "drinks",
+        "opening"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-07-31T19:09:37.337Z"
+    },
+    "f5182b8a-963a-4d9e-a737-32c99075af95": {
+      "title": "Test",
+      "starts_at": "2026-08-03T18:00:00.000Z",
+      "ends_at": "",
+      "location": "",
+      "description": "",
+      "url": "",
+      "image_url": "",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-02T13:17:40.898Z"
+    },
+    "f73057b7-3f69-4ebd-91bc-b9da18cc464e": {
+      "title": "Feierabendkonzert mit Fabi Mägel",
+      "starts_at": "2026-08-05T16:00:00.000Z",
+      "ends_at": "2026-08-05T17:00:00.000Z",
+      "location": "Salzstadel",
+      "description": "Ehrlicher Pop, mitten auf dem Salzstadel: Singer-\nSongwriter Fabi Maegel lädt zum Verweilen, Zu-\nhören, Mitsingen und Mittanzen ein — Musik für\nechte Momente und kleine Auszeiten.\nEintritt frei - Spenden erwünscht\nBei Regen entfällt der Termin.\nVeranstalter: Fabi Maegel\nIm Rahmen von \"StadtLeben - Veranstaltungen\nam Salzstadel\" mit",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785302762754-b407cd6f.jpg",
+      "tags": [
+        "konzert"
+      ],
+      "rrule": "",
+      "rdates": [
+        "2026-08-19T16:00:00.000Z",
+        "2026-09-16T16:00:00.000Z",
+        "2026-09-30T16:00:00.000Z"
+      ],
+      "author_name": "",
+      "created_at": "2026-07-29T05:26:03.527Z"
+    }
+  }
+}
