@@ -40,11 +40,12 @@ create view public.events_with_counts as select e.*, … ;
 grant select on public.events_with_counts to anon;
 ```
 
-Then update **both** mappers, which are explicit allowlists and will silently
-drop an unknown field:
+Then update **all three** allowlists, which will silently drop an unknown field:
 
 - `rowToEvent` / `eventToRow` in `assets/js/store.js`
 - `mapSupabaseRow` in `scripts/build-ics.mjs`
+- `TRACKED` in `scripts/notify-changes.mjs` — otherwise changes to the new
+  column are never reported by email
 
 ## Verifying the backend
 
@@ -103,6 +104,8 @@ Already done. If seeds ever reach the database: `delete from public.events where
 | Feed times off by exactly 1–2 h | Generator ran without `TZ=Europe/Berlin` |
 | A date shows as **01.01.1970** | A null reached `new Date()` — the epoch trap |
 | Repeat setting silently not saved | `rrule`/`rdates` column missing; insert retried without it |
+| No change notification arrived | Secrets unset (the job skips and still goes green) — see [notifications.md](notifications.md) |
+| A notification arrived twice | The state commit was pushed after the mail and the run was retried; harmless by design |
 
 ## Backups
 

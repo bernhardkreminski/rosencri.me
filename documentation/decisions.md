@@ -46,6 +46,47 @@ rather than deleted from the dashboard.
 
 ---
 
+## Notifications poll, they are not pushed {#notify-by-polling}
+
+A GitHub Actions job reads the board every 30 minutes, diffs it against a
+committed snapshot and mails what changed, rather than a Supabase webhook firing
+an Edge Function the moment a row is written.
+
+Push would arrive in seconds. It would also need a deploy step, an HTTP mail
+provider's account and API key, and a second place for secrets to live. Polling
+reuses the runner, the workflow and the Supabase secrets that already exist, and
+a noticeboard for one town does not change often enough for the latency to
+matter — the operator explicitly said a morning digest would do.
+
+**Cost:** up to an hour's delay, one committed state file, and a duplicate
+notification if a run dies between sending and committing. The snapshot is
+written only after the mail is accepted, so the failure mode is a repeat, never
+a miss.
+
+**To reverse:** a `pg_net` trigger or Edge Function on `events`; `OLD`/`NEW`
+makes the diffing in `notify-changes.mjs` unnecessary. See
+[notifications.md](notifications.md).
+
+---
+
+## SMTP by hand rather than a library {#hand-rolled-smtp}
+
+`scripts/smtp.mjs` is ~250 lines of `node:net` and `node:tls` speaking SMTP
+submission. Nodemailer would be one `npm i` away and better in every respect
+except the one that matters: this repo has no `package.json`, no lockfile and no
+install step anywhere, and a notification mailer is not a good enough reason to
+introduce the first one — see [no build step](#no-build-step).
+
+Scope is kept deliberately small: one message, one recipient, plain text,
+no pooling, no retry, no attachments. TLS is mandatory on both ports (implicit
+on 465, STARTTLS on 587); a server offering neither is refused rather than sent
+a password in the clear.
+
+**Cost:** an SMTP state machine nobody else maintains. `SMTP_DEBUG=1` traces the
+conversation, because a provider-specific rejection is otherwise unreadable.
+
+---
+
 ## Tesseract only, no vision model {#tesseract-only}
 
 Browser OCR reliably misses hand-lettered logos and small rotated text — exactly
@@ -112,6 +153,24 @@ updates.
 They are now red/round and amber/square, so the distinction survives colour
 blindness and greyscale. Solid fills use darker variants that clear 4.5:1 against
 white text; the display hues do not.
+
+---
+
+## Pull-to-refresh replaces the browser's own {#pull-to-refresh}
+
+The board changes underneath you and there is no live subscription, so the data
+on screen can be an hour old. On a phone the only remedy was the address bar.
+
+The custom gesture exists rather than leaving Chrome's native overscroll refresh
+alone because the native one reloads the whole page — modules, fonts, Tesseract
+priming — to fetch what a single `store.load()` fetches. `overscroll-behavior-y:
+contain` on `html` turns the native one off, so the two never arm together.
+
+Touch-only, deliberately: touch events are their own feature detection, and on
+desktop the wordmark already reloads.
+
+**Cost:** a non-passive `touchmove` listener on `document`. It returns on its
+first line unless a pull is actually in progress.
 
 ---
 

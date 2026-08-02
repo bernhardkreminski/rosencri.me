@@ -56,6 +56,24 @@ Four phase colours, distinguishable without colour vision (shape differs too):
 | teal | demnächst |
 | grey | vorbei |
 
+### Pull to refresh
+
+Drag down from the top of either view and let go past the threshold: the board
+is re-read from Supabase and repainted, with a spinner under the header and an
+"Aktualisiert." toast. The stale-data problem is real — the page only otherwise
+refetches on load, and the 60-second tick just re-renders what it already has.
+
+Touch only. Touch events *are* the feature detection: a mouse never fires them,
+and on desktop the wordmark already reloads the page.
+
+The gesture is claimed only when it starts at the very top of the document,
+moves downward, is not mostly sideways, and did not start inside a dialog —
+sheets scroll inside themselves. Anything else is handed straight back to the
+page on the first move.
+
+`overscroll-behavior-y: contain` on `html` suppresses the browser's own
+overscroll refresh. Without it Chrome on Android arms two refreshes at once.
+
 ### Search and filters
 
 Collapsed behind "Suchen & filtern" — the front page is about events, not about
@@ -95,6 +113,12 @@ occurrence affects the whole series, and the UI says so.
 
 "Abonnieren" gives a `webcal://` one-tap link, a copyable URL, per-app
 instructions, and a one-off download. See [calendar-feed.md](calendar-feed.md).
+
+## Operator notifications
+
+Not visible on the site: adding, editing or removing an event emails the
+operator a digest, so an open board with no login and no undo is not also a
+silent one. See [notifications.md](notifications.md).
 
 ## Behaviour worth knowing
 

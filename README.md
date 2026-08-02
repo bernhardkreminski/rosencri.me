@@ -14,6 +14,8 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 - **iCal subscription** (`webcal://`) for the whole board, plus a per-event "add to my calendar" link.
 - **Likes, RSVP ("ich bin dabei"), and comments** — comments become more prominent on events that are currently happening, for live updates from the event itself.
 - **Edit and delete** any event, and **repeating events** — weekly/biweekly/monthly, or a series on arbitrary dates.
+- **Pull to refresh** on touch devices — drag down from the top to re-read the board without reloading the page.
+- **Email notifications for the operator** when an event is added, edited or removed, so an open board with no undo isn't also a silent one.
 
 ## Tech stack
 
@@ -21,7 +23,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 - [Tesseract.js](https://github.com/naptha/tesseract.js) loaded from a CDN — OCR runs entirely in the browser; no image is ever uploaded anywhere for text extraction.
 - [Supabase](https://supabase.com) (Postgres + REST + Storage) for shared, cross-device persistence.
 - GitHub Pages for hosting.
-- GitHub Actions to regenerate the subscribable `calendar.ics` every hour.
+- GitHub Actions to regenerate the subscribable `calendar.ics` every hour, and to email the operator when the board changes.
 
 ## Project layout
 
@@ -38,9 +40,12 @@ assets/js/util.js            Date/DOM/formatting helpers, event phase logic
 assets/js/recurrence.js      Expanding repeating events into occurrences
 assets/js/seed.js            Relative-date resolution for the demo events
 scripts/build-ics.mjs        Node script that (re)builds calendar.ics from event data
+scripts/notify-changes.mjs   Diffs the board against the last run and mails the operator
+scripts/smtp.mjs             Minimal dependency-free SMTP client used by the notifier
 scripts/bump-assets.mjs      Cache-busting version stamp — run before shipping
 supabase/schema.sql          Database schema (tables, RLS policies)
-.github/workflows/           CI: hourly calendar.ics rebuild
+.github/workflows/           CI: hourly calendar.ics rebuild, change notifications
+.github/notify-state.json    Last seen event snapshot, written by the notify workflow
 calendar.ics                 Generated, committed iCal feed (see .gitignore)
 dev/ocr-playground.html      Standalone page for testing OCR on sample images
 ```
@@ -87,6 +92,7 @@ Full documentation lives in [`documentation/`](documentation/README.md):
 | [ocr.md](documentation/ocr.md) | Poster scanning and its limits |
 | [recurrence.md](documentation/recurrence.md) | Repeating events and series |
 | [calendar-feed.md](documentation/calendar-feed.md) | The subscribable .ics |
+| [notifications.md](documentation/notifications.md) | Change emails: setup, cadence, failure modes |
 | [deployment.md](documentation/deployment.md) | Hosting and releasing |
 | [operations.md](documentation/operations.md) | Moderation, migrations, recovery |
 | [decisions.md](documentation/decisions.md) | Why things are the way they are |
@@ -107,3 +113,7 @@ nickname — there is no login or account system.
 [`documentation/decisions.md`](documentation/decisions.md#open-permissions) for
 the reasoning and how to reverse it. Comments are insert-only and can only be
 removed from the Supabase dashboard.
+
+Because that is the whole risk surface, every add, edit and removal emails the
+operator — see [`documentation/notifications.md`](documentation/notifications.md).
+The recipient address is a repository secret and appears nowhere in this repo.

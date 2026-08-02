@@ -18,6 +18,7 @@ and it lands on a shared board and in a subscribable calendar.
 | [ocr.md](ocr.md) | Poster scanning: how it works and where it fails |
 | [recurrence.md](recurrence.md) | Repeating events and series on fixed dates |
 | [calendar-feed.md](calendar-feed.md) | The subscribable `.ics` feed |
+| [notifications.md](notifications.md) | Email to the operator when an event changes |
 | [deployment.md](deployment.md) | Hosting, domain, releasing changes |
 | [operations.md](operations.md) | Runbook: moderation, migrations, recovery |
 | [decisions.md](decisions.md) | Why things are the way they are |
@@ -51,9 +52,12 @@ assets/js/
   seed.js                   Relative-date resolution for demo events
 scripts/
   build-ics.mjs             Rebuilds calendar.ics from Supabase
+  notify-changes.mjs        Diffs the board and mails the operator
+  smtp.mjs                  Minimal dependency-free SMTP client
   bump-assets.mjs           Cache-busting version stamp — run before shipping
 supabase/schema.sql         Tables, view, RLS policies. Idempotent.
-.github/workflows/          Hourly calendar rebuild
+.github/workflows/          Hourly calendar rebuild, change notifications
+.github/notify-state.json   Last seen event snapshot (written by the workflow)
 dev/ocr-playground.html     Standalone OCR test harness
 documentation/              You are here
 ```

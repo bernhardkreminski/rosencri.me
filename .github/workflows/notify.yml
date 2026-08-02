@@ -1,0 +1,85 @@
+name: Notify on event changes
+
+# Emails the operator when someone adds, edits or removes an event.
+#
+# Everything sensitive is a repository secret — the recipient address included,
+# so it never appears in this repo. With the secrets unset the job still runs
+# and succeeds; the script just reports that it skipped.
+#
+# Required secrets:
+#   NOTIFY_TO   SMTP_HOST   SMTP_USER   SMTP_PASS
+# Optional:
+#   SMTP_PORT (default 465)   SMTP_FROM (default SMTP_USER)
+# SUPABASE_URL / SUPABASE_ANON_KEY are already set for calendar.yml.
+#
+# See documentation/notifications.md for the setup walkthrough.
+
+on:
+  schedule:
+    # Every 30 minutes. GitHub delays scheduled runs under load, so treat this
+    # as "within the hour", not a guarantee.
+    #
+    # For one digest each morning instead, swap the line below for:
+    #   - cron: '0 5 * * *'   # 07:00 Europe/Berlin in summer, 06:00 in winter
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Print the mail to the log instead of sending it'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notify-events
+  # Never cancel: a cancelled run has already fetched but not yet stored its
+  # snapshot, and the changes it was about to report would go out late at best.
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Detect changes and send mail
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          NOTIFY_DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+          TZ: Europe/Berlin
+        run: node scripts/notify-changes.mjs
+
+      - name: Commit the snapshot if it changed
+        run: |
+          if [ -z "$(git status --porcelain -- .github/notify-state.json)" ]; then
+            echo "No snapshot change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/notify-state.json
+          git commit -m "chore: refresh event notification state [skip ci]"
+          # calendar.yml pushes to the same branch on its own schedule, so a
+          # rejected push here is expected rather than exceptional.
+          for attempt in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "Push rejected (attempt $attempt) — rebasing onto origin/main."
+            git pull --rebase origin main
+          done
+          echo "Could not push the snapshot after 3 attempts." >&2
+          exit 1

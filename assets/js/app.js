@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260731T1314';
-import { store } from './store.js?v=20260731T1314';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260731T1314';
-import { seriesSpan } from './recurrence.js?v=20260731T1314';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260802T1302';
+import { store } from './store.js?v=20260802T1302';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260802T1302';
+import { seriesSpan } from './recurrence.js?v=20260802T1302';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260731T1314';
+} from './util.js?v=20260802T1302';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -46,6 +46,7 @@ async function init() {
   bindCalendarNav();
   bindSubscribe();
   bindFilters();
+  bindPullToRefresh();
 
   store.addEventListener('change', () => render());
   store.addEventListener('event-changed', () => render());
@@ -60,10 +61,7 @@ async function init() {
     toast('Events konnten nicht geladen werden.', 'error');
   }
 
-  if (store.error) banner(store.error, 'warn');
-  else if (store.mode === 'local') {
-    banner('Kein Server verbunden — deine Events bleiben vorerst auf diesem Gerät.', 'warn');
-  }
+  syncBanner();
 
   render();
   loadIcal().catch(() => {});   // also primes the repeat labels
@@ -103,6 +101,7 @@ function cacheNodes() {
     dlgForm: $('#dlg-form'),
     dlgDetail: $('#dlg-detail'),
     dlgSubscribe: $('#dlg-subscribe'),
+    ptr: $('#ptr'),
     detailBody: $('#detail-body'),
     form: $('#event-form'),
     formError: $('#form-error'),
@@ -207,6 +206,138 @@ function toggleFilters(force) {
     state.query = '';
     state.tags.clear();
     render();
+  }
+}
+
+/* --------------------------- pull to refresh ---------------------------- */
+
+/**
+ * Touch-only pull-to-refresh.
+ *
+ * The board is shared and changes underneath you, but there is no live
+ * subscription — the only other way to pick up someone else's event is a full
+ * page reload, which on a phone means reaching for the address bar. Chrome's
+ * native overscroll refresh is suppressed in CSS (`overscroll-behavior-y:
+ * contain`) so exactly one refresh gesture exists, and it is this one.
+ *
+ * Touch events are the whole gate: a mouse or trackpad never fires them, so
+ * there is nothing to feature-detect and nothing to do on desktop.
+ */
+const PTR_THRESHOLD = 64;   // px of indicator travel that arms the refresh
+const PTR_MAX = 110;        // hard stop, so the pull cannot be dragged forever
+const PTR_COMMIT = 8;       // px before the gesture is claimed as a pull
+const PTR_MIN_SPIN = 450;   // ms — under this the spinner only flashes
+
+const ptr = { startY: 0, startX: 0, dist: 0, tracking: false, pulling: false, busy: false };
+
+function bindPullToRefresh() {
+  if (!ui.ptr) return;
+  document.addEventListener('touchstart', onPullStart, { passive: true });
+  // Non-passive: cancelling the scroll is the point. The handler returns on
+  // its first line unless a pull is actually in progress.
+  document.addEventListener('touchmove', onPullMove, { passive: false });
+  document.addEventListener('touchend', onPullEnd, { passive: true });
+  document.addEventListener('touchcancel', resetPull, { passive: true });
+}
+
+function onPullStart(e) {
+  if (ptr.busy || e.touches.length !== 1) return;
+  if (window.scrollY > 0) return;
+  // Sheets scroll inside themselves and sit above an inert page; a pull there
+  // is the dialog's gesture, not ours.
+  if (e.target instanceof Element && e.target.closest('dialog')) return;
+  ptr.startY = e.touches[0].clientY;
+  ptr.startX = e.touches[0].clientX;
+  ptr.dist = 0;
+  ptr.tracking = true;
+  ptr.pulling = false;
+}
+
+function onPullMove(e) {
+  if (!ptr.tracking) return;
+  const dy = e.touches[0].clientY - ptr.startY;
+  const dx = e.touches[0].clientX - ptr.startX;
+
+  if (!ptr.pulling) {
+    // Wait for the gesture to commit to a direction. Anything upward or mostly
+    // sideways belongs to the page — hand it back and stay out of the way for
+    // the rest of the touch.
+    if (dy < PTR_COMMIT) {
+      if (dy < -2 || Math.abs(dx) > PTR_COMMIT) ptr.tracking = false;
+      return;
+    }
+    if (Math.abs(dx) > dy || window.scrollY > 0) { ptr.tracking = false; return; }
+    ptr.pulling = true;
+    ui.ptr.classList.remove('is-settling');
+  }
+
+  e.preventDefault();
+  // Damped, so the indicator moves about half as far as the finger and the
+  // pull gets visibly heavier as it approaches the cap.
+  ptr.dist = Math.min(PTR_MAX, Math.max(0, dy - PTR_COMMIT) * 0.55);
+  paintPull(ptr.dist);
+}
+
+function onPullEnd() {
+  const armed = ptr.pulling && ptr.dist >= PTR_THRESHOLD;
+  ptr.tracking = false;
+  ptr.pulling = false;
+  if (armed) runPullRefresh();
+  else resetPull();
+}
+
+function paintPull(dist) {
+  const progress = Math.min(1, dist / PTR_THRESHOLD);
+  ui.ptr.style.transform = `translateY(${dist}px)`;
+  ui.ptr.style.opacity = String(Math.min(1, progress * 1.4));
+  ui.ptr.querySelector('.ptr-spinner').style.transform = `rotate(${Math.round(progress * 270)}deg)`;
+  ui.ptr.classList.toggle('is-armed', dist >= PTR_THRESHOLD);
+}
+
+function resetPull() {
+  ptr.tracking = false;
+  ptr.pulling = false;
+  ptr.dist = 0;
+  if (!ui.ptr) return;
+  ui.ptr.classList.add('is-settling');
+  ui.ptr.classList.remove('is-armed', 'is-refreshing');
+  ui.ptr.style.transform = 'translateY(0)';
+  ui.ptr.style.opacity = '0';
+  ui.ptr.querySelector('.ptr-spinner').style.transform = '';
+}
+
+async function runPullRefresh() {
+  ptr.busy = true;
+  ui.ptr.classList.add('is-settling', 'is-refreshing');
+  ui.ptr.classList.remove('is-armed');
+  ui.ptr.style.transform = `translateY(${PTR_THRESHOLD}px)`;
+  ui.ptr.style.opacity = '1';
+  // Hand rotation back to the CSS animation.
+  ui.ptr.querySelector('.ptr-spinner').style.transform = '';
+
+  const started = Date.now();
+  try {
+    await refreshData();
+  } finally {
+    // A cached response returns in 40ms; snapping back that fast reads as
+    // "nothing happened" rather than "refreshed".
+    setTimeout(() => {
+      ptr.busy = false;
+      resetPull();
+    }, Math.max(0, PTR_MIN_SPIN - (Date.now() - started)));
+  }
+}
+
+/** Re-read the board from the backend and repaint. */
+async function refreshData() {
+  try {
+    await store.load();
+    syncBanner();
+    render();
+    toast('Aktualisiert.', 'ok');
+  } catch (err) {
+    console.error('[refresh]', err);
+    toast('Aktualisieren fehlgeschlagen.', 'error');
   }
 }
 
@@ -463,7 +594,7 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260731T1314');
+    const ocr = await import('./ocr.js?v=20260802T1302');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
@@ -970,7 +1101,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260731T1314');
+    icalModule = await import('./ical.js?v=20260802T1302');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();
@@ -1034,6 +1165,19 @@ function banner(text, kind = 'info') {
   ui.banner.textContent = text;
   ui.banner.dataset.kind = kind;
   ui.banner.hidden = false;
+}
+
+/**
+ * Put the banner in step with the store's current state. Called after every
+ * load, so a refresh that succeeds clears the warning a failed one left behind.
+ */
+function syncBanner() {
+  if (store.error) banner(store.error, 'warn');
+  else if (store.mode === 'local') {
+    banner('Kein Server verbunden — deine Events bleiben vorerst auf diesem Gerät.', 'warn');
+  } else {
+    ui.banner.hidden = true;
+  }
 }
 
 function toast(message, kind = 'info') {

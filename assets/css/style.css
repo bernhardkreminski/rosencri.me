@@ -75,7 +75,11 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+/* `overscroll-behavior-y: contain` suppresses the browser's *own* overscroll
+   refresh (Chrome on Android) and the bounce that would otherwise fight the
+   custom one in `.ptr` below. Without it a downward pull at the top of the
+   page arms two refreshes at once. */
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overscroll-behavior-y: contain; }
 
 body {
   margin: 0;
@@ -530,6 +534,35 @@ details[open] .section-title-toggle::before { transform: rotate(90deg); }
 .fab:active { transform: scale(.95); }
 .fab-label { display: none; }
 @media (min-width: 700px) { .fab-label { display: inline; } .fab { padding: 15px 22px 15px 18px; } }
+
+/* --------------------------- pull to refresh --------------------------- */
+
+/* Parked one height above its resting line so `translateY(0)` is "hidden" and
+   the JS only ever has to write the pull distance. The line is the bottom of
+   the sticky header, not the top of the viewport: the header stays put during
+   a pull, so an indicator descending from y=0 spends its whole travel behind
+   the wordmark and the view switcher. */
+.ptr {
+  position: fixed; z-index: 50;
+  top: calc(env(safe-area-inset-top) + var(--header-h) - 46px);
+  left: 50%; margin-left: -20px;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--text-dim);
+  box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none;
+  transform: translateY(0);
+}
+/* Past the threshold: let go and it refreshes. */
+.ptr.is-armed { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, transparent); }
+/* Only while snapping back or holding at the spinner — never during the drag,
+   where the indicator must track the finger exactly. */
+.ptr.is-settling { transition: transform .28s var(--ease), opacity .28s; }
+.ptr-spinner { display: grid; place-items: center; }
+.ptr.is-refreshing { color: var(--teal-dark); }
+.ptr.is-refreshing .ptr-spinner { animation: ptr-spin .85s linear infinite; }
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
 
 /* ------------------------------- dialogs ------------------------------- */
 
