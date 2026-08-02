@@ -15,7 +15,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 - **Likes, RSVP ("ich bin dabei"), and comments** — comments become more prominent on events that are currently happening, for live updates from the event itself.
 - **Edit and delete** any event, and **repeating events** — weekly/biweekly/monthly, or a series on arbitrary dates.
 - **Pull to refresh** on touch devices — drag down from the top to re-read the board without reloading the page.
-- **Email notifications for the operator** when an event is added, edited or removed, so an open board with no undo isn't also a silent one.
+- **A daily 09:00 email digest for the operator** of every event added, edited or removed, so an open board with no undo isn't also a silent one.
 
 ## Tech stack
 

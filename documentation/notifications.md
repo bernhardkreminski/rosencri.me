@@ -12,7 +12,7 @@ empty. This closes that gap without adding a login, a server or an account.
 ## How it works
 
 ```
-.github/workflows/notify.yml        every 30 min
+.github/workflows/notify.yml        4 morning slots, sends once
         │
         ▼
 scripts/notify-changes.mjs
@@ -34,6 +34,9 @@ the website already shows publicly, and never the recipient address.
 
 **The very first run sends nothing.** With no previous state everything would
 look new, so that run records a baseline and stops.
+
+The state file also carries `lastMailedOn`, which is what keeps the daily digest
+to one mail a day — see [Cadence](#cadence).
 
 ## Setting it up
 
@@ -95,20 +98,61 @@ that trace is the only practical way to see why a provider is unhappy.
 
 ## Cadence
 
-`*/30 * * * *`, which GitHub delays under load — treat it as "within the hour".
-Each mail is a digest of everything that changed since the last run, so a busy
-evening is one mail, not six.
+**One digest per day, at 09:00 in Rosenheim.** Everything that changed since the
+last mail arrives together, so a busy evening is one mail the next morning, not
+six that night.
 
-For a single morning digest instead, swap the cron in
-`.github/workflows/notify.yml` for `0 5 * * *` (07:00 in Rosenheim in summer,
-06:00 in winter — GitHub cron is always UTC and does not follow DST).
+Hitting 09:00 local takes two pieces, because GitHub cron is UTC and does not
+follow DST — `0 7 * * *` is 09:00 in summer but 08:00 in winter:
+
+- the workflow fires **four candidate slots**, `0 7,8,9,10 * * *`
+- the script sends on the **first slot at or after 09:00 local**, and records
+  the date in `lastMailedOn` so the remaining slots do nothing
+
+|  | 07 UTC | 08 UTC | 09 UTC | 10 UTC |
+|---|---|---|---|---|
+| summer (CEST) | **09:00 → sends** | 10:00 skip | 11:00 skip | 12:00 skip |
+| winter (CET) | 08:00 too early | **09:00 → sends** | 10:00 skip | 11:00 skip |
+
+The spare slots are not waste. GitHub starts scheduled jobs late under load, and
+a run that slips past its hour is simply caught by the next one — the `>= 09:00
+and not yet today` rule makes late runs harmless instead of missed.
+
+A **manual dispatch ignores the gate entirely** and sends whatever is pending.
+`NOTIFY_DIGEST_HOUR` is only set for `schedule` events.
+
+**Consequence worth knowing:** a change made at 09:05 is reported the *next*
+morning. If a change lands on a day when no digest went out, it is mailed at the
+next slot that day. To go back to near-real-time, drop `NOTIFY_DIGEST_HOUR` from
+the workflow and set the cron to `*/30 * * * *`.
 
 ## What the mail says
 
 Subject is the change when there is one (`rosencri.me: neues Event „…"`), or a
-count when there are several. The body lists each event with its date, venue,
-the person who entered it and a deep link, and for an edit the changed fields as
-`before → after`.
+count when there are several. Each event gets a card — colour-coded green for
+added, amber for edited, red for removed — with its date, venue, the person who
+entered it, a button through to the event, and for an edit the changed fields
+struck through as `before → after`.
+
+It is sent as `multipart/alternative`: a plain-text part first, then HTML. A
+client picks the last part it can render, so HTML wins where it is supported and
+the text version is what lands in a terminal mail reader or a notification
+preview. Both are generated from the same diff.
+
+The HTML is deliberately old-fashioned — tables, inline styles, no images, no
+external assets, no `<style>` block. Gmail strips embedded stylesheets, blocks
+remote content by default, and ignores flexbox and grid. It also carries its own
+`<meta charset="utf-8">`: the MIME header already declares the encoding, but a
+client that extracts and re-renders the HTML falls back to guessing without it,
+and every umlaut arrives as mojibake.
+
+To look at it without sending, point a dry run at a file and open it:
+
+```sh
+NOTIFY_DRY_RUN=1 NOTIFY_DUMP_HTML=/tmp/mail.html \
+SUPABASE_URL=… SUPABASE_ANON_KEY=… NOTIFY_STATE_PATH=/tmp/state.json \
+node scripts/notify-changes.mjs
+```
 
 Deletions have no working link, so they don't get one. They also carry a caveat:
 the browser reads with the anon key, RLS exposes only published rows, so an
@@ -123,6 +167,7 @@ The mail says both rather than picking one.
 | Supabase unreachable | Job **fails**, state untouched, next run retries. |
 | SMTP rejects the mail | Job **fails**, state untouched — the change is reported next run rather than lost. |
 | State file missing or from an older format | Silently re-baselines. No mail. |
+| Every morning slot delayed past 10:00 local | That day's digest is skipped; the changes go out the next morning. |
 | Push rejected (`calendar.yml` pushed first) | Rebase and retry, three attempts. |
 
 The state file is only written **after** the mail is accepted. That ordering is
@@ -139,7 +184,7 @@ column added everywhere *but* here is silently never reported. See
 ## Why not something instant
 
 A Supabase database webhook firing an Edge Function would mail within seconds
-instead of within the hour. It was declined for the same reason as everything
+instead of the next morning. It was declined for the same reason as everything
 else here: it needs a deploy step (`supabase functions deploy`), an HTTP mail
 provider's account and API key, and secrets living in a second place. Polling
 reuses the workflow, the runner and the Supabase secrets that already exist, and

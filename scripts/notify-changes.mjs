@@ -33,7 +33,11 @@
 //   SMTP_FROM                         defaults to SMTP_USER
 //   NOTIFY_STATE_PATH                 defaults to .github/notify-state.json
 //   NOTIFY_SITE_URL                   defaults to https://rosencri.me/
+//   NOTIFY_DIGEST_HOUR                hold everything until this hour, Rosenheim
+//                                     local, at most one mail per day. Unset =
+//                                     send immediately (manual runs always do).
 //   NOTIFY_DRY_RUN=1                  print the mail instead of sending it
+//   NOTIFY_DUMP_HTML=<path>           dry runs also write the HTML part there
 //
 // Anything missing is a skip, not a failure: the workflow stays green from the
 // first run, before any secret has been set. A Supabase or SMTP error IS a
@@ -162,17 +166,35 @@ async function readState(statePath) {
     // A state file from a future/unknown shape is treated as absent: re-baseline
     // quietly rather than mail the whole board as "new".
     if (parsed?.version !== STATE_VERSION || typeof parsed.events !== 'object') return null;
-    return parsed.events;
+    // `lastMailedOn` was added after the first deploys; absent means "not today".
+    return { events: parsed.events, lastMailedOn: parsed.lastMailedOn || '' };
   } catch {
     return null;
   }
 }
 
-async function writeState(statePath, events) {
+async function writeState(statePath, events, lastMailedOn = '') {
   await mkdir(path.dirname(statePath), { recursive: true });
-  const payload = { version: STATE_VERSION, updatedAt: new Date().toISOString(), events };
+  const payload = {
+    version: STATE_VERSION,
+    updatedAt: new Date().toISOString(),
+    lastMailedOn,
+    events,
+  };
   await writeFile(statePath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
+
+/* ------------------------------ digest timing ----------------------------- */
+
+const berlinParts = (date = new Date()) => {
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat('en-CA', {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', hourCycle: 'h23', timeZone: 'Europe/Berlin',
+    }).formatToParts(date).map(({ type, value }) => [type, value]),
+  );
+  return { day: `${p.year}-${p.month}-${p.day}`, hour: Number(p.hour) };
+};
 
 /* ------------------------------- formatting ------------------------------ */
 
@@ -226,6 +248,105 @@ function eventBlock(label, { id, snap, changes }, siteUrl, link = true) {
     push(new URL(`#/event/${id}`, siteUrl).href);
   }
   return lines.join('\n');
+}
+
+/* ---------------------------------- html --------------------------------- */
+
+/*
+ * Inline styles only, tables for structure, no images and no external assets.
+ * Mail clients strip <style> blocks (Gmail), ignore flexbox and grid, and block
+ * remote content by default — so this looks deliberately like 2005 markup. The
+ * palette is lifted from assets/css/style.css; the accents are the *-solid
+ * tokens, which are the ones that clear 4.5:1 behind white text.
+ */
+const C = {
+  page: '#f3ece0', card: '#fffdf7', line: '#e3d9c0',
+  ink: '#1c1a17', dim: '#6d675c', faint: '#98918f',
+  added: '#26827e', edited: '#ab611d', removed: '#d34338',
+};
+const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+
+const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function htmlChangeRows(changes) {
+  const rows = changes.map((c) => `
+          <tr>
+            <td style="padding:4px 12px 4px 0;color:${C.dim};font-size:13px;white-space:nowrap;vertical-align:top">${esc(c.label)}</td>
+            <td style="padding:4px 0;font-size:13px;color:${C.ink}">
+              <span style="color:${C.faint};text-decoration:line-through">${esc(fieldValue(c.field, c.from))}</span>
+              <span style="color:${C.faint}">&nbsp;→&nbsp;</span>
+              <strong>${esc(fieldValue(c.field, c.to))}</strong>
+            </td>
+          </tr>`).join('');
+  return `
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 0;border-collapse:collapse">${rows}
+        </table>`;
+}
+
+function htmlCard(label, accent, { id, snap, changes }, siteUrl, link = true, note = '') {
+  const meta = [
+    snap.starts_at && when(snap.starts_at, true),
+    snap.location,
+    snap.author_name && `eingetragen von ${snap.author_name}`,
+  ].filter(Boolean).map((line) => `
+        <div style="font-size:14px;color:${C.dim};margin-top:3px">${esc(line)}</div>`).join('');
+
+  const url = new URL(`#/event/${id}`, siteUrl).href;
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px">
+    <tr>
+      <td style="border-left:3px solid ${accent};padding:2px 0 2px 16px">
+        <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:.09em;color:#ffffff;background:${accent};border-radius:999px;padding:3px 11px">${esc(label)}</span>
+        <div style="font-size:18px;font-weight:700;color:${C.ink};margin:9px 0 0;line-height:1.25">${esc(snap.title || 'Ohne Titel')}</div>${meta}${changes?.length ? htmlChangeRows(changes) : ''}${note ? `
+        <div style="margin-top:12px;padding:9px 12px;background:${C.page};border-radius:8px;font-size:12px;color:${C.dim};line-height:1.5">${esc(note)}</div>` : ''}${link ? `
+        <div style="margin-top:14px"><a href="${esc(url)}" style="display:inline-block;background:${C.ink};color:#ffffff;text-decoration:none;font-size:13px;font-weight:600;padding:9px 16px;border-radius:999px">Event ansehen</a></div>` : ''}
+      </td>
+    </tr>
+  </table>`;
+}
+
+function composeHtml(diff, siteUrl, total) {
+  const cards = [
+    ...diff.added.map((i) => htmlCard('NEU', C.added, i, siteUrl)),
+    ...diff.edited.map((i) => htmlCard('GEÄNDERT', C.edited, i, siteUrl)),
+    ...diff.removed.map((i) => htmlCard('ENTFERNT', C.removed, i, siteUrl, false,
+      'Gelöscht — oder im Supabase-Dashboard auf „hidden" gesetzt. Von außen sind die beiden nicht zu unterscheiden.')),
+  ].join('');
+
+  // A full document, not a fragment. The MIME part already declares
+  // charset=utf-8, but clients that extract the HTML and re-render it (or a
+  // browser opening a saved .eml) fall back to guessing without the meta tag,
+  // and every umlaut arrives as mojibake.
+  return `<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>rosencri.me</title>
+</head>
+<body style="margin:0;padding:0;background:${C.page}">
+<div style="margin:0;padding:26px 12px;background:${C.page};font-family:${FONT};-webkit-text-size-adjust:100%">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;background:${C.card};border:1px solid ${C.line};border-radius:18px">
+  <tr>
+    <td style="padding:24px 26px 18px;border-bottom:1px solid ${C.line}">
+      <div style="font-size:19px;font-weight:700;letter-spacing:-.02em;color:${C.ink}">rosencri<span style="color:${C.removed}">.</span>me</div>
+      <div style="font-size:14px;color:${C.dim};margin-top:3px">${total === 1 ? 'Eine Änderung' : `${total} Änderungen`} auf dem Board</div>
+    </td>
+  </tr>
+  <tr><td style="padding:22px 26px 4px">${cards}</td></tr>
+  <tr>
+    <td style="padding:16px 26px 22px;border-top:1px solid ${C.line};font-size:12px;color:${C.dim};line-height:1.6">
+      Stand: ${esc(when(new Date().toISOString()))} · <a href="${esc(siteUrl)}" style="color:${C.dim}">${esc(siteUrl.replace(/^https?:\/\/|\/$/g, ''))}</a><br>
+      Jede Person kann Events auf dieser Seite anlegen, ändern und löschen — das ist so gewollt.
+      Rückgängig machen geht nur über das Supabase-Dashboard.
+    </td>
+  </tr>
+</table>
+</div>
+</body>
+</html>`;
 }
 
 function composeSubject({ added, edited, removed }) {
@@ -282,6 +403,7 @@ async function main() {
   const smtpHost = process.env.SMTP_HOST;
   const from = process.env.SMTP_FROM || process.env.SMTP_USER;
   const dryRun = process.env.NOTIFY_DRY_RUN === '1';
+  const digestHour = process.env.NOTIFY_DIGEST_HOUR;
   const siteUrl = process.env.NOTIFY_SITE_URL || 'https://rosencri.me/';
   const statePath = process.env.NOTIFY_STATE_PATH
     ? path.resolve(process.env.NOTIFY_STATE_PATH)
@@ -299,28 +421,55 @@ async function main() {
 
   const rows = await fetchEvents(supabaseUrl, supabaseKey);
   const after = Object.fromEntries(rows.map((row) => [row.id, snapshotOf(row)]));
-  const before = await readState(statePath);
+  const state = await readState(statePath);
 
-  if (!before) {
+  if (!state) {
     await writeState(statePath, after);
     console.log(`[notify] No previous state — recorded ${rows.length} event(s) as the baseline, no mail sent.`);
     return;
   }
 
-  const diff = diffSnapshots(before, after);
+  const diff = diffSnapshots(state.events, after);
   const total = diff.added.length + diff.edited.length + diff.removed.length;
   if (!total) {
     console.log(`[notify] ${rows.length} event(s), nothing changed.`);
     return;
   }
 
+  /*
+   * One digest a day, in the morning.
+   *
+   * `digestHour` is only set for scheduled runs, so a manual dispatch always
+   * sends. The gate lives here rather than in the cron because GitHub cron is
+   * UTC and ignores DST: `0 7 * * *` is 09:00 in Rosenheim in summer and 08:00
+   * in winter. The workflow fires several candidate slots and this drops all
+   * but the first one at or after 09:00 local — which also absorbs GitHub's
+   * habit of running scheduled jobs late.
+   */
+  const now = berlinParts();
+  if (digestHour) {
+    if (now.hour < Number(digestHour)) {
+      console.log(`[notify] ${total} change(s) pending — holding until ${digestHour}:00 (now ${now.hour}:xx in Rosenheim).`);
+      return;
+    }
+    if (state.lastMailedOn === now.day) {
+      console.log(`[notify] ${total} change(s) pending — today's digest already went out; they go in tomorrow's.`);
+      return;
+    }
+  }
+
   const subject = composeSubject(diff);
   const text = composeBody(diff, siteUrl, total);
+  const html = composeHtml(diff, siteUrl, total);
 
   if (dryRun) {
     // Deliberately returns without storing: a dry run that consumed the diff
     // would leave the next real run with nothing to report.
     console.log(`[notify] DRY RUN — would send:\n\nSubject: ${subject}\n\n${text}`);
+    if (process.env.NOTIFY_DUMP_HTML) {
+      await writeFile(process.env.NOTIFY_DUMP_HTML, html, 'utf8');
+      console.log(`[notify] HTML part written to ${process.env.NOTIFY_DUMP_HTML}`);
+    }
     return;
   }
 
@@ -333,12 +482,13 @@ async function main() {
     to,
     subject,
     text,
+    html,
   });
   console.log(`[notify] Sent: ${subject}`);
 
   // Only after the mail is away. A failed send throws before this line, so the
   // next run sees the same diff again instead of losing the notification.
-  await writeState(statePath, after);
+  await writeState(statePath, after, now.day);
   console.log(
     `[notify] ${diff.added.length} added, ${diff.edited.length} edited, ${diff.removed.length} removed — state updated.`,
   );
@@ -353,4 +503,4 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   });
 }
 
-export { diffSnapshots, snapshotOf, composeSubject, composeBody };
+export { diffSnapshots, snapshotOf, composeSubject, composeBody, composeHtml, berlinParts };

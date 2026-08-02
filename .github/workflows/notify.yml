@@ -16,12 +16,18 @@ name: Notify on event changes
 
 on:
   schedule:
-    # Every 30 minutes. GitHub delays scheduled runs under load, so treat this
-    # as "within the hour", not a guarantee.
+    # One digest a day at 09:00 in Rosenheim.
     #
-    # For one digest each morning instead, swap the line below for:
-    #   - cron: '0 5 * * *'   # 07:00 Europe/Berlin in summer, 06:00 in winter
-    - cron: '*/30 * * * *'
+    # GitHub cron is UTC and does not follow DST, so no single expression is
+    # 09:00 local all year: 07:00 UTC is 09:00 in summer but 08:00 in winter.
+    # Four candidate slots fire instead, and the script sends on the first one
+    # at or after 09:00 local, at most once per day (NOTIFY_DIGEST_HOUR below).
+    # The extra slots also absorb GitHub's habit of starting scheduled jobs
+    # late — a run delayed past its hour is caught by the next one.
+    #
+    #   summer (CEST)  07,08,09,10 UTC -> 09,10,11,12 local, sends at 09
+    #   winter (CET)   07,08,09,10 UTC -> 08,09,10,11 local, sends at 09
+    - cron: '0 7,8,9,10 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -61,6 +67,9 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
           NOTIFY_DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+          # Only scheduled runs wait for the morning. A manual dispatch is
+          # someone asking for it now, so it sends whatever is pending.
+          NOTIFY_DIGEST_HOUR: ${{ github.event_name == 'schedule' && '9' || '' }}
           TZ: Europe/Berlin
         run: node scripts/notify-changes.mjs
 

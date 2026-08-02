@@ -160,31 +160,61 @@ function encodeHeader(value) {
 }
 
 /**
- * Build the DATA payload.
+ * One MIME part, base64-encoded.
  *
- * The body is base64'd rather than sent as-is. That makes UTF-8 safe on servers
+ * Bodies are base64'd rather than sent as-is. That makes UTF-8 safe on servers
  * that never announced 8BITMIME, keeps every line inside the 998-character
  * limit, and sidesteps dot-stuffing entirely — a base64 line can never be a
  * lone `.`, which would otherwise end the message early.
  */
-function buildMessage({ from, to, subject, text, date = new Date() }) {
-  const domain = /@([^@>]+)>?$/.exec(from)?.[1] || 'localhost';
-  const body = Buffer.from(String(text).replace(/\r?\n/g, CRLF), 'utf8')
+function mimePart(contentType, content) {
+  const encoded = Buffer.from(String(content).replace(/\r?\n/g, CRLF), 'utf8')
     .toString('base64')
     .replace(/(.{76})/g, `$1${CRLF}`);
-
   return [
+    `Content-Type: ${contentType}; charset=utf-8`,
+    'Content-Transfer-Encoding: base64',
+    '',
+    encoded,
+  ].join(CRLF);
+}
+
+/**
+ * Build the DATA payload.
+ *
+ * With `html` given the message is `multipart/alternative`, plain text first:
+ * the parts must run least-rich to most-rich, because a client picks the *last*
+ * one it can display. Without it, a bare `text/plain` message.
+ */
+function buildMessage({ from, to, subject, text, html, date = new Date() }) {
+  const domain = /@([^@>]+)>?$/.exec(from)?.[1] || 'localhost';
+  const headers = [
     `From: ${from}`,
     `To: ${to}`,
     `Subject: ${encodeHeader(subject)}`,
     `Date: ${rfc5322Date(date)}`,
     `Message-ID: <${randomUUID()}@${domain}>`,
     'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=utf-8',
-    'Content-Transfer-Encoding: base64',
     'Auto-Submitted: auto-generated',
+  ];
+
+  if (!html) {
+    return [...headers, mimePart('text/plain', text)].join(CRLF);
+  }
+
+  // A uuid can never occur inside base64 output, so the boundary is safe
+  // without scanning the parts for it.
+  const boundary = `=_rc_${randomUUID()}`;
+  return [
+    ...headers,
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
     '',
-    body,
+    `--${boundary}`,
+    mimePart('text/plain', text),
+    `--${boundary}`,
+    mimePart('text/html', html),
+    `--${boundary}--`,
+    '',
   ].join(CRLF);
 }
 
@@ -202,7 +232,8 @@ function buildMessage({ from, to, subject, text, date = new Date() }) {
  * @param {string}  opts.from         bare address or `Name <addr>`
  * @param {string}  opts.to           bare address
  * @param {string}  opts.subject
- * @param {string}  opts.text
+ * @param {string}  opts.text     always required — the fallback part
+ * @param {string} [opts.html]    when given, sent as multipart/alternative
  * @param {number} [opts.timeoutMs=20000]
  */
 export async function sendMail(opts) {

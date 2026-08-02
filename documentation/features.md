@@ -116,9 +116,10 @@ instructions, and a one-off download. See [calendar-feed.md](calendar-feed.md).
 
 ## Operator notifications
 
-Not visible on the site: adding, editing or removing an event emails the
-operator a digest, so an open board with no login and no undo is not also a
-silent one. See [notifications.md](notifications.md).
+Not visible on the site: every event added, edited or removed goes into a digest
+emailed to the operator at 09:00 the next morning, so an open board with no
+login and no undo is not also a silent one. See
+[notifications.md](notifications.md).
 
 ## Behaviour worth knowing
 

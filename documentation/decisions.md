@@ -48,17 +48,23 @@ rather than deleted from the dashboard.
 
 ## Notifications poll, they are not pushed {#notify-by-polling}
 
-A GitHub Actions job reads the board every 30 minutes, diffs it against a
-committed snapshot and mails what changed, rather than a Supabase webhook firing
-an Edge Function the moment a row is written.
+A GitHub Actions job reads the board each morning, diffs it against a committed
+snapshot and mails what changed, rather than a Supabase webhook firing an Edge
+Function the moment a row is written.
 
 Push would arrive in seconds. It would also need a deploy step, an HTTP mail
 provider's account and API key, and a second place for secrets to live. Polling
 reuses the runner, the workflow and the Supabase secrets that already exist, and
 a noticeboard for one town does not change often enough for the latency to
-matter — the operator explicitly said a morning digest would do.
+matter — the operator asked for exactly one digest, at 09:00.
 
-**Cost:** up to an hour's delay, one committed state file, and a duplicate
+Hitting 09:00 local is itself a decision. GitHub cron is UTC and ignores DST, so
+no single expression is 09:00 all year. Rather than accept an hour of winter
+drift, four candidate slots fire and the script sends on the first at or after
+09:00 local, once per day. That also makes GitHub's late scheduling harmless
+instead of a missed day.
+
+**Cost:** up to a day's delay, one committed state file, and a duplicate
 notification if a run dies between sending and committing. The snapshot is
 written only after the mail is accepted, so the failure mode is a repeat, never
 a miss.
