@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260802T1852';
-import { store } from './store.js?v=20260802T1852';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260802T1852';
-import { seriesSpan } from './recurrence.js?v=20260802T1852';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260804T1840';
+import { store } from './store.js?v=20260804T1840';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260804T1840';
+import { seriesSpan, seriesIdOf } from './recurrence.js?v=20260804T1840';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260802T1852';
+} from './util.js?v=20260804T1840';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -383,18 +383,69 @@ function render() {
   else renderCalendarView();
 }
 
+/**
+ * One card per series, for the list view only.
+ *
+ * A weekly event materialises into dozens of occurrences (see recurrence.js).
+ * That is right for the month grid — a calendar exists precisely to show every
+ * date — but on the front page it buried everything else once real data
+ * arrived. The list therefore shows a series once, and the card says that it
+ * repeats.
+ *
+ * Which occurrence stands in for the series:
+ *   - the earliest date that is not over yet, so a running or upcoming series
+ *     lands in the section a visitor would look for it in;
+ *   - if every date is past, the most recent one, so a finished series still
+ *     appears once under "Vorbei" rather than vanishing.
+ *
+ * Collapsing happens after filtering, so a search still matches on any
+ * occurrence and the series is represented by the one that matters now.
+ *
+ * @returns {{event: object, remaining: number}[]} sorted by the shown date
+ */
+function collapseSeries(events, now = new Date()) {
+  const groups = new Map();
+
+  for (const ev of events) {
+    // One-off events carry no seriesId, so derive the key from the id — an
+    // occurrence id is `<uuid>::<timestamp>`, a plain event is just its uuid.
+    const key = seriesIdOf(ev.id);
+    const isPast = eventPhase(ev, now) === 'past';
+    let group = groups.get(key);
+    if (!group) {
+      groups.set(key, { pick: ev, pickPast: isPast, ahead: isPast ? 0 : 1 });
+      continue;
+    }
+    if (!isPast) group.ahead++;
+
+    const at = parseDate(ev.start)?.getTime() ?? 0;
+    const pickAt = parseDate(group.pick.start)?.getTime() ?? 0;
+    if (group.pickPast && !isPast) {
+      group.pick = ev;                       // anything still to come wins
+      group.pickPast = false;
+    } else if (group.pickPast === isPast && (isPast ? at > pickAt : at < pickAt)) {
+      group.pick = ev;                       // next one up, or latest if ended
+    }
+  }
+
+  return [...groups.values()]
+    .map((g) => ({ event: g.pick, remaining: Math.max(0, g.ahead - 1) }))
+    .sort((a, b) =>
+      (parseDate(a.event.start)?.getTime() || 0) - (parseDate(b.event.start)?.getTime() || 0));
+}
+
 function renderList() {
   const now = new Date();
   // Re-stamped on every render (incl. the 60s tick), so it survives midnight.
   ui.todayDate.textContent = formatDateLong(now);
-  const events = visibleEvents();
+  const entries = collapseSeries(visibleEvents(), now);
   const hot = [], upcoming = [], past = [];
 
-  for (const ev of events) {
-    const phase = eventPhase(ev, now);
-    if (phase === 'live' || phase === 'soon') hot.push(ev);
-    else if (phase === 'past') past.push(ev);
-    else upcoming.push(ev);
+  for (const entry of entries) {
+    const phase = eventPhase(entry.event, now);
+    if (phase === 'live' || phase === 'soon') hot.push(entry);
+    else if (phase === 'past') past.push(entry);
+    else upcoming.push(entry);
   }
   past.reverse(); // most recently finished first
 
@@ -406,7 +457,7 @@ function renderList() {
   ui.sectionUpcoming.hidden = upcoming.length === 0;
   ui.sectionPast.hidden = past.length === 0;
   ui.pastCount.textContent = past.length ? `(${past.length})` : '';
-  ui.empty.hidden = events.length !== 0;
+  ui.empty.hidden = entries.length !== 0;
 
   if (!upcoming.length && (hot.length || past.length)) {
     ui.sectionUpcoming.hidden = false;
@@ -416,12 +467,14 @@ function renderList() {
   }
 }
 
-function fill(container, events, opts = {}) {
+function fill(container, entries, opts = {}) {
   clear(container);
-  for (const ev of events) container.append(eventCard(ev, opts));
+  for (const { event, remaining } of entries) {
+    container.append(eventCard(event, { ...opts, remaining }));
+  }
 }
 
-function eventCard(ev, { hot = false, past = false } = {}) {
+function eventCard(ev, { hot = false, past = false, remaining = 0 } = {}) {
   const now = new Date();
   const phase = eventPhase(ev, now);
   const start = parseDate(ev.start);
@@ -477,9 +530,19 @@ function eventCard(ev, { hot = false, past = false } = {}) {
     ]));
   }
   const repeatLabel = describeSchedule(seriesRow);
+  // How many dates still follow the one on this card. Only stated for a series
+  // that actually ends: an open-ended weekly has exactly as many occurrences as
+  // the expansion window happens to cover, so printing that as a total would
+  // state a number nobody chose. For those, the rule text already says it keeps
+  // going. `span.last === null` is precisely "no end date" \u2014 see seriesSpan().
+  const moreLabel = remaining > 0 && span?.last
+    ? (remaining === 1 ? 'noch 1 Termin' : `noch ${remaining} Termine`)
+    : '';
   if (ev.tags?.length || repeatLabel) {
     card.append(el('span.card-tags', {}, [
-      repeatLabel && el('span.repeat-tag', {}, ['\u27f3 ', repeatLabel]),
+      repeatLabel && el('span.repeat-tag', {}, [
+        '\u27f3 ', repeatLabel, moreLabel && ` \u00b7 ${moreLabel}`,
+      ]),
       ...ev.tags.slice(0, 3).map((t) => el('span.tag', { text: t })),
     ]));
   }
@@ -594,7 +657,7 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260802T1852');
+    const ocr = await import('./ocr.js?v=20260804T1840');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
@@ -1101,7 +1164,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260802T1852');
+    icalModule = await import('./ical.js?v=20260804T1840');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();

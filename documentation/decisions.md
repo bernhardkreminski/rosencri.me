@@ -206,3 +206,24 @@ render-blocking request to a third-party origin disappeared.
 
 **Do not reintroduce a CDN font, embed or analytics snippet** without updating
 [legal.md](legal.md) and the privacy policy in the same change.
+
+---
+
+## The list collapses a series, the calendar does not
+
+`recurrence.js` materialises a weekly event into as many occurrences as the
+400-day window holds. Showing all of them in the list was correct in the sense
+that every date is real, and wrong in every sense that matters: with actual data
+one weekly Vokü pushed everything else off the front page.
+
+The list now shows one card per series, marked ⟳ with its schedule. The month
+grid still gets every occurrence, because showing individual dates is the entire
+purpose of a calendar.
+
+**Cost:** the list no longer answers "when is the next Vokü *after* this one" —
+that question moves to the calendar view or the event dialog. Accepted: the
+front page is for finding out what is on, not for reading a timetable.
+
+The remaining-dates count is only printed for a series that ends. An open-ended
+rule has no total, and the window size is an implementation detail, not a fact
+about the event.

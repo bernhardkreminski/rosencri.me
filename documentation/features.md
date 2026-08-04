@@ -41,6 +41,25 @@ for a series, or for something currently running, also carry a **"von … bis �
 line — dates for multi-day, times for same-day. It is omitted entirely when an
 event has no real end time.
 
+**A series appears once.** A weekly event expands into dozens of occurrences
+(see [recurrence.md](recurrence.md)), which would otherwise bury everything
+else. The list shows one card per series, standing for:
+
+- the **earliest date that is not over yet**, so a running or upcoming series
+  sits in the section you would look for it in; or
+- the **most recent date**, if every date is past, so a finished series still
+  shows up once under "Vorbei".
+
+The card is marked **⟳** with the schedule — `Jede Woche`, `4 Termine`. Where the
+series has an end, it also says how many dates are still to come
+(`⟳ 4 Termine · noch 3 Termine`). An open-ended series deliberately gets **no
+count**: it has exactly as many occurrences as the expansion window happens to
+cover, and printing that as a total would state a number nobody chose.
+
+Collapsing happens after filtering, so a search still matches on any occurrence.
+The **calendar view is not collapsed** — a month grid exists precisely to show
+every individual date.
+
 ### Calendar view
 
 Month grid, weeks starting Monday, past events included but dimmed. Today is
