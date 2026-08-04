@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-03T10:49:21.441Z",
-  "lastMailedOn": "2026-08-03",
+  "updatedAt": "2026-08-04T09:41:41.547Z",
+  "lastMailedOn": "2026-08-04",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -122,6 +122,24 @@
       "author_name": "",
       "created_at": "2026-07-31T19:09:37.337Z"
     },
+    "e98f0bf5-f6bf-4089-97e3-f2c9026e1ec6": {
+      "title": "Küfa - Küche für alle",
+      "starts_at": "2026-08-03T16:00:00.000Z",
+      "ends_at": "2026-08-03T17:00:00.000Z",
+      "location": "Vetternwirtschaft",
+      "description": "Veganes Essen auf Spendenbasis",
+      "url": "",
+      "image_url": "",
+      "tags": [
+        "essen",
+        "gemeinschaft",
+        "vegan"
+      ],
+      "rrule": "FREQ=WEEKLY",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-03T18:00:28.726Z"
+    },
     "f73057b7-3f69-4ebd-91bc-b9da18cc464e": {
       "title": "Feierabendkonzert mit Fabi Mägel",
       "starts_at": "2026-08-05T16:00:00.000Z",
@@ -141,6 +159,24 @@
       ],
       "author_name": "",
       "created_at": "2026-07-29T05:26:03.527Z"
+    },
+    "c0bfda72-64d9-4791-8bda-0e743b982f67": {
+      "title": "Alpine Flohmarkt",
+      "starts_at": "2026-10-25T08:00:00.000Z",
+      "ends_at": "2026-10-25T13:00:00.000Z",
+      "location": "BlumengroßMarkt München, Schäftlarnstr. 2",
+      "description": "Alpenverein München & Oberland\nSave the Date\nalpinflohmarkt\nVerkauf von 09:00 Uhr - 14:00 Uhr",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785825087749-8ff204bc.jpg",
+      "tags": [
+        "flohmarkt",
+        "alpinflohmarkt",
+        "alpenverein"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-04T06:31:28.718Z"
     }
   }
 }
