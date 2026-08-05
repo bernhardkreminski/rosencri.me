@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-04T09:41:41.547Z",
-  "lastMailedOn": "2026-08-04",
+  "updatedAt": "2026-08-05T09:40:29.493Z",
+  "lastMailedOn": "2026-08-05",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -159,6 +159,20 @@
       ],
       "author_name": "",
       "created_at": "2026-07-29T05:26:03.527Z"
+    },
+    "ee957c7a-e438-400d-8c93-46558acd592a": {
+      "title": "H3CKE",
+      "starts_at": "2026-08-23T16:00:00.000Z",
+      "ends_at": "",
+      "location": "",
+      "description": "Makerspace\nRosenheim\nwerkstatt\nStationen\nTruck\nVIBES",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785865098166-0359c7a0.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-04T17:38:19.677Z"
     },
     "c0bfda72-64d9-4791-8bda-0e743b982f67": {
       "title": "Alpine Flohmarkt",
