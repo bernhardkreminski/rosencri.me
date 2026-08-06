@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-05T09:40:29.493Z",
-  "lastMailedOn": "2026-08-05",
+  "updatedAt": "2026-08-06T09:43:15.211Z",
+  "lastMailedOn": "2026-08-06",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -49,6 +49,26 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-07-27T17:25:41.389Z"
+    },
+    "25978132-c8d5-4935-b136-6b2b8f3ea8bd": {
+      "title": "Freiluftkino am Stoa",
+      "starts_at": "2026-07-23T18:00:00.000Z",
+      "ends_at": "2026-08-23T18:00:00.000Z",
+      "location": "Am Stoa Edling",
+      "description": "FREILUFTKINO AM STOA 2026\nKINO UTOPIA WASSERBURG PRÄSENTIERT",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785963162382-beeee78c.jpg",
+      "tags": [
+        "konzert",
+        "festival",
+        "kino",
+        "film",
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-05T20:52:43.046Z"
     },
     "03f2c671-92fc-47f8-a3bf-23c6aa6f22f6": {
       "title": "KinoKulturWoche am Salzstadel",
@@ -159,6 +179,23 @@
       ],
       "author_name": "",
       "created_at": "2026-07-29T05:26:03.527Z"
+    },
+    "e68230ec-ff6d-4247-8ece-88e949e2e886": {
+      "title": "Flohmarkt am Stoa",
+      "starts_at": "2026-08-22T11:00:00.000Z",
+      "ends_at": "",
+      "location": "Am Stoa, Edling",
+      "description": "Flohmarkt Am Stoa\nEinfahrt bis 12:30 oth,\nrainer@kino-utopia.de",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1785962656259-cfbdffeb.jpg",
+      "tags": [
+        "kino",
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-05T20:44:16.927Z"
     },
     "ee957c7a-e438-400d-8c93-46558acd592a": {
       "title": "H3CKE",
