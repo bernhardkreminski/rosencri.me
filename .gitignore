@@ -15,3 +15,6 @@ node_modules/
 
 # Third-party sample posters used for OCR testing — not redistributed
 dev/samples/
+
+# Supabase CLI local state (project ref, db version) — not repo content
+supabase/.temp/
