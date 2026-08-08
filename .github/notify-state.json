@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-06T09:43:15.211Z",
-  "lastMailedOn": "2026-08-06",
+  "updatedAt": "2026-08-08T07:52:44.337Z",
+  "lastMailedOn": "2026-08-08",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -53,7 +53,7 @@
     "25978132-c8d5-4935-b136-6b2b8f3ea8bd": {
       "title": "Freiluftkino am Stoa",
       "starts_at": "2026-07-23T18:00:00.000Z",
-      "ends_at": "2026-08-23T18:00:00.000Z",
+      "ends_at": "",
       "location": "Am Stoa Edling",
       "description": "FREILUFTKINO AM STOA 2026\nKINO UTOPIA WASSERBURG PRÄSENTIERT",
       "url": "",
@@ -65,7 +65,7 @@
         "film",
         "flohmarkt"
       ],
-      "rrule": "",
+      "rrule": "FREQ=DAILY;UNTIL=20260823T215959Z",
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-05T20:52:43.046Z"
@@ -111,7 +111,7 @@
     "edd5dc1e-5791-4c39-8f2d-82f22c9b4762": {
       "title": "Kultur-Strand",
       "starts_at": "2026-07-30T18:00:00.000Z",
-      "ends_at": "2026-08-22T05:31:00.000Z",
+      "ends_at": "",
       "location": "Innspitz",
       "description": "rosenheim. jetzt\nx Live-Acts Open Air\nTausch? Genuss",
       "url": "https://instagram.com/kulturstrand_rosenheim",
@@ -120,7 +120,19 @@
         "open-air"
       ],
       "rrule": "",
-      "rdates": [],
+      "rdates": [
+        "2026-07-31T18:00:00.000Z",
+        "2026-08-01T18:00:00.000Z",
+        "2026-08-06T18:00:00.000Z",
+        "2026-08-07T18:00:00.000Z",
+        "2026-08-08T18:00:00.000Z",
+        "2026-08-13T18:00:00.000Z",
+        "2026-08-14T18:00:00.000Z",
+        "2026-08-15T18:00:00.000Z",
+        "2026-08-20T18:00:00.000Z",
+        "2026-08-21T18:00:00.000Z",
+        "2026-08-22T18:00:00.000Z"
+      ],
       "author_name": "",
       "created_at": "2026-07-29T05:32:57.242Z"
     },
@@ -180,6 +192,22 @@
       "author_name": "",
       "created_at": "2026-07-29T05:26:03.527Z"
     },
+    "80985a29-1560-4a45-956e-63c1b8ca635b": {
+      "title": "Landlmuhle",
+      "starts_at": "2026-08-07T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Lokal Landl",
+      "description": "SUPERMUSIK & HAUSWANDKINO\nMIT NOUVELLE VAGUE\nSuperMusik DJs\nempfohlen\nStreetfood von La Chocolatera\n\n21 Uhr HAUSWANDKINO MIT NOUVELLE\nEine Liebeserklarung an die revolutionare\nKraft des Kinos!",
+      "url": "https://landimuehle.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1786104949129-85dbc7b3.jpg",
+      "tags": [
+        "kino"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-07T12:15:50.037Z"
+    },
     "e68230ec-ff6d-4247-8ece-88e949e2e886": {
       "title": "Flohmarkt am Stoa",
       "starts_at": "2026-08-22T11:00:00.000Z",
@@ -210,6 +238,28 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-04T17:38:19.677Z"
+    },
+    "2345e8d1-c472-47a0-ada3-13096d9e8786": {
+      "title": "Klinken Festival",
+      "starts_at": "2026-09-18T13:00:00.000Z",
+      "ends_at": "2026-09-19T22:00:00.000Z",
+      "location": "Enskirchen",
+      "description": "(white saviorism\nFASTFORWARD.\nMona Mi & Lalucia0O89 (Hip Hop, Rap) yr \\p\nDie groben Fetten (Punk) Theater Kuckucksheim:\nPunkstelle Süd (Pun\nNuria Noba (Pop, Hip Hop, Jazz)\nDurchfall (Punk)\nMaria Semaforo (Reggaeton)\nSlowphie (DnB, Latin Breaks, Garage)\nSonalie Solar (Latin)",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1786133958990-0be1b757.jpg",
+      "tags": [
+        "punk",
+        "garage",
+        "hiphop",
+        "jazz",
+        "indie",
+        "festival",
+        "theater"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-07T20:19:21.035Z"
     },
     "c0bfda72-64d9-4791-8bda-0e743b982f67": {
       "title": "Alpine Flohmarkt",
