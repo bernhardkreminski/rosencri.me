@@ -76,9 +76,11 @@ Regeln:
 - Bei einer Zeitspanne ("10-22 Uhr", "18 bis 19 Uhr", "Verkauf von 09:00 - 14:00") setze startTime und endTime.
 - Ein Datumsbereich ("4.7.26 – 27.9.26", "30. Juli bis 22. August") ist KEINE Uhrzeit. Setze dann startDate auf den ersten Tag und untilDate auf den letzten.
 - Nennt das Bild weitere Termine derselben Reihe ("Weitere Termine: 19.08., 16.09."), liste sie in furtherDates.
+- WICHTIG — Programme und Spielpläne: Zeigt das Bild eine Liste oder Tabelle mit vielen Zeilen aus Datum + Einzeltitel (ein Kinoprogramm, ein Festivalspielplan, ein Saisonprogramm), dann ist die Veranstaltung die REIHE ALS GANZES, nicht eine einzelne Zeile. Nimm die große Überschrift des Blattes als title, den frühesten Tag der Liste als startDate und den spätesten als untilDate. Übernimm NIEMALS den Titel oder das Datum einer einzelnen Zeile als Titel bzw. Startdatum der Veranstaltung.
 - Beschreibt es einen Rhythmus ("Donnerstag – Samstag", "jeden Mittwoch"), gib ihn in recurrenceNote in eigenen Worten wieder.
 - title ist der Name der Veranstaltung, ohne Datum und ohne "Save the Date".
-- location ist der Veranstaltungsort (Name oder Adresse), nicht die Stadt allein.
+- location ist der Veranstaltungsort (Name oder Adresse), nicht die Stadt allein. Der Veranstalter ist nur dann der Ort, wenn kein anderer genannt wird.
+- url: eine im Bild genannte Website. Steht keine da, aber ein Instagram-Konto (als "@name" oder als Kontoname über dem Beitrag), dann setze url auf "https://instagram.com/<name>".
 - description: 1–3 kurze Sätze aus dem tatsächlichen Text des Bildes. Keine Bedienoberfläche, keine Wiederholung von Titel/Datum.
 - tags: wenige Kleinbuchstaben-Schlagwörter aus dieser Liste, soweit zutreffend: konzert, festival, party, flohmarkt, kino, film, lesung, theater, ausstellung, workshop, voku, kufa, soli, open-air, biergarten, kinder, diy, punk, rock, indie, jazz, folk, techno, hiphop, metal, hardcore, live-musik.
 - notes: was du NICHT sicher lesen konntest, in einem kurzen deutschen Satz. Leer lassen, wenn alles klar war.`;

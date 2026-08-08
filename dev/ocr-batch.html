@@ -106,14 +106,14 @@ function score(fx, res) {
     add('tags', missing.length === 0, f.tags.join(', ') || '(none)', e.tags.join(', '));
   }
   if (e.extraDates?.length) {
-    // Nothing in the current pipeline models a series, so this is expected to
-    // fail today — it is here to measure the gap, not to pass.
-    const found = e.extraDates.filter((d) => {
-      const [mm, dd] = d.split('-');
-      return new RegExp(`\\b${Number(dd)}\\s*\\.\\s*${Number(mm)}\\s*\\.`).test(res.rawText);
-    });
-    add('extra dates (series)', found.length === e.extraDates.length,
-        `${found.length}/${e.extraDates.length} in raw text`, e.extraDates.join(', '));
+    // Scored on the parsed field, not on raw text: the two engines spell dates
+    // differently in their raw output (Tesseract passes through "19.08.", the
+    // model emits ISO), so a regex over rawText marked a perfectly correct
+    // vision result as a failure.
+    const got = (f.extraDates ?? []).map((d) => d.slice(5, 10));
+    const missing = e.extraDates.filter((d) => !got.includes(d));
+    add('extra dates (series)', missing.length === 0,
+        got.join(', ') || '(none)', e.extraDates.join(', '));
   }
   for (const bad of fx.mustNot) {
     add(`no "${bad}"`, !haystack.includes(fold(bad)), haystack.includes(fold(bad)) ? 'LEAKED' : 'clean', 'absent');

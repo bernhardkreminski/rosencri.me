@@ -31,9 +31,15 @@ so plainly. Two things worth keeping in mind:
 ## Why this was necessary
 
 `dev/ocr-batch.html` scores both engines against `dev/ocr-fixtures.js` — six
-images that are live on the board, hand-transcribed from the originals. The
-browser-only pipeline scored **19/43**, and the failures were not the kind more
-tuning reaches:
+images that are live on the board, hand-transcribed from the originals.
+
+| Engine | Score | Wall clock, all six |
+|---|---|---|
+| Tesseract, before this work | 16/43 | ~150 s |
+| Tesseract, with the parser fixes below | 19/43 | ~150 s |
+| **Gemini via `ocr-extract`** | **43/43** | **~15 s** |
+
+The browser-only failures were not the kind more tuning reaches:
 
 | Image | What happened |
 |---|---|
@@ -63,6 +69,17 @@ a date range is not a time range, return null rather than guess.
 It returns `furtherDates` (a stated series) and `untilDate` (the last day of a
 run) alongside the usual fields, plus `notes` — a sentence naming whatever it
 could not read, which the review form shows instead of a generic "please check".
+
+Two prompt rules were added after the first scored run, each fixing a real miss:
+
+- **Programme sheets.** On the Freiluftkino programme the model returned the
+  film from one row (`Michael`, 3.8.) as the whole event. It is now told that a
+  table of dated rows means the event is the *run*: heading as the title,
+  earliest row as `startDate`, latest as `untilDate`.
+- **Instagram handles.** With no website on the flyer, the account name above
+  the post is the only link there is, and it was being dropped.
+
+Those two changes took the score from 39/43 to 43/43.
 
 Confidence is **derived, not asked for**: a model scoring its own certainty
 produces a confident-sounding number with nothing behind it. What is actually
