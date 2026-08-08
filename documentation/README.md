@@ -34,7 +34,10 @@ and it lands on a shared board and in a subscribable calendar.
 - **No server of our own.** The browser talks directly to Supabase (Postgres +
   PostgREST + Storage) with a public key; all access control lives in Postgres
   Row Level Security.
-- **OCR runs on the device.** Poster images are never uploaded for text extraction.
+- **Poster reading calls a vision model server-side**, through a Supabase Edge
+  Function that holds the API key. Tesseract stays on the device as the
+  fallback. This replaced browser-only OCR, which scored 19/43 against ground
+  truth on real uploads — see [ocr.md](ocr.md).
 - **German UI.** The audience is a local scene; the code and docs are English.
 
 ## Repository layout

@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260808T0648';
-import { store } from './store.js?v=20260808T0648';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260808T0648';
-import { seriesSpan, seriesIdOf } from './recurrence.js?v=20260808T0648';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260808T0738';
+import { store } from './store.js?v=20260808T0738';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260808T0738';
+import { seriesSpan, seriesIdOf } from './recurrence.js?v=20260808T0738';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260808T0648';
+} from './util.js?v=20260808T0738';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -657,11 +657,12 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260808T0648');
+    const ocr = await import('./ocr.js?v=20260808T0738');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
-    const result = await ocr.extractFromImage(file, {
+    // Vision model first, on-device Tesseract as the fallback — see ocr.js.
+    const result = await ocr.extractEventFields(file, {
       signal: controller.signal,
       onProgress: ({ progress, message }) => {
         ui.scanBar.style.width = `${Math.round((progress || 0) * 100)}%`;
@@ -672,14 +673,17 @@ async function handleImage(file) {
     ui.dlgScan.close();
     const found = [result.fields.title && 'Titel', result.fields.start && 'Datum', result.fields.location && 'Ort']
       .filter(Boolean);
+    // The model reports what it could not read. Passing that on is worth more
+    // than a generic "please check" — it tells someone exactly where to look.
+    const note = found.length
+      ? `Erkannt: ${found.join(', ')}. Bitte kurz prüfen.${result.notes ? ` (${result.notes})` : ''}`
+      : 'Wir konnten wenig lesen — bitte von Hand ergänzen.';
     openForm({
       fields: result.fields,
       confidence: result.confidence,
       blob,
       previewUrl,
-      note: found.length
-        ? `Erkannt: ${found.join(', ')}. Bitte kurz prüfen.`
-        : 'Wir konnten wenig lesen — bitte von Hand ergänzen.',
+      note,
     });
   } catch (err) {
     ui.dlgScan.close();
@@ -740,10 +744,16 @@ function openForm(draft, editing = null) {
     form.url.value = f.url || '';
     form.tags.value = (f.tags || []).join(', ');
     form.authorName.value = store.identity.name || '';
-    form.repeat.value = '';
-    form.repeatUntil.value = '';
+    // A poster that lists further dates ("Weitere Termine: 19.08., 16.09.")
+    // describes a series. Pre-select the explicit-dates mode and fill the rows
+    // so those dates are reviewed rather than silently dropped — before this,
+    // every occurrence but the first was lost at import.
+    const extraDates = Array.isArray(f.extraDates) ? f.extraDates : [];
     clear($('#extra-dates'));
-    syncRepeatMode('');
+    form.repeat.value = extraDates.length ? 'dates' : '';
+    form.repeatUntil.value = '';
+    for (const d of extraDates) addDateRow(d);
+    syncRepeatMode(form.repeat.value);
   }
 
   for (const flag of form.querySelectorAll('.field-flag')) {
@@ -1164,7 +1174,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260808T0648');
+    icalModule = await import('./ical.js?v=20260808T0738');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();

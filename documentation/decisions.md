@@ -95,6 +95,10 @@ conversation, because a provider-specific rejection is otherwise unreadable.
 
 ## Tesseract only, no vision model {#tesseract-only}
 
+> **Reversed on 2026-08-08.** See "Vision model for poster reading" below. The
+> original reasoning is kept because the trade-off it describes is still real —
+> the site gave up a genuine privacy property to buy accuracy.
+
 Browser OCR reliably misses hand-lettered logos and small rotated text — exactly
 what this scene's posters are made of. A vision model behind a serverless
 function would read them properly.
@@ -106,6 +110,36 @@ than presented as fact.
 
 **To revisit:** a Supabase Edge Function holding an API key server-side, with
 Tesseract as the offline fallback.
+
+---
+
+## Vision model for poster reading {#vision-ocr}
+
+Poster reading now calls Gemini through the `ocr-extract` Edge Function, with
+Tesseract kept on-device as the fallback — precisely the revisit the entry above
+reserved.
+
+What forced it: six real uploads were hand-transcribed into
+`dev/ocr-fixtures.js` and scored. The browser-only pipeline managed **19/43**.
+It spent 71 seconds on a hand-lettered flyer and returned no date at all, lost
+four of six titles, and saved a flea market starting at 22:42 — the clock in the
+screenshot's status bar. Half of those are comprehension failures, not
+recognition ones, and no amount of Tesseract tuning reaches them.
+
+**Cost, accepted deliberately:** the image is sent to Google for reading, so the
+"nothing ever leaves your device" property is gone. Google's free tier also
+trains on submitted content. The privacy page says both plainly, the upload
+dialog warns before the picture is chosen, and `OCR_VISION_ENABLED = false`
+restores the old behaviour in one line.
+
+**Also considered:** PaddleOCR PP-OCRv5 on-device (~13–30 MB) would have kept
+the privacy property and likely fixed the *titles*, but it still returns plain
+text — it cannot tell an advert from a poster or a series from a date. Its
+accuracy on hand-lettered German is benchmarked nowhere we could find.
+
+**Not built:** a captcha on the upload form. The per-IP daily quota stops loops
+and casual scrapers but not a distributed attacker. What is at risk is a free
+quota, not money, so this was judged not worth the friction yet.
 
 ---
 

@@ -265,6 +265,58 @@ create policy "comments_insert_anon"
   with check (true);
 
 -- ---------------------------------------------------------------------
+-- OCR abuse control
+--
+-- The `ocr-extract` Edge Function calls a metered third-party vision API with
+-- a key we hold. The board has no login, so there is no account to attribute a
+-- request to and no way to make a visitor prove they are a person. A per-IP
+-- daily counter is the honest middle ground: it stops a runaway loop or a
+-- casual scraper from draining the free quota, and it does nothing at all
+-- against a distributed attacker. That limitation is accepted, not overlooked
+-- — see documentation/ocr.md.
+--
+-- Deliberately NOT reachable with the anon key. Only the Edge Function, which
+-- uses the service_role key, may touch this: if anon could call the bump
+-- function it could inflate someone else's counter, or its own to no effect.
+-- ---------------------------------------------------------------------
+
+create table if not exists public.ocr_usage (
+  ip         text not null,
+  day        date not null,
+  count      integer not null default 0,
+  updated_at timestamptz not null default now(),
+  primary key (ip, day)
+);
+
+alter table public.ocr_usage enable row level security;
+-- No policies and no grants to anon: RLS with zero policies denies everything,
+-- and service_role bypasses RLS entirely, which is exactly the split we want.
+
+-- Atomically increment and return the caller's new count for the day. Written
+-- as one upsert so two concurrent uploads cannot both read the old value and
+-- write the same increment.
+create or replace function public.bump_ocr_usage(p_ip text, p_day date)
+returns integer
+language sql
+security definer
+set search_path = public
+as $$
+  insert into public.ocr_usage (ip, day, count, updated_at)
+  values (p_ip, p_day, 1, now())
+  on conflict (ip, day) do update
+    set count = public.ocr_usage.count + 1,
+        updated_at = now()
+  returning count;
+$$;
+
+revoke all on function public.bump_ocr_usage(text, date) from public, anon, authenticated;
+grant execute on function public.bump_ocr_usage(text, date) to service_role;
+
+-- Old rows have no value once their day has passed. Run occasionally, or wire
+-- to pg_cron if it is ever enabled:
+--   delete from public.ocr_usage where day < current_date - 7;
+
+-- ---------------------------------------------------------------------
 -- Storage: `posters` public bucket for uploaded event poster images.
 --
 -- 5 MB per-file limit and an allowed mime type set are enforced on the

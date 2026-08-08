@@ -12,6 +12,14 @@
  * testing `parsePosterText` and its helpers without a browser.
  */
 
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  OCR_VISION_ENABLED,
+  OCR_FUNCTION_NAME,
+  OCR_VISION_TIMEOUT_MS,
+} from './config.js?v=20260808T0738';
+
 /** Feature flag the app can check before showing OCR-related UI. */
 export const OCR_AVAILABLE = true;
 
@@ -443,6 +451,106 @@ function fixDigitLookalikes(token) {
 }
 
 // ---------------------------------------------------------------------------
+// Screenshot chrome
+//
+// A large share of what people upload is not a photo of a poster but a
+// screenshot of one — an Instagram post, a browser tab. Those carry the phone's
+// own furniture, and the status-bar clock is the dangerous part: it is a
+// perfectly-formed "HH:MM" sitting above the poster, so the time parser reads
+// it in preference to anything printed on the flyer itself. Observed live:
+// "Flohmarkt am Stoa" was saved starting at 22:42, which is when the person
+// took the screenshot.
+//
+// Two independent signals, because either alone misfires. Position: a status
+// bar occupies the top few percent of the image, a nav bar the bottom few.
+// Content: OS furniture looks like a bare clock, a carrier name, a battery
+// percentage; app furniture is a small closed set of UI strings. A positional
+// drop only happens once the image has been identified as a screenshot at all.
+// ---------------------------------------------------------------------------
+
+/** Carrier/battery/clock signatures — an OS status bar, not poster text. */
+const STATUS_BAR_RE = /(?:\b\d{1,2}[:.]\d{2}\b.*\b\d{1,3}\s*%|\b\d{1,3}\s*%.*\b\d{1,2}[:.]\d{2}\b|\b(?:LTE|5G|4G|3G|WLAN|WiFi|Vodafone|Telekom|o2|maXXim)\b)/i;
+
+/**
+ * A line that opens with a clock and carries nothing but symbols after it.
+ *
+ * The status bar rarely OCRs cleanly: the signal/wifi/battery glyphs come back
+ * as punctuation soup, so the real reads look like `22:42 all = +` and
+ * `08:27 @ 77 %` rather than a tidy `22:42`. Anchoring on the clock and then
+ * requiring the remainder to be short and essentially letter-free is what
+ * catches those without touching a genuine poster line that happens to begin
+ * with a time ("20:00 Einlass" keeps its letters and is left alone).
+ */
+const STATUS_BAR_CLOCK_RE = /^\s*\d{1,2}[:.]\d{2}\b(.{0,14})$/;
+
+/** True for `22:42 all = +` and `08:27`, false for `20:00 Einlass Doors`. */
+function looksLikeStatusBarClock(text) {
+  const m = STATUS_BAR_CLOCK_RE.exec(text.trim());
+  if (!m) return false;
+  return (m[1].match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length <= 3;
+}
+
+/** App chrome that is unambiguous wherever it appears on the page. */
+const APP_CHROME_RE = new RegExp([
+  '^f(?:ü|ue)r dich(?: vorgeschlagen)?$',
+  '^vorgeschlagen$',
+  '^folgen$',
+  '^abonnieren$',
+  '^antworten$',
+  '^mehr ansehen$',
+  '^(?:übersetzung|uebersetzung) anzeigen$',
+  '^gef(?:ä|ae)llt .{0,20}mal$',
+  '^vor \\d+ (?:sekunden|minuten|stunden|tagen|wochen)$',
+  '^(?:https?://)?(?:www\\.)?(?:instagram|facebook|threads)\\.com/?$',
+].join('|'), 'i');
+
+/**
+ * Marks lines that belong to the screenshot rather than to the poster.
+ *
+ * Content-driven, NOT band-driven. Dropping a fixed top/bottom slice of the
+ * page was tried first and was actively harmful: it removed the Fabi Maegel
+ * headline (7% down the page), the "Weitere Termine" line and the
+ * Alpinflohmarkt "Verkauf von 09:00 Uhr - 14:00 Uhr" line (both ~90% down).
+ * Real posters put real content hard against both edges, so position alone
+ * cannot decide this. Only the status bar itself gets a positional rule, and
+ * only to catch what sits above it.
+ *
+ * @param {PosterLine[]} lines
+ * @returns {Set<number>} indexes to ignore
+ */
+function findChromeLines(lines) {
+  const chrome = new Set();
+  if (!lines.length) return chrome;
+
+  const pageBottom = Math.max(...lines.map((l) => l.top + l.height));
+  if (!(pageBottom > 0)) return chrome;
+
+  // A status bar is a clock/carrier/battery line in the top sliver of the
+  // image. Its lower edge is the only positional landmark worth trusting.
+  let statusBarBottom = -1;
+  lines.forEach((line, i) => {
+    const text = line.text.trim();
+    const nearTop = line.top < pageBottom * 0.12;
+    if (nearTop && (STATUS_BAR_RE.test(text) || looksLikeStatusBarClock(text))) {
+      chrome.add(i);
+      statusBarBottom = Math.max(statusBarBottom, line.top + line.height);
+    }
+  });
+
+  lines.forEach((line, i) => {
+    if (chrome.has(i)) return;
+    const text = line.text.trim();
+    // App furniture, wherever it appears.
+    if (APP_CHROME_RE.test(text)) { chrome.add(i); return; }
+    // Anything level with or above the status bar is part of it (signal bars,
+    // carrier text recognised as its own line).
+    if (statusBarBottom > 0 && line.top + line.height <= statusBarBottom) chrome.add(i);
+  });
+
+  return chrome;
+}
+
+// ---------------------------------------------------------------------------
 // Date / time parsing
 // ---------------------------------------------------------------------------
 
@@ -487,13 +595,90 @@ function monthFromToken(token) {
 }
 
 /**
+ * Blanks every date-shaped substring so the time parser can never read a date
+ * as a clock.
+ *
+ * This is not defensive tidying — it fixes a live bug. On the Freiluftkino
+ * programme the run "4.7.26 – 27.9.26" matched the time-RANGE pattern as
+ * "7.26 - 27", and the event was saved starting at 07:26. Masking dates first
+ * leaves the range matcher only genuine clock text to work with.
+ *
+ * Replaced with spaces rather than removed so adjacent tokens cannot fuse into
+ * a new false match ("18.09.19 Uhr" must not become "1819 Uhr").
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function maskDates(text) {
+  const blank = (m) => ' '.repeat(m.length);
+  return text
+    .replace(/\b\d{4}-\d{1,2}-\d{1,2}\b/g, blank)
+    .replace(new RegExp(`\\b\\d{1,2}\\.?\\s*${MONTH_NAME_ALTERNATION}\\.?(?:\\s*\\d{4})?`, 'gi'), blank)
+    .replace(/\b\d{1,2}\.\s?\d{1,2}\.(?:\s?\d{2,4}\b)?/g, blank);
+}
+
+/** A "further dates" preamble — the dates after it belong to a series, not to
+ *  the event's own start. Seen on the Fabi Maegel listing as
+ *  "Weitere Termine: 19.08., 16.09., 30.09." */
+const FURTHER_DATES_RE = /\b(?:weitere\s+termine|weitere\s+veranstaltungen|auch\s+am|sowie\s+am|zus(?:ä|ae)tzliche\s+termine)\b\s*:?/i;
+
+/**
+ * Extra occurrence dates stated in prose, for pre-filling the repeat form.
+ * Only dates appearing AFTER a "Weitere Termine"-style marker on the same line
+ * count — a bare list of dates elsewhere on a flyer is far more likely to be a
+ * programme than a series.
+ *
+ * @param {{text: string}[]} lines
+ * @returns {{month: number, day: number, year: number|null}[]}
+ */
+function findFurtherDates(lines) {
+  const out = [];
+  for (const line of lines) {
+    const marker = FURTHER_DATES_RE.exec(line.text);
+    if (!marker) continue;
+    const tail = line.text.slice(marker.index + marker[0].length);
+    const dotted = /\b([0-9oOlIS]{1,2})\.\s?([0-9oOlIS]{1,2})\.(?:\s?(\d{2,4})\b)?/g;
+    let m;
+    while ((m = dotted.exec(tail)) !== null) {
+      const day = Number(fixDigitLookalikes(m[1]));
+      const month = Number(fixDigitLookalikes(m[2]));
+      if (!(month >= 1 && month <= 12 && day >= 1 && day <= 31)) continue;
+      const year = m[3] ? (m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3])) : null;
+      out.push({ month, day, year });
+    }
+    const named = new RegExp(`\\b(\\d{1,2})\\.?\\s*(${MONTH_NAME_ALTERNATION})\\.?\\s*(\\d{4})?`, 'gi');
+    while ((m = named.exec(tail)) !== null) {
+      const month = monthFromToken(m[2]);
+      const day = Number(m[1]);
+      if (!month || !(day >= 1 && day <= 31)) continue;
+      out.push({ month, day, year: m[3] ? Number(m[3]) : null });
+    }
+  }
+  // De-duplicate; keep flyer order.
+  const seen = new Set();
+  return out.filter((d) => {
+    const key = `${d.month}-${d.day}-${d.year ?? ''}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
  * Finds the first plausible date in a set of lines.
  * @param {{text: string}[]} lines
  * @returns {{year: number, month: number, day: number, explicitYear: boolean, lineIndex: number, matchText: string}|null}
  */
 function findDate(lines) {
+  // A line listing further dates of a series must never supply the event's own
+  // start. The Fabi Maegel listing puts "Weitere Termine: 19.08., 16.09.,
+  // 30.09." above the fold, and the dotted-date pass (which runs before the
+  // month-name pass) picked 19.08. over the real "Mittwoch, 5. August 2026".
+  const isSeriesLine = (text) => FURTHER_DATES_RE.test(text);
+
   // 1. ISO yyyy-mm-dd
   for (let i = 0; i < lines.length; i += 1) {
+    if (isSeriesLine(lines[i].text)) continue;
     const m = lines[i].text.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
     if (m) {
       const year = Number(m[1]);
@@ -510,6 +695,7 @@ function findDate(lines) {
   // trailing-dot yearless date like "25.07." still matches at end-of-string.)
   const dotDateRe = /\b([0-9oOlIS]{1,2})\.\s?([0-9oOlIS]{1,2})\.(?:\s?([0-9oOlIS]{2,4})\b)?/;
   for (let i = 0; i < lines.length; i += 1) {
+    if (isSeriesLine(lines[i].text)) continue;
     const m = lines[i].text.match(dotDateRe);
     if (!m) continue;
     const day = Number(fixDigitLookalikes(m[1]));
@@ -531,6 +717,7 @@ function findDate(lines) {
     'i',
   );
   for (let i = 0; i < lines.length; i += 1) {
+    if (isSeriesLine(lines[i].text)) continue;
     const m = lines[i].text.match(monthNameRe);
     if (!m) continue;
     const month = monthFromToken(m[2]);
@@ -783,6 +970,46 @@ function normaliseTitleCasing(line) {
     .join(' ');
 }
 
+/** Lead-ins that are never part of the event's name. */
+const TITLE_PREFIX_NOISE_RE = /^(?:save\s+the\s+date|jetzt\s+neu|neu)\s*[:!–—-]*\s*/i;
+
+/**
+ * Removes date/time expressions from a headline instead of discarding the
+ * whole line for containing one.
+ *
+ * Posters routinely set the name and the date in the same line of display
+ * type — "Save the Date alpinflohmarkt: 25. Oktober" is the entire headline of
+ * that flyer. Rejecting any line matching a date pattern meant the real title
+ * was never even a candidate, and the title fell through to the Instagram
+ * handle underneath it.
+ *
+ * @param {string} text
+ * @returns {string} the line with dates/times and lead-in noise removed
+ */
+function stripDateTimeFromTitle(text) {
+  return text
+    .replace(new RegExp(DATE_OR_TIME_LINE_RE.source, 'gi'), ' ')
+    .replace(TITLE_PREFIX_NOISE_RE, '')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/^[\s:,–—-]+|[\s:,–—-]+$/g, '')
+    .trim();
+}
+
+/** Letters only, for judging how much of a line survived stripping. */
+const letterCount = (s) => (s.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length;
+
+/**
+ * The title a line would contribute, after removing the leading weekday and
+ * any date/time inside it. Used by BOTH the candidate filter and the final
+ * extraction so the two can never disagree — when they did, "Samstag,
+ * 25.07.2026" passed the filter on the strength of the word "Samstag" and then
+ * produced the title "2026".
+ * @param {string} raw
+ */
+function titleTextOf(raw) {
+  return stripDateTimeFromTitle(raw.trim().replace(WEEKDAY_PREFIX_RE, '').trim());
+}
+
 /**
  * Picks the most likely poster headline out of the recognised lines.
  * @param {{text: string, confidence: number, height: number, top: number, left: number}[]} lines
@@ -795,7 +1022,12 @@ function findTitle(lines) {
       const trimmed = line.text.trim();
       if (trimmed.length < 2 || trimmed.length > 60) return false;
       if ((line.confidence ?? 100) <= 55) return false;
-      if (DATE_OR_TIME_LINE_RE.test(trimmed)) return false;
+      // A line carrying a date is only rejected if the date is essentially all
+      // it is; a headline that merely includes one keeps its non-date words.
+      if (DATE_OR_TIME_LINE_RE.test(trimmed)) {
+        const rest = titleTextOf(trimmed);
+        if (letterCount(rest) < 4 || letterCount(rest) < letterCount(trimmed) * 0.4) return false;
+      }
       if (URL_LINE_RE.test(trimmed)) return false;
       if (PRICE_OR_NUMERIC_RE.test(trimmed)) return false;
       const folded = foldGerman(trimmed);
@@ -813,7 +1045,7 @@ function findTitle(lines) {
   const tallest = candidates[0];
   const second = candidates[1];
 
-  let text = tallest.text.trim().replace(WEEKDAY_PREFIX_RE, '').trim();
+  let text = titleTextOf(tallest.text);
   const lineIndexes = [tallest.index];
   let confSum = tallest.confidence ?? 70;
   let confCount = 1;
@@ -823,7 +1055,7 @@ function findTitle(lines) {
     const verticalGap = Math.abs((second.top ?? 0) - ((tallest.top ?? 0) + (tallest.height ?? 0)));
     const adjacent = verticalGap < (tallest.height ?? 20) * 1.5;
     if (heightRatio >= 0.85 && adjacent) {
-      const secondText = second.text.trim().replace(WEEKDAY_PREFIX_RE, '').trim();
+      const secondText = titleTextOf(second.text);
       // Join in reading order (top-to-bottom).
       if ((second.top ?? 0) >= (tallest.top ?? 0)) {
         text = `${text} ${secondText}`.trim();
@@ -883,9 +1115,12 @@ function findLocation(lines) {
     }
   }
 
-  // 2. Inline prefix markers: "@ X", "im X", "in der X", "bei X"
+  // 2. Inline prefix markers: "@ X", "im X", "in der X", "bei X", "am X",
+  // "auf dem X", "beim X". The last three were added for real flyers that read
+  // "am Innspitz" and "mitten auf dem Salzstadel" — both venues the earlier
+  // marker list walked straight past.
   for (let i = 0; i < lines.length; i += 1) {
-    const m = lines[i].text.match(/(?:^|\s)(?:@\s+|im\s+|in der\s+|bei\s+)([A-ZÄÖÜ][\wäöüßÄÖÜ .-]{1,40})/);
+    const m = lines[i].text.match(/(?:^|\s)(?:@\s+|im\s+|in der\s+|bei\s+|beim\s+|am\s+|auf dem\s+)([A-ZÄÖÜ][\wäöüßÄÖÜ .-]{1,40})/);
     if (m && m[1].trim()) {
       return { text: m[1].trim(), confidence: 0.7, lineIndex: i, consumesLine: true };
     }
@@ -1053,6 +1288,7 @@ function findTags(fullText) {
  * @property {string} description
  * @property {string} url
  * @property {string[]} tags
+ * @property {string[]} extraDates  further occurrence starts stated in prose
  */
 
 /**
@@ -1074,31 +1310,53 @@ function analyzePoster(lines, now = new Date()) {
       }))
     : [];
 
-  const fullText = safeLines.map((l) => l.text).join('\n');
+  // Drop the phone's own furniture before anything reads the text. Every
+  // downstream index below refers to `posterLines`, not `safeLines`.
+  const chromeIndexes = findChromeLines(safeLines);
+  const posterLines = safeLines.filter((_, i) => !chromeIndexes.has(i));
 
-  const dateInfo = findDate(safeLines);
-  const timeInfo = findTime(fullText);
-  const titleInfo = findTitle(safeLines);
-  const locationInfo = findLocation(safeLines);
-  const urlInfo = findUrl(safeLines);
+  const fullText = posterLines.map((l) => l.text).join('\n');
+
+  const dateInfo = findDate(posterLines);
+  // Times are searched over date-masked text so a date range cannot be read as
+  // a clock — see `maskDates`.
+  const timeInfo = findTime(maskDates(fullText));
+  const titleInfo = findTitle(posterLines);
+  const locationInfo = findLocation(posterLines);
+  const urlInfo = findUrl(posterLines);
   const tags = findTags(fullText);
+  const furtherDates = findFurtherDates(posterLines);
 
   let start = null;
   let end = null;
   let startConfidence = 0;
 
+  const pad = (n) => String(n).padStart(2, '0');
+
   if (dateInfo) {
     const year = resolveYear(dateInfo, now);
-    const pad = (n) => String(n).padStart(2, '0');
     const isoDate = `${year}-${pad(dateInfo.month)}-${pad(dateInfo.day)}`;
+    // No time on the flyer still has to yield a value the datetime-local input
+    // accepts, so 20:00 stands in. It is an assumption, not a reading, and the
+    // confidence below is deliberately pushed under the form's 0.7 flag
+    // threshold so the review screen marks it "bitte prüfen" rather than
+    // presenting it as fact. Kultur-Strand shipped 20:00 this way while its
+    // poster said 17:00.
     const hhmm = timeInfo.start ?? '20:00';
     start = `${isoDate}T${hhmm}`;
-    if (timeInfo.end) {
-      end = `${isoDate}T${timeInfo.end}`;
-    }
+    if (timeInfo.end) end = `${isoDate}T${timeInfo.end}`;
     const dateConfidence = dateInfo.explicitYear ? 0.9 : 0.65;
-    startConfidence = timeInfo.found ? dateConfidence : Math.min(dateConfidence, 0.5);
+    startConfidence = timeInfo.found ? dateConfidence : Math.min(dateConfidence, 0.4);
   }
+
+  // Prose-stated further dates ("Weitere Termine: …") become repeat dates the
+  // review form can pre-fill. Each takes the event's own time of day.
+  const extraDates = dateInfo
+    ? furtherDates.map((d) => {
+        const y = d.year ?? resolveYear({ ...d, explicitYear: false }, now);
+        return `${y}-${pad(d.month)}-${pad(d.day)}T${timeInfo.start ?? '20:00'}`;
+      })
+    : [];
 
   // Build description from whatever lines weren't consumed elsewhere.
   const consumedIndexes = new Set([
@@ -1113,7 +1371,7 @@ function analyzePoster(lines, now = new Date()) {
   const fieldTexts = [titleInfo?.text, dateInfo?.matchText, urlInfo?.matchText, urlInfo?.text, locationInfo?.text];
 
   const candidateLines = [];
-  safeLines.forEach((line, index) => {
+  posterLines.forEach((line, index) => {
     if (consumedIndexes.has(index)) return;
     let text = line.text;
     if (urlInfo && urlInfo.lineIndex === index) {
@@ -1177,6 +1435,7 @@ function analyzePoster(lines, now = new Date()) {
     description,
     url: urlInfo?.text ?? '',
     tags,
+    extraDates,
   };
 
   const confidence = {
@@ -1209,6 +1468,7 @@ export function parsePosterText(lines) {
       description: '',
       url: '',
       tags: [],
+      extraDates: [],
     };
   }
 }
@@ -1673,4 +1933,229 @@ export async function extractFromImage(file, options = {}) {
       }
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// Vision-model path (server-side, via the ocr-extract Edge Function)
+//
+// Tesseract reads glyphs. It cannot tell that the 22:42 above an Instagram post
+// is the phone's clock and not the flea market's opening time, that
+// "Weitere Termine: 19.08." describes a series rather than this event's date,
+// or that the paragraph above the poster belongs to somebody else's advert.
+// Those are the failures measured on the six real uploads in dev/ocr-fixtures.js,
+// and they are comprehension failures, not recognition ones.
+//
+// So the primary path asks a vision model, server-side, and Tesseract stays as
+// the fallback for offline, quota-exhausted, disabled and error cases. Set
+// OCR_VISION_ENABLED = false in config.js to go back to on-device only.
+// ---------------------------------------------------------------------------
+
+/** Longest edge sent to the model. Smaller than the 2600px Tesseract wants:
+ *  the model reads fine at this size and the payload/token cost scales with
+ *  pixels, which is what the free tier is metered on. */
+const VISION_MAX_DIMENSION = 1600;
+
+/** @returns {Promise<string>} bare base64, no data: prefix */
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Could not read the image file.'));
+    reader.onload = () => {
+      const result = String(reader.result);
+      const comma = result.indexOf(',');
+      resolve(comma === -1 ? result : result.slice(comma + 1));
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
+/** `HH:MM` if it really looks like one, else null — the model is instructed to
+ *  return null rather than guess, and this enforces that at the boundary. */
+function safeTime(value) {
+  return typeof value === 'string' && /^\d{1,2}:\d{2}$/.test(value.trim())
+    ? value.trim().padStart(5, '0')
+    : null;
+}
+
+/** `YYYY-MM-DD` or null. */
+function safeDate(value) {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.trim()) ? value.trim() : null;
+}
+
+/**
+ * Maps the model's JSON onto the same PosterFields shape the Tesseract path
+ * produces, so the review form does not care which engine ran.
+ *
+ * Confidence is derived, not reported by the model: asking a model to score
+ * itself produces a confident-sounding number with no grounding. What is
+ * actually known here is whether a field came back populated, and — for the
+ * start — whether a time was genuinely printed on the poster. A date without a
+ * time is scored below the form's 0.7 flag threshold so the review screen marks
+ * it for checking rather than presenting the 20:00 stand-in as fact.
+ *
+ * @param {Record<string, any>} raw
+ * @returns {{fields: PosterFields, confidence: object, notes: string, recurrenceNote: string, untilDate: string|null}}
+ */
+function mapVisionFields(raw) {
+  const startDate = safeDate(raw?.startDate);
+  const startTime = safeTime(raw?.startTime);
+  const endTime = safeTime(raw?.endTime);
+
+  const start = startDate ? `${startDate}T${startTime ?? '20:00'}` : null;
+  const end = startDate && endTime ? `${startDate}T${endTime}` : null;
+
+  const furtherDates = Array.isArray(raw?.furtherDates) ? raw.furtherDates : [];
+  const extraDates = furtherDates
+    .map((d) => safeDate(d))
+    .filter(Boolean)
+    .map((d) => `${d}T${startTime ?? '20:00'}`);
+
+  const title = typeof raw?.title === 'string' ? raw.title.trim() : '';
+  const location = typeof raw?.location === 'string' ? raw.location.trim() : '';
+  const url = typeof raw?.url === 'string' ? raw.url.trim() : '';
+  const tags = Array.isArray(raw?.tags)
+    ? raw.tags.filter((t) => typeof t === 'string' && t.trim()).map((t) => t.trim().toLowerCase()).slice(0, MAX_TAGS)
+    : [];
+
+  const fields = {
+    title,
+    start,
+    end,
+    location,
+    description: typeof raw?.description === 'string' ? raw.description.trim() : '',
+    url,
+    tags,
+    extraDates,
+  };
+
+  const confidence = {
+    title: title ? 0.9 : 0,
+    start: startDate ? (startTime ? 0.9 : 0.4) : 0,
+    location: location ? 0.8 : 0,
+    url: url ? 0.8 : 0,
+  };
+  const parts = [confidence.title, confidence.start, confidence.location, confidence.url];
+  confidence.overall = parts.reduce((a, b) => a + b, 0) / parts.length;
+
+  return {
+    fields,
+    confidence,
+    notes: typeof raw?.notes === 'string' ? raw.notes.trim() : '',
+    recurrenceNote: typeof raw?.recurrenceNote === 'string' ? raw.recurrenceNote.trim() : '',
+    untilDate: safeDate(raw?.untilDate),
+  };
+}
+
+/** True when the Edge Function is configured well enough to be worth trying. */
+export function visionAvailable() {
+  return Boolean(OCR_VISION_ENABLED && SUPABASE_URL && SUPABASE_ANON_KEY);
+}
+
+/**
+ * Reads a poster with the server-side vision model.
+ *
+ * Throws on any failure — the caller is expected to fall back to
+ * `extractFromImage`. The error message is deliberately specific (quota,
+ * misconfiguration, upstream) so the fallback can be logged with a reason
+ * instead of a shrug.
+ *
+ * @param {File|Blob} file
+ * @param {{onProgress?: Function, signal?: AbortSignal, timeoutMs?: number}} [options]
+ */
+export async function extractWithVision(file, options = {}) {
+  const { onProgress = () => {}, signal, timeoutMs = OCR_VISION_TIMEOUT_MS } = options;
+  if (!visionAvailable()) throw new Error('Vision OCR is disabled.');
+
+  const startedAt = nowMs();
+  onProgress({ stage: 'prepare', progress: 0, message: 'Bereite Bild vor…' });
+  assertNotAborted(signal);
+
+  // Downscale before encoding: a 12 MP phone photo base64s to ~16 MB, which the
+  // function rejects and the free tier would charge dearly for.
+  const prepared = typeof document === 'undefined'
+    ? file
+    : await downscaleImage(file, VISION_MAX_DIMENSION, 0.85);
+  const imageBase64 = await blobToBase64(prepared);
+  assertNotAborted(signal);
+
+  onProgress({ stage: 'recognize', progress: 0.3, message: 'Lese Plakat…' });
+
+  // Own timeout, merged with any caller signal, so a hung request cannot block
+  // the fallback indefinitely.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onOuterAbort = () => controller.abort();
+  signal?.addEventListener('abort', onOuterAbort);
+
+  let resp;
+  try {
+    resp = await fetch(`${SUPABASE_URL}/functions/v1/${OCR_FUNCTION_NAME}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ imageBase64, mimeType: prepared.type || 'image/jpeg' }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (signal?.aborted) { const e = new Error('Extraction was cancelled.'); e.name = 'AbortError'; throw e; }
+    throw new Error(`Vision request failed: ${err?.message ?? 'network error'}`);
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener('abort', onOuterAbort);
+  }
+
+  if (!resp.ok) {
+    let detail = '';
+    try { detail = JSON.stringify(await resp.json()).slice(0, 300); } catch { /* body not JSON */ }
+    throw new Error(`Vision request failed (${resp.status}): ${detail}`);
+  }
+
+  const payload = await resp.json();
+  if (!payload?.ok || !payload?.extracted) throw new Error('Vision returned no usable result.');
+
+  const mapped = mapVisionFields(payload.extracted);
+  onProgress({ stage: 'parse', progress: 1, message: 'Fertig.' });
+
+  return {
+    rawText: JSON.stringify(payload.extracted, null, 2),
+    lines: [],
+    fields: mapped.fields,
+    confidence: mapped.confidence,
+    durationMs: nowMs() - startedAt,
+    passes: [`vision:${payload.model ?? 'unknown'}`],
+    engine: 'vision',
+    notes: mapped.notes,
+    recurrenceNote: mapped.recurrenceNote,
+    untilDate: mapped.untilDate,
+  };
+}
+
+/**
+ * The entry point the app should call: vision first, Tesseract if that cannot
+ * deliver.
+ *
+ * A cancelled request is NOT a fallback case — if the person closed the dialog,
+ * running a second engine for 30 seconds is the opposite of what they asked
+ * for. Everything else (disabled, offline, quota, bad key, upstream outage)
+ * falls through, so the feature degrades to exactly the previous behaviour
+ * rather than to an error.
+ *
+ * @param {File|Blob} file
+ * @param {object} [options] forwarded to whichever engine runs
+ */
+export async function extractEventFields(file, options = {}) {
+  if (visionAvailable()) {
+    try {
+      return await extractWithVision(file, options);
+    } catch (err) {
+      if (err?.name === 'AbortError') throw err;
+      console.warn('[ocr] vision path failed, falling back to on-device Tesseract:', err?.message ?? err);
+      options.onProgress?.({ stage: 'load', progress: 0, message: 'Lese Plakat auf dem Gerät…' });
+    }
+  }
+  const result = await extractFromImage(file, options);
+  return { ...result, engine: 'tesseract', notes: '', recurrenceNote: '', untilDate: null };
 }

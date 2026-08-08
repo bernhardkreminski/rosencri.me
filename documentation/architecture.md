@@ -7,7 +7,7 @@
 | Hosting | GitHub Pages, branch-based | Free, no build step, redeploys on every push |
 | Frontend | Plain HTML/CSS/ES modules | No toolchain to rot; editable by anyone who knows JS |
 | Backend | Supabase (Postgres + PostgREST + Storage) | Shared data without running a server |
-| OCR | Tesseract.js, lazily loaded from a CDN | Runs on-device; no image ever leaves the phone |
+| OCR | Gemini via a Supabase Edge Function, Tesseract.js on-device as fallback | The image is sent for reading; the API key stays server-side |
 | Calendar feed | GitHub Actions, hourly | Produces a static `.ics` that any calendar app can subscribe to |
 
 There is **no build, no bundler, no framework, and no npm dependency**. `scripts/`

@@ -51,3 +51,31 @@ export const DEFAULT_DURATION_HOURS = 3;
 
 /** Max upload size for poster images, in bytes. */
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/* ------------------------------------------------------------------------- *
+ * Poster reading (OCR)
+ *
+ * Two engines. The `ocr-extract` Supabase Edge Function runs a vision model
+ * server-side and reads posters far better than anything that fits in a
+ * browser; Tesseract.js stays on the device as the fallback and runs whenever
+ * the function is disabled, unreachable, over quota, or the visitor is offline.
+ *
+ * Setting this to `false` restores the original behaviour exactly: on-device
+ * only, nothing ever leaves the browser. Do that if the function's API key is
+ * unset or you want the privacy property back — nothing else needs changing.
+ *
+ * NOTE: with this enabled, the poster image IS sent to a third party for
+ * reading. That is a change from the site's original promise and is documented
+ * in documentation/ocr.md and in the privacy page.
+ * ------------------------------------------------------------------------- */
+export const OCR_VISION_ENABLED = true;
+
+/** Edge Function slug; resolved against SUPABASE_URL. */
+export const OCR_FUNCTION_NAME = 'ocr-extract';
+
+/**
+ * Longest the browser waits for the vision call before giving up and running
+ * Tesseract instead. The function itself may take a few seconds on a large
+ * image; beyond this the on-device path will finish sooner.
+ */
+export const OCR_VISION_TIMEOUT_MS = 25000;

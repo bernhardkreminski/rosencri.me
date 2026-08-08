@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OCR batch harness — rosencri.me</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; margin: 0; padding: 24px;
+         background: #14140f; color: #e8e6df; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: #9a968a; margin: 0 0 20px; }
+  button { font: inherit; padding: 8px 16px; background: #e1483c; color: #fff; border: 0;
+           border-radius: 6px; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #2e2c25; vertical-align: top; }
+  th { color: #9a968a; font-weight: normal; }
+  .ok { color: #5fd08a; }
+  .bad { color: #ff6b5e; }
+  .warn { color: #e8b84b; }
+  .score { font-size: 16px; }
+  pre { white-space: pre-wrap; word-break: break-word; color: #b9b5a8; margin: 4px 0 0;
+        max-height: 180px; overflow: auto; background: #1c1b16; padding: 8px; border-radius: 4px; }
+  #log { color: #9a968a; margin-top: 12px; min-height: 20px; }
+  details summary { cursor: pointer; color: #9a968a; }
+</style>
+</head>
+<body>
+
+<h1>OCR batch harness</h1>
+<p class="sub">
+  Runs the real browser pipeline (<code>extractFromImage</code>) over the six fixture
+  images and scores the result against hand-written ground truth.
+  Results are also left on <code>window.__OCR_RESULTS__</code> as JSON.
+</p>
+
+<button id="run">Run all fixtures</button>
+<span id="log"></span>
+
+<div id="out"></div>
+
+<script type="module">
+import { FIXTURES } from './ocr-fixtures.js';
+import { extractFromImage, extractWithVision, visionAvailable } from '../assets/js/ocr.js';
+
+// ?engine=vision runs the Edge Function path, ?engine=tesseract forces
+// on-device. Default follows config. Both write the same result shape, so the
+// two can be scored against identical ground truth.
+const ENGINE = new URLSearchParams(location.search).get('engine')
+  || (visionAvailable() ? 'vision' : 'tesseract');
+
+const log = (m) => { document.getElementById('log').textContent = m; };
+const fold = (s) => (s ?? '').toString().toLowerCase()
+  .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
+
+/** Scores one fixture's extracted fields, returning per-check pass/fail rows. */
+function score(fx, res) {
+  const f = res.fields;
+  const checks = [];
+  const add = (name, pass, got, want) => checks.push({ name, pass, got, want });
+  const e = fx.expect;
+  // Only the fields that actually get SAVED count for contamination. rawText is
+  // the unfiltered union of every ensemble pass, kept purely for diagnosis —
+  // scoring against it would make every mustNot check unpassable by design.
+  const haystack = fold([f.title, f.description, f.location, f.url].join(' \n '));
+
+  if (e.title) {
+    add('title', e.title.any.some((t) => fold(f.title).includes(fold(t))),
+        f.title || '(none)', e.title.any.join(' | '));
+  }
+  if (e.monthDay) {
+    const got = f.start ? f.start.slice(5, 10) : null;
+    add('date (MM-DD)', got === e.monthDay, got ?? '(none)', e.monthDay);
+  }
+  if (e.startTime) {
+    const got = f.start ? f.start.slice(11, 16) : null;
+    add('start time', got === e.startTime, got ?? '(none)', e.startTime);
+  }
+  if (e.endTime) {
+    const got = f.end ? f.end.slice(11, 16) : null;
+    add('end time', got === e.endTime, got ?? '(none)', e.endTime);
+  }
+  if (e.timeAnywhere) {
+    const got = [f.start?.slice(11, 16), f.end?.slice(11, 16)].filter(Boolean);
+    add('time (either slot)', got.includes(e.timeAnywhere), got.join(', ') || '(none)', e.timeAnywhere);
+  }
+  if (e.noConfidentTime) {
+    // The parser defaults to 20:00 whenever it finds no time at all, so a bare
+    // start value proves nothing — low start-confidence is what signals
+    // "no time was actually read".
+    const invented = res.confidence.start > 0.5;
+    add('no invented time', !invented,
+        `${f.start?.slice(11, 16) ?? '(none)'} @conf ${res.confidence.start.toFixed(2)}`,
+        'no confident time');
+  }
+  if (e.location) {
+    add('location', e.location.any.some((t) => fold(f.location).includes(fold(t))),
+        f.location || '(none)', e.location.any.join(' | '));
+  }
+  if (e.url) {
+    add('url', e.url.any.some((t) => fold(f.url).includes(fold(t))),
+        f.url || '(none)', e.url.any.join(' | '));
+  }
+  if (e.tags?.length) {
+    const missing = e.tags.filter((t) => !f.tags.includes(t));
+    add('tags', missing.length === 0, f.tags.join(', ') || '(none)', e.tags.join(', '));
+  }
+  if (e.extraDates?.length) {
+    // Nothing in the current pipeline models a series, so this is expected to
+    // fail today — it is here to measure the gap, not to pass.
+    const found = e.extraDates.filter((d) => {
+      const [mm, dd] = d.split('-');
+      return new RegExp(`\\b${Number(dd)}\\s*\\.\\s*${Number(mm)}\\s*\\.`).test(res.rawText);
+    });
+    add('extra dates (series)', found.length === e.extraDates.length,
+        `${found.length}/${e.extraDates.length} in raw text`, e.extraDates.join(', '));
+  }
+  for (const bad of fx.mustNot) {
+    add(`no "${bad}"`, !haystack.includes(fold(bad)), haystack.includes(fold(bad)) ? 'LEAKED' : 'clean', 'absent');
+  }
+  return checks;
+}
+
+async function runOne(fx) {
+  const resp = await fetch(fx.imageUrl, { mode: 'cors' });
+  if (!resp.ok) throw new Error(`fetch ${resp.status}`);
+  const blob = await resp.blob();
+  const opts = {
+    budgetMs: 120000,             // generous: this is a desktop harness, not a phone
+    onProgress: (p) => log(`[${ENGINE}] ${fx.slug}: ${p.message}`),
+  };
+  const res = ENGINE === 'vision'
+    ? await extractWithVision(blob, opts)
+    : await extractFromImage(blob, opts);
+  return { res, checks: score(fx, res) };
+}
+
+function render(rows) {
+  const out = document.getElementById('out');
+  out.innerHTML = '';
+  let totalPass = 0, totalChecks = 0;
+
+  for (const row of rows) {
+    const passed = row.checks.filter((c) => c.pass).length;
+    totalPass += passed; totalChecks += row.checks.length;
+
+    const wrap = document.createElement('div');
+    const cls = passed === row.checks.length ? 'ok' : passed === 0 ? 'bad' : 'warn';
+    wrap.innerHTML = `
+      <h2 class="score">${row.fx.label}
+        <span class="${cls}">${passed}/${row.checks.length}</span></h2>
+      <div class="sub">hazards: ${row.fx.hazards.join(' · ')}</div>`;
+
+    if (row.error) {
+      wrap.innerHTML += `<p class="bad">ERROR: ${row.error}</p>`;
+    } else {
+      const t = document.createElement('table');
+      t.innerHTML = '<tr><th>check</th><th>got</th><th>expected</th></tr>' +
+        row.checks.map((c) => `<tr>
+            <td class="${c.pass ? 'ok' : 'bad'}">${c.pass ? '✓' : '✗'} ${c.name}</td>
+            <td>${escapeHtml(String(c.got))}</td>
+            <td>${escapeHtml(String(c.want))}</td>
+          </tr>`).join('');
+      wrap.appendChild(t);
+      const d = document.createElement('details');
+      d.innerHTML = `<summary>raw text (${row.res.passes.length} passes, ${Math.round(row.res.durationMs)}ms)</summary>
+                     <pre>${escapeHtml(row.res.rawText)}</pre>`;
+      wrap.appendChild(d);
+    }
+    out.appendChild(wrap);
+  }
+
+  const summary = document.createElement('h2');
+  summary.className = 'score';
+  summary.textContent = `TOTAL: ${totalPass}/${totalChecks}`;
+  out.prepend(summary);
+  return { totalPass, totalChecks };
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+
+document.getElementById('run').addEventListener('click', async (ev) => {
+  ev.target.disabled = true;
+  const only = new URLSearchParams(location.search).get('only');
+  const list = only ? FIXTURES.filter((f) => f.slug === only) : FIXTURES;
+  const rows = [];
+  for (const fx of list) {
+    log(`${fx.slug}: starting…`);
+    try {
+      const { res, checks } = await runOne(fx);
+      rows.push({ fx, res, checks });
+    } catch (err) {
+      rows.push({ fx, checks: [], error: err.message });
+    }
+  }
+  const totals = render(rows);
+  window.__OCR_RESULTS__ = {
+    ...totals,
+    rows: rows.map((r) => ({
+      slug: r.fx.slug,
+      error: r.error ?? null,
+      fields: r.res?.fields ?? null,
+      confidence: r.res?.confidence ?? null,
+      durationMs: r.res?.durationMs ?? null,
+      passes: r.res?.passes ?? null,
+      rawText: r.res?.rawText ?? null,
+      checks: r.checks,
+    })),
+  };
+  log(`done — ${totals.totalPass}/${totals.totalChecks}`);
+  ev.target.disabled = false;
+});
+</script>
+</body>
+</html>

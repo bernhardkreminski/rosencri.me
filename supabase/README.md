@@ -118,3 +118,68 @@ clear either or both:
   with the same public anon key. It's enough to keep the normal UI honest
   (you can only un-like/un-RSVP through your own browser), not a security
   boundary.
+
+---
+
+## Edge Function: `ocr-extract` (poster reading)
+
+Reads an uploaded poster with Google's Gemini API and returns event fields.
+It exists so the API key stays **server-side** — a static site cannot hold a
+secret, and a key shipped in client JS gets scraped within hours.
+
+Background and the measurements that justified it: [`documentation/ocr.md`](../documentation/ocr.md).
+
+### 1. Apply the schema
+
+Re-run `schema.sql` in the SQL editor (it is idempotent). This adds
+`public.ocr_usage` and `public.bump_ocr_usage()`, the per-IP daily quota the
+function uses. Both are deliberately unreachable with the anon key.
+
+### 2. Get a Gemini API key
+
+<https://aistudio.google.com/apikey> — free, no credit card.
+
+### 3. Deploy
+
+```bash
+supabase login
+supabase link --project-ref pyftcvikhuzleqxjsecn
+supabase secrets set GEMINI_API_KEY=<your key>
+supabase functions deploy ocr-extract
+```
+
+Or, without the CLI: paste `functions/ocr-extract/index.ts` into
+**Edge Functions → Deploy a new function** in the dashboard, and add
+`GEMINI_API_KEY` under **Project Settings → Edge Functions → Secrets**.
+
+### 4. Verify
+
+```bash
+curl -s -X POST https://pyftcvikhuzleqxjsecn.supabase.co/functions/v1/ocr-extract \
+  -H "Content-Type: application/json" \
+  -H "apikey: sb_publishable_Nc8I0WcFkrfZKqoRGEBYJQ_1opGv3oG" \
+  -H "Authorization: Bearer sb_publishable_Nc8I0WcFkrfZKqoRGEBYJQ_1opGv3oG" \
+  -d '{"imageBase64":"iVBORw0KGgo=","mimeType":"image/png"}'
+```
+
+`{"error":"not_configured"}` means the secret is missing. `{"error":"upstream_error", "status":400}`
+with "API key not valid" means the secret is set but wrong. A `400` naming the
+model means `GEMINI_MODEL` needs setting to a model id your key can reach.
+
+Then run `dev/ocr-batch.html?engine=vision` against the six fixture images.
+
+### Environment variables
+
+| Name | Default | Purpose |
+|---|---|---|
+| `GEMINI_API_KEY` | — | **Required.** Set via `supabase secrets set`, never in git. |
+| `GEMINI_MODEL` | `gemini-flash-lite-latest` | Change without a redeploy if the model id moves. |
+| `OCR_DAILY_IP_QUOTA` | `40` | Per-IP, per-UTC-day cap. |
+
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected by the platform; the
+function uses them only to count quota, and skips counting if they are absent.
+
+### Turning it off
+
+`OCR_VISION_ENABLED = false` in `assets/js/config.js` reverts the site to
+on-device Tesseract. The function can stay deployed; nothing will call it.

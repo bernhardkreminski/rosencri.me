@@ -6,7 +6,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 
 ## Features
 
-- **Add events from a poster photo** — take a picture with your phone or upload one, and on-device OCR extracts a title, date, time, location, and description as a starting point.
+- **Add events from a poster photo** — take a picture with your phone or upload one, and a vision model extracts a title, date, time, location, and description as a starting point.
 - **Review-and-correct step** — every OCR result is shown in an editable form before it's saved, so nothing gets published unchecked.
 - **Manual entry** for events without a poster.
 - **List view** with visual highlighting for events happening **now** and events starting **within 24h**, plus separate upcoming and past sections.
@@ -20,7 +20,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 ## Tech stack
 
 - Plain HTML/CSS/JS, ES modules, **zero build step**.
-- [Tesseract.js](https://github.com/naptha/tesseract.js) loaded from a CDN — OCR runs entirely in the browser; no image is ever uploaded anywhere for text extraction.
+- Poster reading: a **Supabase Edge Function** calls Google's Gemini API server-side (the API key never reaches the browser), with [Tesseract.js](https://github.com/naptha/tesseract.js) kept as the on-device fallback for offline, over-quota and disabled cases. Flip `OCR_VISION_ENABLED` in `assets/js/config.js` to go back to browser-only. See [ocr.md](documentation/ocr.md).
 - [Supabase](https://supabase.com) (Postgres + REST + Storage) for shared, cross-device persistence.
 - GitHub Pages for hosting.
 - GitHub Actions to regenerate the subscribable `calendar.ics` every hour, and to email the operator when the board changes.

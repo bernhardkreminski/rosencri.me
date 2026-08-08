@@ -3,7 +3,7 @@
  * just dimmed — people want to look back at what happened.
  */
 
-import { el, clear, dayKey, startOfDay, sameDay, eventPhase, MONTHS_DE, WEEKDAYS_SHORT_DE, parseDate } from './util.js?v=20260808T0648';
+import { el, clear, dayKey, startOfDay, sameDay, eventPhase, MONTHS_DE, WEEKDAYS_SHORT_DE, parseDate } from './util.js?v=20260808T0738';
 
 const MAX_LABELS = 3;
 
