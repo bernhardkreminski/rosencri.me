@@ -12,6 +12,7 @@ and it lands on a shared board and in a subscribable calendar.
 
 | Document | What it covers |
 |---|---|
+| [development.md](development.md) | Tools you need installed, running it locally |
 | [architecture.md](architecture.md) | Stack, module map, data flow, rendering |
 | [data-model.md](data-model.md) | Event shape, database schema, access rules |
 | [features.md](features.md) | Every user-facing feature and how it behaves |
@@ -67,6 +68,9 @@ documentation/              You are here
 ```
 
 ## Working on this
+
+You need **git**, **Node** and **Python 3** — nothing else, and there is no
+`npm install`. Full setup in [development.md](development.md).
 
 ```bash
 python3 -m http.server 8123      # ES modules need a real HTTP origin

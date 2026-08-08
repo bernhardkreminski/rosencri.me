@@ -17,8 +17,9 @@ fits, so those dates are listed explicitly.
 
 ## The form
 
-"Wiederholung" offers: Einmalig · **Mehrere Termine (eigene Daten)** · Jede Woche ·
-Alle 2 Wochen · Jeden Monat. Picking a rule reveals an optional end date; picking
+"Wiederholung" offers: Einmalig · **Mehrere Termine (eigene Daten)** · Jeden Tag ·
+Jede Woche · Alle 2 Wochen · Jeden Monat. Picking a rule reveals an optional end
+date; picking
 "Mehrere Termine" reveals a list of date rows with add/remove.
 
 On save, extra dates are sorted, de-duplicated, and any date equal to the start
@@ -38,6 +39,13 @@ expandAll(store.series) // → store.events
 Window: 60 days back, 400 days forward, hard-capped at 400 occurrences. If a
 series' every occurrence is in the past but the rule is open-ended, the next one
 is still produced, so a weekly event never silently vanishes.
+
+The occurrence cap only actually bites for `FREQ=DAILY` — it is the only rule
+dense enough to reach 400 occurrences before the 400-day window ends. A daily
+series that started before the window fills the cap about 340 days out (400 days
+counted from `now - 60`), so the month grid stops showing it ~2 months short of
+the other rules. The list view is unaffected either way — it collapses a series
+to a single card.
 
 The published `.ics` does **not** expand anything — it ships the rule and lets
 the calendar client expand it. That is what makes a subscription show a genuine

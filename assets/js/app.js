@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260804T1840';
-import { store } from './store.js?v=20260804T1840';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260804T1840';
-import { seriesSpan, seriesIdOf } from './recurrence.js?v=20260804T1840';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260808T0648';
+import { store } from './store.js?v=20260808T0648';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260808T0648';
+import { seriesSpan, seriesIdOf } from './recurrence.js?v=20260808T0648';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260804T1840';
+} from './util.js?v=20260808T0648';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -657,7 +657,7 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260804T1840');
+    const ocr = await import('./ocr.js?v=20260808T0648');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
@@ -793,7 +793,7 @@ function splitRRule(rrule) {
   if (!rrule) return ['', ''];
   const m = /;?UNTIL=(\d{4})(\d{2})(\d{2})/i.exec(rrule);
   const base = rrule.replace(/;?UNTIL=[^;]*/i, '');
-  const known = ['FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY'];
+  const known = ['FREQ=DAILY', 'FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY'];
   return [known.includes(base) ? base : '', m ? `${m[1]}-${m[2]}-${m[3]}` : ''];
 }
 
@@ -1164,7 +1164,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260804T1840');
+    icalModule = await import('./ical.js?v=20260808T0648');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();

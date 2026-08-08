@@ -13,7 +13,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 - **Month calendar view**, including past events, for browsing by date.
 - **iCal subscription** (`webcal://`) for the whole board, plus a per-event "add to my calendar" link.
 - **Likes, RSVP ("ich bin dabei"), and comments** — comments become more prominent on events that are currently happening, for live updates from the event itself.
-- **Edit and delete** any event, and **repeating events** — weekly/biweekly/monthly, or a series on arbitrary dates.
+- **Edit and delete** any event, and **repeating events** — daily/weekly/biweekly/monthly, or a series on arbitrary dates.
 - **Pull to refresh** on touch devices — drag down from the top to re-read the board without reloading the page.
 - **A daily 09:00 email digest for the operator** of every event added, edited or removed, so an open board with no undo isn't also a silent one.
 
@@ -52,6 +52,24 @@ dev/ocr-playground.html      Standalone page for testing OCR on sample images
 
 ## Local development
 
+### Prerequisites
+
+| Tool | Needed for |
+|---|---|
+| **git** | cloning; `git push` to `main` *is* the deploy |
+| **Node** (18+, CI pins 20) | `scripts/*.mjs`, above all the mandatory `bump-assets.mjs` |
+| **Python 3** | the local static server only — any static server works |
+
+```bash
+brew install node          # git and python3 already ship with macOS
+```
+
+There is **no `package.json` and no `npm install`** — every script uses Node's
+standard library only. Details and per-script environment variables in
+[`documentation/development.md`](documentation/development.md).
+
+### Running it
+
 No build step — but ES modules need to be served over a real HTTP origin, not opened as a `file://` path.
 
 ```bash
@@ -86,6 +104,7 @@ Full documentation lives in [`documentation/`](documentation/README.md):
 
 | | |
 |---|---|
+| [development.md](documentation/development.md) | Tools you need installed, running it locally |
 | [architecture.md](documentation/architecture.md) | Stack, module map, data flow |
 | [data-model.md](documentation/data-model.md) | Event shape, schema, access rules |
 | [features.md](documentation/features.md) | What the site does |
