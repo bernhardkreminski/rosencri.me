@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-11T08:11:57.826Z",
-  "lastMailedOn": "2026-08-11",
+  "updatedAt": "2026-08-12T08:22:59.199Z",
+  "lastMailedOn": "2026-08-12",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -213,7 +213,7 @@
       "starts_at": "2026-08-15T10:00:00.000Z",
       "ends_at": "2026-08-16T10:00:00.000Z",
       "location": "Happinger See",
-      "description": "Regeln: Die Meisterschaft dauert 24 Stunden. Wer in dieser Zeit die meisten Hechte schafft, hat gewonnen. Es gelten alle Hecht- und Kopfsprünge. Neoprenanzüge sind nicht erlaubt, nur gängige Badebekleidung.\nAnmeldung erwünscht, aber auch vor Ort noch möglich.\n\nAustragungsort wird der Happinger sein, es wird biwakiert und auch wer nur zum Zuschauen oder für einen einzelnen Ehrenhecht vorbei kommen mag ist herzlich willkommen!\n\nEintritt frei. Für Verpflegung und Schlafgelegenheit muss selbst gesorgt werden.\nTeilnahme auf eigene Gefahr!",
+      "description": "Regeln: Die Meisterschaft dauert 24 Stunden. Wer in dieser Zeit die meisten Hechte schafft, hat gewonnen. Es gelten alle Hecht- und Kopfsprünge. Neoprenanzüge sind nicht erlaubt, nur gängige Badebekleidung.\nAnmeldung (beim Tom) erwünscht, aber auch vor Ort noch möglich.\n\nAustragungsort wird der Happinger sein, es wird biwakiert und auch wer nur zum Zuschauen oder für einen einzelnen Ehrenhecht vorbei kommen mag ist herzlich willkommen!\n\nEintritt frei. Für Verpflegung und Schlafgelegenheit muss selbst gesorgt werden.\nTeilnahme auf eigene Gefahr!",
       "url": "",
       "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1786367291435-bc69d2d3.jpg",
       "tags": [
