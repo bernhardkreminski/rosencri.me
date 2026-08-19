@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-13T10:14:14.125Z",
-  "lastMailedOn": "2026-08-13",
+  "updatedAt": "2026-08-19T07:43:49.728Z",
+  "lastMailedOn": "2026-08-19",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -303,6 +303,20 @@
       ],
       "author_name": "",
       "created_at": "2026-08-13T09:28:00.926Z"
+    },
+    "73d3691b-6109-42a1-87a5-83b652548a05": {
+      "title": "Spieltag am Bolzplatz",
+      "starts_at": "2026-10-18T09:00:00.000Z",
+      "ends_at": "",
+      "location": "Bolzplatz Alt Fürstätt, Rosenheim",
+      "description": "Freundschaftsspiel mit fünf Mannschaften: Team Bike Kitchen, Team Vettern, Team Rosa, FC Holzheim und 1. FC Happing. Jeder gegen jeden, Eintritt frei.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1787082187098-5613c69a.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "jovan",
+      "created_at": "2026-08-18T19:43:08.040Z"
     },
     "c0bfda72-64d9-4791-8bda-0e743b982f67": {
       "title": "Alpine Flohmarkt",
