@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-19T07:43:49.728Z",
-  "lastMailedOn": "2026-08-19",
+  "updatedAt": "2026-08-20T07:46:57.545Z",
+  "lastMailedOn": "2026-08-20",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -335,6 +335,25 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-04T06:31:28.718Z"
+    },
+    "d2452791-d2b0-4eae-b439-d427a6e3fe1b": {
+      "title": "Good Night White Pride 2026",
+      "starts_at": "2026-12-05T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft, Oberaustr. 2, Rosenheim",
+      "description": "Antifaschistisches Konzert in Rosenheim.",
+      "url": "https://instagram.com/gnwp.rosenheim",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1787154331915-2f2ef2a5.jpg",
+      "tags": [
+        "konzert",
+        "punk",
+        "rock",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-19T15:45:32.545Z"
     }
   }
 }
