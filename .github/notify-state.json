@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-20T07:46:57.545Z",
-  "lastMailedOn": "2026-08-20",
+  "updatedAt": "2026-08-28T19:21:15.751Z",
+  "lastMailedOn": "2026-08-28",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -255,6 +255,20 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-04T17:38:19.677Z"
+    },
+    "2d6c544e-02c7-4d09-bf11-56aca0a45a4f": {
+      "title": "KAFFKIEZ Konzert",
+      "starts_at": "2026-08-28T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Max Josef Platz",
+      "description": "Eintritt: Gratis",
+      "url": "",
+      "image_url": "",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-08-28T09:00:36.422Z"
     },
     "2345e8d1-c472-47a0-ada3-13096d9e8786": {
       "title": "Klinken Festival",
