@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-28T19:21:15.751Z",
-  "lastMailedOn": "2026-08-28",
+  "updatedAt": "2026-09-08T12:04:03.375Z",
+  "lastMailedOn": "2026-09-08",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -317,6 +317,23 @@
       ],
       "author_name": "",
       "created_at": "2026-08-13T09:28:00.926Z"
+    },
+    "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
+      "title": "Sip & Shop Flohmarkt",
+      "starts_at": "2026-10-10T15:00:00.000Z",
+      "ends_at": "2026-10-10T20:00:00.000Z",
+      "location": "Werk 1, Giessereistrasse 22, 83022 Rosenheim",
+      "description": "Vintage, Designer, Houseware, Plants & More. Dazu Food, Drinks und Live Musik.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1788851362935-339eead0.jpg",
+      "tags": [
+        "flohmarkt",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-09-08T07:09:23.982Z"
     },
     "73d3691b-6109-42a1-87a5-83b652548a05": {
       "title": "Spieltag am Bolzplatz",
