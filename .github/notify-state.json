@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-08T12:04:03.375Z",
-  "lastMailedOn": "2026-09-08",
+  "updatedAt": "2026-09-11T12:07:30.183Z",
+  "lastMailedOn": "2026-09-11",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -366,6 +366,23 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-04T06:31:28.718Z"
+    },
+    "87a675a0-365f-4371-b0a8-2fe2ce7dac0a": {
+      "title": "Das neue Z stellt sich vor",
+      "starts_at": "2026-11-01T15:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum in Selbstverwaltung, Samerstraße 11, 83022 Rosenheim",
+      "description": "15 Jahre linkes Zentrum in Rosenheim. Programm mit Stadtführung, Get-together bei Kaffee und Kuchen sowie Filmvorführung.",
+      "url": "https://instagram.com/z.linkes.zentrum.rosenheim",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1789116181492-ec9619d9.jpg",
+      "tags": [
+        "kufa",
+        "film"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-09-11T08:43:02.930Z"
     },
     "d2452791-d2b0-4eae-b439-d427a6e3fe1b": {
       "title": "Good Night White Pride 2026",
