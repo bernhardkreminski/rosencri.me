@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-11T12:07:30.183Z",
-  "lastMailedOn": "2026-09-11",
+  "updatedAt": "2026-09-12T11:33:11.383Z",
+  "lastMailedOn": "2026-09-12",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -317,6 +317,25 @@
       ],
       "author_name": "",
       "created_at": "2026-08-13T09:28:00.926Z"
+    },
+    "df5d9e39-5722-46cb-a787-3327adf0b8cb": {
+      "title": "Irschenberg Festival 2026",
+      "starts_at": "2026-10-01T18:00:00.000Z",
+      "ends_at": "2026-10-11T20:30:00.000Z",
+      "location": "Irschenberg",
+      "description": "Elf Tage voller besonderer Momente, großer Stimmen, inspirierender Geschichten und einzigartiger Erlebnisse.",
+      "url": "https://instagram.com/irschenberg_festival",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1789187378129-322d3d74.jpg",
+      "tags": [
+        "festival",
+        "live-musik",
+        "theater",
+        "kinder"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "jovan",
+      "created_at": "2026-09-12T04:29:38.805Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
