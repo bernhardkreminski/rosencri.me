@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-12T11:33:11.383Z",
-  "lastMailedOn": "2026-09-12",
+  "updatedAt": "2026-09-13T12:38:52.342Z",
+  "lastMailedOn": "2026-09-13",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -270,6 +270,22 @@
       "author_name": "",
       "created_at": "2026-08-28T09:00:36.422Z"
     },
+    "bcaabbb0-d474-4c14-8046-e9a504bdecb9": {
+      "title": "Flohmarkt",
+      "starts_at": "2026-09-13T08:00:00.000Z",
+      "ends_at": "2026-09-13T12:00:00.000Z",
+      "location": "Lounge 34, Münchner Str. 34, 83043 Bad Aibling",
+      "description": "Speis und Trank @ Lounge 34. Anmeldung unter 0159/01058992. Aufbau ab 9.30h.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1789286711832-93be036e.jpg",
+      "tags": [
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-09-13T08:05:13.435Z"
+    },
     "2345e8d1-c472-47a0-ada3-13096d9e8786": {
       "title": "Klinken Festival",
       "starts_at": "2026-09-18T13:00:00.000Z",
@@ -336,6 +352,22 @@
       "rdates": [],
       "author_name": "jovan",
       "created_at": "2026-09-12T04:29:38.805Z"
+    },
+    "c8cf7eb9-c32b-4d04-aa85-1cb356d2c688": {
+      "title": "Lange Nacht der Demokratie - Theaterstück \"Prima Facie\"",
+      "starts_at": "2026-10-02T16:00:00.000Z",
+      "ends_at": "",
+      "location": "Aula der St. Georg-Schule, Sonnenstr. 36, Bad Aibling",
+      "description": "Ein bewegender Theaterabend über Recht, Gerechtigkeit, Macht und Verantwortung, gefolgt von Impuls-Stationen und Austausch.",
+      "url": "http://www.lange-nacht-der-demokratie.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1789286550314-cad9f755.jpg",
+      "tags": [
+        "theater"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-09-13T08:02:31.959Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
