@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-18T12:09:40.368Z",
-  "lastMailedOn": "2026-09-18",
+  "updatedAt": "2026-09-24T12:39:17.089Z",
+  "lastMailedOn": "2026-09-24",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -321,6 +321,20 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-09-18T10:10:23.898Z"
+    },
+    "8dc1c0d1-f675-4397-9138-690a871940ea": {
+      "title": "Rosa feiert Geburtstag",
+      "starts_at": "2026-09-24T16:00:00.000Z",
+      "ends_at": "",
+      "location": "BARABEND & MITBRINGBUFFET",
+      "description": "ROSA 2. Geburtstag \nrosa.rosenheim\n Uns gibt’s schon zwei Jahre 🥹🥳🎈\n& das muss gefeiert werden!\n\nZusammen mit dem @sprachcaferosenheim feiern wir am Donnerstag den 24.09.26 in der Alten Druckerei (@buergerstiftung_rosenheim ) unser gemeinsames Jubiläum.\nDanke @affekt.rosenheim fürs Organisieren!\n\nMit Barbetrieb & Mitbringbuffet 🍾🪩👯‍♀️🍹🥨🫒🥟 Wir freuen uns mit euch zu feiern! 🥳",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1790178031361-09f158b0.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-09-23T15:40:32.539Z"
     },
     "f0f8e6d9-b3af-49d0-bd90-6f08262e7a06": {
       "title": "Theater MISERY Stephen King",
