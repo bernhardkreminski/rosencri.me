@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-25T12:40:41.942Z",
-  "lastMailedOn": "2026-09-25",
+  "updatedAt": "2026-09-27T12:54:02.219Z",
+  "lastMailedOn": "2026-09-27",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -393,6 +393,24 @@
       ],
       "author_name": "",
       "created_at": "2026-08-13T09:28:00.926Z"
+    },
+    "5729b4ff-100c-4e3f-b98e-cab27e8ade58": {
+      "title": "Gemeinsames Frühstück für alle Generationen",
+      "starts_at": "2026-09-28T07:00:00.000Z",
+      "ends_at": "",
+      "location": "Pfarrheim Vogtareuth",
+      "description": "Begegnen, Austauschen, Miteinander beim gemeinsamen Frühstück für alle Generationen.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1790486536276-ef6744c4.jpg",
+      "tags": [
+        "frühstück",
+        "familie",
+        "senioren"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "Florian",
+      "created_at": "2026-09-27T05:22:17.458Z"
     },
     "da8458cf-c896-41d8-aff1-0c2a3e3f0843": {
       "title": "Es reicht! Das Leben bezahlbar machen.",
