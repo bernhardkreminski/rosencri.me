@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-27T12:54:02.219Z",
-  "lastMailedOn": "2026-09-27",
+  "updatedAt": "2026-10-01T14:21:40.916Z",
+  "lastMailedOn": "2026-10-01",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -477,6 +477,22 @@
       "rdates": [],
       "author_name": "Tom",
       "created_at": "2026-09-17T16:39:19.754Z"
+    },
+    "32fe1fa0-a9fd-4619-a540-9e37befd65de": {
+      "title": "Mobiveranstaltung Rosenheim - Abschiebeterminal MUC verhindern!",
+      "starts_at": "2026-10-09T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Z Linkes Zentrum, Samerstraße 11",
+      "description": "Wir informieren euch über die nächste Demo.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1790853182821-72f26b00.jpg",
+      "tags": [
+        "soli"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-01T11:13:03.258Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
