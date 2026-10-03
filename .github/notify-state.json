@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-01T14:21:40.916Z",
-  "lastMailedOn": "2026-10-01",
+  "updatedAt": "2026-10-03T12:23:19.822Z",
+  "lastMailedOn": "2026-10-03",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -511,6 +511,23 @@
       "author_name": "",
       "created_at": "2026-09-08T07:09:23.982Z"
     },
+    "28a49804-4911-4ad4-866f-8226abaed4ca": {
+      "title": "Schlachthof Bronx - Le Pirate",
+      "starts_at": "2026-10-17T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate",
+      "description": "Super Musik präsentiert Schlachthofbronx",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1790989210259-dc6d9e5e.jpg",
+      "tags": [
+        "party",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T01:00:11.633Z"
+    },
     "73d3691b-6109-42a1-87a5-83b652548a05": {
       "title": "Spieltag am Bolzplatz",
       "starts_at": "2026-10-18T09:00:00.000Z",
@@ -524,6 +541,20 @@
       "rdates": [],
       "author_name": "jovan",
       "created_at": "2026-08-18T19:43:08.040Z"
+    },
+    "def4613b-38f4-47d4-8d7a-1dcf971adfaf": {
+      "title": "Privatstädte – Labore für einen totalitären Kapitalismus",
+      "starts_at": "2026-10-21T17:30:00.000Z",
+      "ends_at": "",
+      "location": "Z - Linkes Zentrum in Rosenheim (Samerstraße 11, 83022 Rosenheim)",
+      "description": "Vortrag von Autor Andreas Kemper über Privatstädte und Labore für einen totalitären Kapitalismus.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1790988254496-fd46f538.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T00:44:15.219Z"
     },
     "c0bfda72-64d9-4791-8bda-0e743b982f67": {
       "title": "Alpine Flohmarkt",
