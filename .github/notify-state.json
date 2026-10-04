@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-03T12:23:19.822Z",
-  "lastMailedOn": "2026-10-03",
+  "updatedAt": "2026-10-04T13:06:41.716Z",
+  "lastMailedOn": "2026-10-04",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -461,6 +461,20 @@
       "author_name": "",
       "created_at": "2026-09-13T08:02:31.959Z"
     },
+    "7a28e687-54cc-4f83-82c8-fd6ee1606243": {
+      "title": "Punkrock Konzert",
+      "starts_at": "2026-10-03T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft Rosenheim",
+      "description": "Mit 1328, Antischall und Sunflower Radio",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791042224896-c05e5a04.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T15:43:55.484Z"
+    },
     "afb5c205-96ed-4226-97b8-bd80f8ac7664": {
       "title": "Konzert: Maxi Pongratz",
       "starts_at": "2026-10-05T17:30:00.000Z",
@@ -493,6 +507,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-01T11:13:03.258Z"
+    },
+    "752e6c64-96d2-42b1-b2e3-3e376b4a17a3": {
+      "title": "Odysseus Verbrecher - Theater",
+      "starts_at": "2026-10-09T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft",
+      "description": "Eine Theaterproduktion des V.F.B.K. e.V. von Christoph Ransmayr.\n\nVorstellungen\n\nPremiere: Freitag, 9.10.2026 um 20:00 Uhr\n\nWeitere Aufführungen:\n\nSamstag, 10.10.2026, 20:00 Uhr\nSonntag, 18.10.2026, 17:00 Uhr\nFreitag, 23.10.2026, 20:00 Uhr\nSamstag, 24.10.2026, 20:00 Uhr",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791050358030-bc0bdcb6.jpg",
+      "tags": [
+        "theater"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T17:59:19.131Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
@@ -591,6 +621,81 @@
       "author_name": "",
       "created_at": "2026-09-11T08:43:02.930Z"
     },
+    "b6077f2c-dd32-4361-9bd1-4f0ee431251b": {
+      "title": "Ein Leben am seidenen Faden",
+      "starts_at": "2026-11-06T18:00:00.000Z",
+      "ends_at": "",
+      "location": "evang. Gemeindehaus Kolbermoor",
+      "description": "Von Auschwitz nach Gusen. Lesung mit Kulturwerk Kolbermoor.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056217418-f0e89ed0.jpg",
+      "tags": [
+        "lesung"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:36:57.832Z"
+    },
+    "e305cf38-b687-4378-87e1-ca5a18d54a1e": {
+      "title": "Exile Never Ends",
+      "starts_at": "2026-11-07T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerstr 11, Rosenheim",
+      "description": "Filmvorführung organisiert vom Initiativkreis Migration Rosenheim.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056243195-9cbde71b.jpg",
+      "tags": [
+        "kino",
+        "film"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:37:23.340Z"
+    },
+    "acfa88b5-f5c9-4098-ae5b-f3618b1b22e0": {
+      "title": "Gedenken an die Pogromnacht 1938",
+      "starts_at": "2026-11-09T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Bahnhofsvorplatz, Rosenheim",
+      "description": "Gedenken an die Pogromnacht 1938.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056265298-013bf726.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:37:45.443Z"
+    },
+    "7534fd94-9124-4481-b0cd-d2a387e914d8": {
+      "title": "FASCHISIERUNG oder: Wie groß ist die Gefahr von Rechts?",
+      "starts_at": "2026-11-16T18:30:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerstr. 11, Rosenheim",
+      "description": "Vortrag von Klaus Weber organisiert von Die Linke Kreisverband Rosenheim.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056325087-f052d5cd.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:38:45.285Z"
+    },
+    "9d9614d3-a820-40b4-85a4-6e40e2c8759c": {
+      "title": "Die Geschichte des Lebensborn",
+      "starts_at": "2026-11-21T13:30:00.000Z",
+      "ends_at": "",
+      "location": "Mehrzweckhalle Steinhöring",
+      "description": "Eine Exkursion zum Thema Die Geschichte des Lebensborn mit Abfahrt in Kolbermoor um 13:30 Uhr.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056349986-642cefb6.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:39:10.257Z"
+    },
     "d2452791-d2b0-4eae-b439-d427a6e3fe1b": {
       "title": "Good Night White Pride 2026",
       "starts_at": "2026-12-05T19:00:00.000Z",
@@ -609,6 +714,114 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-19T15:45:32.545Z"
+    },
+    "cd3935f9-28c7-4a42-ab84-d548a16781d9": {
+      "title": "Spuren - Die Opfer des NSU",
+      "starts_at": "2026-12-06T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerst. 11, Rosenheim",
+      "description": "Ein Film von Aysun Bademsoy.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056368971-4447c9a9.jpg",
+      "tags": [
+        "kino",
+        "film"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:39:29.086Z"
+    },
+    "746a1577-e490-4493-8161-12cf9087f990": {
+      "title": "15 Jahre nach der Selbstenttarnung des NSU",
+      "starts_at": "2026-12-10T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerstr 11, Rosenheim",
+      "description": "Vortrag von Robert Andreasch, organisiert in Zusammenarbeit mit der Rosa Luxemburg Stiftung Bayern und dem Kurt Eisner Verein.",
+      "url": "https://instagram.com/bibliothek_a",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056399576-69e41cd8.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:39:59.859Z"
+    },
+    "41fb63bc-aa93-4962-bec7-5add765d8af0": {
+      "title": "Völkermord in Deutsch-Südwestafrika",
+      "starts_at": "2026-12-12T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerstr 11, Rosenheim",
+      "description": "Vortrag von Andreas Salomon.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056415980-2ebb75f9.jpg",
+      "tags": [
+        "lesung"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:40:16.105Z"
+    },
+    "d85eef70-0163-42a7-aa2b-6abab9494648": {
+      "title": "Ländliche Raumnahme und extrem rechte Strategien",
+      "starts_at": "2026-12-14T18:30:00.000Z",
+      "ends_at": "",
+      "location": "Die Linke Büro, Salinstr 5, Rosenheim",
+      "description": "Vortrag MBR organisiert vom Kreisverband Rosenheim der Partei Die Linke.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056431843-777c0f48.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:40:32.039Z"
+    },
+    "c4590e79-d662-45ea-bf5c-d604a3c664ae": {
+      "title": "White Power - Europas Rechtsextreme",
+      "starts_at": "2027-01-03T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerst. 11, Rosenheim",
+      "description": "Filmvorführung und Veranstaltung der Initiative Menschenwürde verteidigen! / AfD-Verbot jetzt Rosenheim.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056447210-65ccd311.jpg",
+      "tags": [
+        "kino",
+        "film"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:40:47.651Z"
+    },
+    "52dcbb4e-2248-4158-a26d-0058e21ecae0": {
+      "title": "Antifa, ja klar!",
+      "starts_at": "2027-01-23T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerstr 11, Rosenheim",
+      "description": "Tagesseminar",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056465453-2fb871dd.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:41:05.754Z"
+    },
+    "3856cdeb-e403-4740-8b50-5fd8eb609e53": {
+      "title": "Aus Worten werden Taten",
+      "starts_at": "2027-01-27T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Stellwerk 18, Eduard-Rüber-Straße 7, Rosenheim",
+      "description": "Lesung mit Toni Schuberl.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056483921-958ffc90.jpg",
+      "tags": [
+        "lesung"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-03T19:41:24.148Z"
     }
   }
 }
