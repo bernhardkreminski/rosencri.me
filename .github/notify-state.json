@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-04T13:06:41.716Z",
-  "lastMailedOn": "2026-10-04",
+  "updatedAt": "2026-10-05T15:46:46.114Z",
+  "lastMailedOn": "2026-10-05",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -524,6 +524,22 @@
       "author_name": "",
       "created_at": "2026-10-03T17:59:19.131Z"
     },
+    "00ede9bd-9370-4127-b085-23ad4093878f": {
+      "title": "Flohmarkt Landlmühle",
+      "starts_at": "2026-10-10T08:00:00.000Z",
+      "ends_at": "2026-10-10T15:00:00.000Z",
+      "location": "Landlmühle",
+      "description": "Flohmarkt",
+      "url": "",
+      "image_url": "",
+      "tags": [
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-04T17:48:38.274Z"
+    },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
       "starts_at": "2026-10-10T15:00:00.000Z",
@@ -681,6 +697,20 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:38:45.285Z"
+    },
+    "756dfb5e-e4cf-45f2-a48f-673e6a6e7913": {
+      "title": "Adventsmarkt: Die Kunst des Feierns",
+      "starts_at": "2026-11-21T10:00:00.000Z",
+      "ends_at": "2026-11-21T18:00:00.000Z",
+      "location": "Landlmühle",
+      "description": "Kränze, Kerzen, Glühwein. Lichter, lachen, lustig, lebendig & legendär.",
+      "url": "https://www.landlmuehle.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791126448927-a80566ec.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-04T15:07:30.046Z"
     },
     "9d9614d3-a820-40b4-85a4-6e40e2c8759c": {
       "title": "Die Geschichte des Lebensborn",
