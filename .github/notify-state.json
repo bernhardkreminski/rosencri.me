@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T15:46:46.114Z",
-  "lastMailedOn": "2026-10-05",
+  "updatedAt": "2026-10-08T14:29:18.144Z",
+  "lastMailedOn": "2026-10-08",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -523,6 +523,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T17:59:19.131Z"
+    },
+    "7c78cf3e-e263-449c-aadf-331f3e3db0a0": {
+      "title": "Radl, Ski & Outdoor Flohmarkt Samerberg",
+      "starts_at": "2026-10-10T08:00:00.000Z",
+      "ends_at": "2026-10-10T14:00:00.000Z",
+      "location": "Hochriesbahn Parkplatz am Bikepark",
+      "description": "Flohmarkt für Radl, Ski und Outdoor-Ausrüstung am Samerberg.",
+      "url": "https://Bikepark-Samerberg.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791444459682-54634a19.jpg",
+      "tags": [
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-08T07:27:41.898Z"
     },
     "00ede9bd-9370-4127-b085-23ad4093878f": {
       "title": "Flohmarkt Landlmühle",
