@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-08T14:29:18.144Z",
-  "lastMailedOn": "2026-10-08",
+  "updatedAt": "2026-10-13T14:54:58.843Z",
+  "lastMailedOn": "2026-10-13",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -524,22 +524,6 @@
       "author_name": "",
       "created_at": "2026-10-03T17:59:19.131Z"
     },
-    "7c78cf3e-e263-449c-aadf-331f3e3db0a0": {
-      "title": "Radl, Ski & Outdoor Flohmarkt Samerberg",
-      "starts_at": "2026-10-10T08:00:00.000Z",
-      "ends_at": "2026-10-10T14:00:00.000Z",
-      "location": "Hochriesbahn Parkplatz am Bikepark",
-      "description": "Flohmarkt für Radl, Ski und Outdoor-Ausrüstung am Samerberg.",
-      "url": "https://Bikepark-Samerberg.de",
-      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791444459682-54634a19.jpg",
-      "tags": [
-        "flohmarkt"
-      ],
-      "rrule": "",
-      "rdates": [],
-      "author_name": "",
-      "created_at": "2026-10-08T07:27:41.898Z"
-    },
     "00ede9bd-9370-4127-b085-23ad4093878f": {
       "title": "Flohmarkt Landlmühle",
       "starts_at": "2026-10-10T08:00:00.000Z",
@@ -555,6 +539,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-04T17:48:38.274Z"
+    },
+    "7c78cf3e-e263-449c-aadf-331f3e3db0a0": {
+      "title": "Radl, Ski & Outdoor Flohmarkt Samerberg",
+      "starts_at": "2026-10-10T08:00:00.000Z",
+      "ends_at": "2026-10-10T14:00:00.000Z",
+      "location": "Hochriesbahn Parkplatz am Bikepark",
+      "description": "Flohmarkt für Radl, Ski und Outdoor-Ausrüstung am Samerberg.",
+      "url": "https://Bikepark-Samerberg.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791444459682-54634a19.jpg",
+      "tags": [
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-08T07:27:41.898Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
@@ -604,6 +604,20 @@
       "author_name": "jovan",
       "created_at": "2026-08-18T19:43:08.040Z"
     },
+    "b0cffdaa-ca0b-4998-bc87-98ac25e2e065": {
+      "title": "Was ist die Anti-Fascist Internationalist Front? - Vortrag über den antifaschistischen Kampf in Myanmar",
+      "starts_at": "2026-10-20T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Z - Linkes Zentrum, Samerstraße 11",
+      "description": "Internationalistische Solidarität und Frauen im bewaffneten Widerstand in Myanmar:\n\nWas bedeutet internationalistische Solidarität in einem Bürgerkrieg? Und welche Rolle spielen Frauen dort?\n\nIm Vortrag wollen wir die Anti-Fascist Internationalist Front (AIF) vorstellen: eine internationalistische Formation, die am 15. Oktober 2024 öffentlich ihre Gründung bekannt gab. Ihre Mitglieder verstehen sich als Unterstützer*innen des Widerstands gegen die Militärjunta in Myanmar und betonen, an der Seite der Menschen vor Ort zu kämpfen, statt ihnen eine eigene politische Linie aufzuzwingen. Wir werden über Entstehung, Ziele, politische Vielfalt und Zusammenarbeit der AIF mit lokalen Widerstandsgruppen sprechen und über ihre Beteiligung an Kämpfen im Chin Staat, darunter die Kämpfe um Falam. \n\nEin wichtiger Punkt wird auch „WITCH“, also „Women Internationalists of the Chin Hills“ sein. Das ist eine autonome Fraueneinheit, die mit der AIF verbunden ist und sich nach eigener Darstellung für Selbstbestimmung, eine freie und gleichberechtigte Gesellschaft sowie ein Leben im Einklang mit der Natur einsetzt. Wir beleuchten, wie WITCH den abwertend verwendeten Begriff „Hexe“ für sich umdeutet, welche Bedeutung eine eigenständige Fraueneinheit hat und was über ihre Beteiligung an Drohneneinsätzen in der Region Falam berichtet wird.\n\nGemeinsam wollen wir fragen: Wie hängen Antifaschismus, Feminismus und Internationalismus in diesem konkreten Kontext zusammen? Was können wir aus den Erfahrungen lernen und wo liegen die Grenzen vereinfachender Erzählungen über eine komplexe, von vielen lokalen Gemeinschaften und politischen Kräften getragene Revolution?\n\nKommt vorbei und diskutiert mit.\n20.10. · 19:00 · Z - Linkes Zentrum, Samerstraße 11\nFür das leibliche Wohl ist gesorgt.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791888154342-712335d2.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-13T10:42:35.675Z"
+    },
     "def4613b-38f4-47d4-8d7a-1dcf971adfaf": {
       "title": "Privatstädte – Labore für einen totalitären Kapitalismus",
       "starts_at": "2026-10-21T17:30:00.000Z",
@@ -617,6 +631,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T00:44:15.219Z"
+    },
+    "782f7e88-32e1-4c0f-8860-73d9fb7abe35": {
+      "title": "München darf nicht zur Abschiebe-Hauptstadt werden! - Demonstration",
+      "starts_at": "2026-10-24T14:00:00.000Z",
+      "ends_at": "",
+      "location": "Flughafen München - MAC Forum",
+      "description": "Demonstration gegen das Abschiebeterminal MUC. Zugtreffpunkt in Rosenheim ist um 13:15 Uhr in der Bahnhofshalle (ab 13:34 Uhr im RE5 im hinteren Zugteil).",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791825716432-1e620fee.jpg",
+      "tags": [
+        "soli"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-12T17:21:58.542Z"
     },
     "c0bfda72-64d9-4791-8bda-0e743b982f67": {
       "title": "Alpine Flohmarkt",
