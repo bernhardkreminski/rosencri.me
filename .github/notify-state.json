@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-17T11:30:34.298Z",
-  "lastMailedOn": "2026-10-17",
+  "updatedAt": "2026-10-20T12:38:07.594Z",
+  "lastMailedOn": "2026-10-20",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -524,22 +524,6 @@
       "author_name": "",
       "created_at": "2026-10-03T17:59:19.131Z"
     },
-    "00ede9bd-9370-4127-b085-23ad4093878f": {
-      "title": "Flohmarkt Landlmühle",
-      "starts_at": "2026-10-10T08:00:00.000Z",
-      "ends_at": "2026-10-10T15:00:00.000Z",
-      "location": "Landlmühle",
-      "description": "Flohmarkt",
-      "url": "",
-      "image_url": "",
-      "tags": [
-        "flohmarkt"
-      ],
-      "rrule": "",
-      "rdates": [],
-      "author_name": "",
-      "created_at": "2026-10-04T17:48:38.274Z"
-    },
     "7c78cf3e-e263-449c-aadf-331f3e3db0a0": {
       "title": "Radl, Ski & Outdoor Flohmarkt Samerberg",
       "starts_at": "2026-10-10T08:00:00.000Z",
@@ -555,6 +539,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-08T07:27:41.898Z"
+    },
+    "00ede9bd-9370-4127-b085-23ad4093878f": {
+      "title": "Flohmarkt Landlmühle",
+      "starts_at": "2026-10-10T08:00:00.000Z",
+      "ends_at": "2026-10-10T15:00:00.000Z",
+      "location": "Landlmühle",
+      "description": "Flohmarkt",
+      "url": "",
+      "image_url": "",
+      "tags": [
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-04T17:48:38.274Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
@@ -743,6 +743,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:37:45.443Z"
+    },
+    "cf020042-cbf3-423a-b992-51af87780188": {
+      "title": "Meinungsfreiheit. Vortrag und Gespräch mit Ronen Steinke",
+      "starts_at": "2026-11-12T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Hans-Fischer-Saal, Künstlerhof am Ludwigplatz, 83022 Rosenheim",
+      "description": "Bestsellerautor und Journalist Ronen Steinke spricht darüber, wie Polizei und Justiz unser Grundrecht einschränken und wie wir es verteidigen. Nominiert für den Deutschen Sachbuchpreis 2026.",
+      "url": "https://instagram.com/gesichtzeigenrosenheim",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1792494412388-32057241.jpg",
+      "tags": [
+        "lesung"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-20T11:06:53.108Z"
     },
     "7534fd94-9124-4481-b0cd-d2a387e914d8": {
       "title": "FASCHISIERUNG oder: Wie groß ist die Gefahr von Rechts?",
