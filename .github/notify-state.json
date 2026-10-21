@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-20T12:38:07.594Z",
-  "lastMailedOn": "2026-10-20",
+  "updatedAt": "2026-10-21T12:49:54.290Z",
+  "lastMailedOn": "2026-10-21",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -743,6 +743,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:37:45.443Z"
+    },
+    "d4ed120e-c504-4b7b-8b72-3b1631640d91": {
+      "title": "Meinungsfreiheit. Vortrag und Gespräch mit Ronen Steinke",
+      "starts_at": "2026-11-12T17:30:00.000Z",
+      "ends_at": "",
+      "location": "Hans-Fischer-Saal (4. Stock), Künstlerhof am Ludwigsplatz, 83022 Rosenheim",
+      "description": "Wie Polizei und Justiz unser Grundrecht einschränken und wie wir es verteidigen. Bestsellerautor und Journalist Ronen Steinke zu Gast in Rosenheim.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1792564758318-20acfcbe.jpg",
+      "tags": [
+        "lesung"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "Mims",
+      "created_at": "2026-10-21T06:39:18.823Z"
     },
     "cf020042-cbf3-423a-b992-51af87780188": {
       "title": "Meinungsfreiheit. Vortrag und Gespräch mit Ronen Steinke",
