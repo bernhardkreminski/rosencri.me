@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-21T12:49:54.290Z",
-  "lastMailedOn": "2026-10-21",
+  "updatedAt": "2026-11-03T14:56:00.931Z",
+  "lastMailedOn": "2026-11-03",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -524,22 +524,6 @@
       "author_name": "",
       "created_at": "2026-10-03T17:59:19.131Z"
     },
-    "7c78cf3e-e263-449c-aadf-331f3e3db0a0": {
-      "title": "Radl, Ski & Outdoor Flohmarkt Samerberg",
-      "starts_at": "2026-10-10T08:00:00.000Z",
-      "ends_at": "2026-10-10T14:00:00.000Z",
-      "location": "Hochriesbahn Parkplatz am Bikepark",
-      "description": "Flohmarkt für Radl, Ski und Outdoor-Ausrüstung am Samerberg.",
-      "url": "https://Bikepark-Samerberg.de",
-      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791444459682-54634a19.jpg",
-      "tags": [
-        "flohmarkt"
-      ],
-      "rrule": "",
-      "rdates": [],
-      "author_name": "",
-      "created_at": "2026-10-08T07:27:41.898Z"
-    },
     "00ede9bd-9370-4127-b085-23ad4093878f": {
       "title": "Flohmarkt Landlmühle",
       "starts_at": "2026-10-10T08:00:00.000Z",
@@ -555,6 +539,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-04T17:48:38.274Z"
+    },
+    "7c78cf3e-e263-449c-aadf-331f3e3db0a0": {
+      "title": "Radl, Ski & Outdoor Flohmarkt Samerberg",
+      "starts_at": "2026-10-10T08:00:00.000Z",
+      "ends_at": "2026-10-10T14:00:00.000Z",
+      "location": "Hochriesbahn Parkplatz am Bikepark",
+      "description": "Flohmarkt für Radl, Ski und Outdoor-Ausrüstung am Samerberg.",
+      "url": "https://Bikepark-Samerberg.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791444459682-54634a19.jpg",
+      "tags": [
+        "flohmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-10-08T07:27:41.898Z"
     },
     "d6d6cb62-d1c3-468a-a9ae-b102c78110a9": {
       "title": "Sip & Shop Flohmarkt",
@@ -697,6 +697,118 @@
       "author_name": "",
       "created_at": "2026-09-11T08:43:02.930Z"
     },
+    "9dc2eff4-553e-4129-822f-cadb3adbb888": {
+      "title": "Kleider & Büchertausch",
+      "starts_at": "2026-11-03T17:00:00.000Z",
+      "ends_at": "2026-11-03T20:00:00.000Z",
+      "location": "H3cke Makerspace",
+      "description": "Sommerklamotten gegen Herbstbücher tauschen. Bringt eure nicht mehr benutzten Klamotten und gelesenen Bücher und nehmt Neues mit.",
+      "url": "https://instagram.com/rosa.rosenheim",
+      "image_url": "",
+      "tags": [
+        "flohmarkt",
+        "diy"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T07:34:27.348Z"
+    },
+    "6d8cfb43-9311-40d9-b1c0-ef61546fe81f": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-11-03T17:00:00.000Z",
+      "ends_at": "2026-11-03T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "ea994e95-830d-4470-88eb-f955868241d8": {
+      "title": "🌈 Queerer Stammtisch",
+      "starts_at": "2026-11-03T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Hans im Glück - Rosenheim, Ludwigspatz 14, 83022 Rosenheim",
+      "description": "Wir sind am 1. Dienstag im Monat im Hans im Glück zum Austausch und für tolle Gespräche. Dazu gibt es eine großartige Auswahl an Essen und Getränken!\n\nQueerer Stammtisch bedeutet dabei weder, dass du schon mal dabei gewesen sein musst. Auch musst du dich nicht als queer identifizieren. Komm einfach vorbei um neue Leute kennenzulernen! 🥳🌈\n\nFrag direkt am Empfang nach dem queeren Stammtisch, dann zeigen dir die Mitarbeiter:innen wo wir sitzen :)\n\nWir freuen uns auf dich!",
+      "url": "https://www.vegansofrosenheim.de/queer",
+      "image_url": "",
+      "tags": [
+        "essen",
+        "lgbtq"
+      ],
+      "rrule": "",
+      "rdates": [
+        "2026-12-01T18:00:00.000Z"
+      ],
+      "author_name": "Queers of Rosenheim",
+      "created_at": "2026-11-03T12:46:52.359Z"
+    },
+    "7d9977c9-c377-497b-ba18-f07560919685": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-11-05T15:00:00.000Z",
+      "ends_at": "2026-11-05T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "0663c189-0b01-4706-a4d1-c6bd458167e1": {
+      "title": "Homegrown: Kuupa & the Gang",
+      "starts_at": "2026-11-05T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Ludwigsplatz 5, 83022 Rosenheim",
+      "description": "Homegrown-Konzert – Kuupa & the Gang\n\nAuthentischer Indie-Pop/Rock aus Bayern, mit Elementen aus verschiedensten Musikgenres und eingängigen Melodien. Moderne Sounds, gepaart mit ehrlichen Geschichten über Alltagskämpfe, große Gefühle und gesellschaftlichen Wandel.\n\nEinlass 19:00 Uhr, Beginn 20:00 Uhr\nEintritt frei, Spenden für die Musiker erwünscht\n\nHomegrown-Reihe: Musikinitiative Rosenheim (M.I.R. e.V.), Radio Regenbogen und Jazzclub Le Pirate",
+      "url": "https://www.musikinitiative.com/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "homegrown",
+        "indie",
+        "musikinitiative",
+        "le-pirate"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:29:02.989Z"
+    },
+    "cedd5756-e2ed-4169-96cb-a087f1d70602": {
+      "title": "Kasperltheater: „Kasperl auf Bergtour“",
+      "starts_at": "2026-11-06T14:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft, Rosenheim",
+      "description": "Katis Kasperltheater in der Vetternwirtschaft mit dem Stück „Kasperl auf Bergtour“ (im beheizten Nebenraum).",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kinder",
+        "kasperl"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:36:47.909Z"
+    },
     "b6077f2c-dd32-4361-9bd1-4f0ee431251b": {
       "title": "Ein Leben am seidenen Faden",
       "starts_at": "2026-11-06T18:00:00.000Z",
@@ -712,6 +824,40 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:36:57.832Z"
+    },
+    "9484ae28-12ba-47d3-9392-2cc019f77241": {
+      "title": "Sexschweiss/Stresshotel Mutti",
+      "starts_at": "2026-11-06T19:00:00.000Z",
+      "ends_at": "2026-11-06T22:45:00.000Z",
+      "location": "Asta-Kneipe, Rosenheim",
+      "description": "Abendkasse: 15€. Für Schüler*innen, Student*innen und U23: 10€",
+      "url": "https://astakneipe.de/veranstaltungen/sexschweiss-stresshotel-mutti/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "asta"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:40:50.369Z"
+    },
+    "7e7cdcc1-22b0-4162-ba75-579ab2b1df77": {
+      "title": "Kleidertauschmarkt",
+      "starts_at": "2026-11-07T09:00:00.000Z",
+      "ends_at": "2026-11-07T13:00:00.000Z",
+      "location": "AWO Mehrgenerationenhaus, Ebersberger Str. 8, 83022 Rosenheim",
+      "description": "Bring Kleiderschrankhüter mit und tausche sie gegen neue Lieblingsstücke! Oder komm einfach vorbei zum Austausch und für Tipps rund um Nachhaltigkeit bei Kaffee und veganen Kuchen.",
+      "url": "https://www.awo-rosenheim.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1793710501992-9ad97f1b.jpg",
+      "tags": [
+        "flohmarkt",
+        "soli"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "Vegans of Rosenheim",
+      "created_at": "2026-11-03T12:55:17.716Z"
     },
     "e305cf38-b687-4378-87e1-ca5a18d54a1e": {
       "title": "Exile Never Ends",
@@ -730,6 +876,25 @@
       "author_name": "",
       "created_at": "2026-10-03T19:37:23.340Z"
     },
+    "d9008166-1bc9-4c25-9451-de4f256b930d": {
+      "title": "Konzert mit Rötten Shock, Choke Combat und Age of Rats",
+      "starts_at": "2026-11-07T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft Rosenheim",
+      "description": "Los geht's mit den Anarchopunker*innen von Rötten Shock aus München, gefolgt von Choke Combat und den Hardcorepunks von Age of Rats aus Regensburg.",
+      "url": "https://vfbk.net",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1793690745405-e5e5b7ad.jpg",
+      "tags": [
+        "konzert",
+        "live-musik",
+        "punk",
+        "hardcore"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T07:25:45.990Z"
+    },
     "acfa88b5-f5c9-4098-ae5b-f3618b1b22e0": {
       "title": "Gedenken an die Pogromnacht 1938",
       "starts_at": "2026-11-09T18:00:00.000Z",
@@ -743,6 +908,44 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:37:45.443Z"
+    },
+    "e3aae681-490c-4209-8824-13614da916b2": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-11-10T17:00:00.000Z",
+      "ends_at": "2026-11-10T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "3ba299ca-3983-47f0-aa76-899962fcf894": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-11-12T15:00:00.000Z",
+      "ends_at": "2026-11-12T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
     },
     "d4ed120e-c504-4b7b-8b72-3b1631640d91": {
       "title": "Meinungsfreiheit. Vortrag und Gespräch mit Ronen Steinke",
@@ -776,6 +979,60 @@
       "author_name": "",
       "created_at": "2026-10-20T11:06:53.108Z"
     },
+    "4645a7eb-28ae-4ad7-aa6e-5f701a067a23": {
+      "title": "SpezialMusik // Neo Soul",
+      "starts_at": "2026-11-13T18:00:00.000Z",
+      "ends_at": "2026-11-14T00:00:00.000Z",
+      "location": "achtpunktsechs, Finsterwalderstraße 8, Stephanskirchen",
+      "description": "Listening Bar SpezialMusik – NEO SOUL\n\nVersiert kuratierter Neo Soul mit warmen Bässen und smoothen Beats. An den Decks: Marion Berger & Michael Fakesch.\nMusik u. a. von Anderson Paak, Erykah Badu, Flying Lotus und mehr. Dazu Drinks vom achtpunktsechs.\n\nEintritt frei.\nKulturKlub Rosenheim",
+      "url": "https://www.kulturklub-rosenheim.de/aktionen/super-musik-rainer-trby-ramza-249cj-and4m-p49xl-7c7d6-hp2tw-sn4rl-re4fe-264fd-er4s2-fw63d-25kmf-7tzhx-hmh42-5mdss-z2rtt",
+      "image_url": "",
+      "tags": [
+        "dj",
+        "neo-soul",
+        "kulturklub",
+        "listening-bar"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:26:08.742Z"
+    },
+    "d91577e4-d5bc-45bf-9399-9ed18aafee7d": {
+      "title": "Rathmann & Koriander – LIVE!",
+      "starts_at": "2026-11-13T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Asta-Kneipe, Rosenheim",
+      "description": "Vorverkauf: 13€\nAbendkasse: 13–15€\nTickets: https://tickets.astakneipe.de/asta/koriandermann/",
+      "url": "https://astakneipe.de/veranstaltungen/rathmann-koriander-live/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "asta"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:41:46.797Z"
+    },
+    "5e33b34d-a312-4912-b14e-6cb8eba525eb": {
+      "title": "Poetry Slam – Best Of Rosenslam",
+      "starts_at": "2026-11-13T19:00:00.000Z",
+      "ends_at": "2026-11-13T21:30:00.000Z",
+      "location": "Bühne im Lokschuppen, Rathausstraße 26, 83022 Rosenheim",
+      "description": "ROSENSLAM – der monatliche Rosenheimer Poetry Slam.\nVeranstalter + Moderator: Thomas Eiwen.\n\nIn diesem Dichterwettstreit treten Dichter*innen in 2 Runden mit selbstgeschriebenen Texten (ohne Hilfsmittel, max. 7 Minuten) gegeneinander an. Gewonnen wird per Applaus.\n\nInfos: https://www.instagram.com/rosenslam/",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "poetry-slam",
+        "rosenslam",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:16:43.256Z"
+    },
     "7534fd94-9124-4481-b0cd-d2a387e914d8": {
       "title": "FASCHISIERUNG oder: Wie groß ist die Gefahr von Rechts?",
       "starts_at": "2026-11-16T18:30:00.000Z",
@@ -789,6 +1046,81 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:38:45.285Z"
+    },
+    "1854e63e-1f86-43e4-8cae-de9ff48d8189": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-11-17T17:00:00.000Z",
+      "ends_at": "2026-11-17T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "7eed0881-1bd4-4824-9b67-f553b97ee2b6": {
+      "title": "PROGRAMMKINO: ROSE",
+      "starts_at": "2026-11-18T18:30:00.000Z",
+      "ends_at": "",
+      "location": "Stadtbibliothek Rosenheim, Am Salzstadel 15",
+      "description": "PROGRAMMKINO in der Stadtbibliothek – Film: ROSE (mit Sandra Hüller).\n\nIn den Wirren des 30-jährigen Krieges erscheint ein mysteriöser Soldat in einem abgeschiedenen protestantischen Dorf … ROSE erzählt von einer jungen Frau auf der Suche nach Freiheit und wirft Fragen nach Identitäten, Rollen und Geschlecht auf.\n\nIm Anschluss Gespräch/Austausch, begleitet von Maic Staebler und der UN Women-Kampagne „HeForShe“.\nMehr: https://www.mstaebler.de/heforshe\n\nDauer: 94 Minuten, FSK ab 12\nEintritt: 8 € / 6 € für Mitglieder (KulturKlub und Förderverein der Stadtbibliothek)\nEinlass ab 19:00 Uhr",
+      "url": "https://www.kulturklub-rosenheim.de/aktionen/super-musik-rainer-trby-ramza-249cj-and4m-p49xl-7c7d6-hp2tw-3wx3g-s8e4f-3c3g5-pdn5e-pm3jk-wbzas-htwfd-2wjha-xtw5h",
+      "image_url": "",
+      "tags": [
+        "kino",
+        "programmkino",
+        "kulturklub",
+        "stadtbibliothek"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:26:08.742Z"
+    },
+    "868b5459-6627-40a3-ae9d-703c6e5093d9": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-11-19T15:00:00.000Z",
+      "ends_at": "2026-11-19T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "bc37c0a8-6066-4a21-94f8-51a6e53b2ec7": {
+      "title": "JAM-Session #42",
+      "starts_at": "2026-11-19T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Rosenheim",
+      "description": "Opener - Gregor Bürger & Band\n\nReihe: Postcovid JAM - Session #42\n\nWir laden wieder ein zur offenen Jamsession und möchten damit einmal im Monat ein spontanes Treffen für die lokale Jazzmusiker und Jazzliebhaber-Szene etablieren.\n\nAuf den Sessions treffen sich Jazzer vom Einsteiger bis zum Profi. Gespielt werden klassische Realbook Standards, aber auch jazzige Versionen von Bands anderer Genres sind herzlich willkommen. Spielfreude steht vor Virtuosität – es geht um den Spaß an der Musik.\n\nAls Opener des Abends spielt eine Rhythmusgruppe aus der lokalen und regionalen Rosenheimer Szene um Gregor Bürger, anschließend ist jeder eingeladen, in die offene Jams…\n\nLine-up:\nGregor Bürger & Kollegen\nGefördert durch die ...\n\nEinlass: 19:00 Uhr · Eintritt: frei",
+      "url": "https://www.lepirate-rosenheim.de/vvorschau_einzeln.html#id=40786415-10eb-49ea-9e4e-55a7dec66d6c",
+      "image_url": "",
+      "tags": [
+        "lepirate",
+        "jam",
+        "jazz"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:14:30.457Z"
     },
     "756dfb5e-e4cf-45f2-a48f-673e6a6e7913": {
       "title": "Adventsmarkt: Die Kunst des Feierns",
@@ -817,6 +1149,208 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:39:10.257Z"
+    },
+    "4900b84f-6341-4f7e-ad2a-b188cf710535": {
+      "title": "Couch Rocker Crew 20 Jahre Jubiläum!",
+      "starts_at": "2026-11-21T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Asta Kneipe, Hubertusstr. 1, 83022 Rosenheim",
+      "description": "Vorverkauf: 10€, Abendkasse: 15€",
+      "url": "https://astakneipe.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1793690322646-453b7937.jpg",
+      "tags": [
+        "party",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T07:18:43.322Z"
+    },
+    "a43cb811-23d7-4958-b2c8-34346fe9dc54": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-11-24T17:00:00.000Z",
+      "ends_at": "2026-11-24T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "1f2fc4f4-e4d3-4310-988f-a1cd6ecb9eac": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-11-26T15:00:00.000Z",
+      "ends_at": "2026-11-26T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "a6f87262-507a-41f2-bf0d-24ca77f92a78": {
+      "title": "Newcomer Abend in der AStA",
+      "starts_at": "2026-11-27T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Asta-Kneipe, Rosenheim",
+      "description": "Vorverkauf: 6€\nAbendkasse: 10€\nTickets: https://tickets.astakneipe.de/asta/newcomer/",
+      "url": "https://astakneipe.de/veranstaltungen/newcomer-abend-in-der-asta/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "asta",
+        "newcomer"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:41:46.797Z"
+    },
+    "c6f776ca-b6ae-4e6e-b7f8-9a8482494791": {
+      "title": "Bavarian Metal Battle",
+      "starts_at": "2026-11-28T17:00:00.000Z",
+      "ends_at": "2026-11-28T22:45:00.000Z",
+      "location": "Bühne im Lokschuppen, Rathausstraße 26, 83022 Rosenheim",
+      "description": "Contest für Metal- und Underground-Bands. Am Start sind 6 Bands aus Metal und Rock.\nSpecial Guest: CRUST´N´DRILLAS\n\nBands:\nSwarm Iniquity\nRivers of Grief\nGreyfen\nBloodspire Covenant\nUNVERMiTTELT\nDark Solstice\n\nEntscheidung durch Publikum und Jury.\nTickets: https://www.bavarianbattle.de",
+      "url": "https://www.bavarianbattle.de",
+      "image_url": "",
+      "tags": [
+        "metal",
+        "konzert",
+        "battle",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:16:43.256Z"
+    },
+    "a438f157-a13a-4c25-b5af-119f06b026b9": {
+      "title": "SMUG & Kill me after that/KMAT - LIVE",
+      "starts_at": "2026-11-28T19:00:00.000Z",
+      "ends_at": "",
+      "location": "AStA Rosenheim, Hubertusstr. 1",
+      "description": "Saturday Night Punk Show mit SMUG und KMAT (Kill me after that).",
+      "url": "https://astakneipe.de/veranstaltungen/smug-l",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1793690446215-432082b5.jpg",
+      "tags": [
+        "konzert",
+        "punk",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T07:20:46.608Z"
+    },
+    "e52dc776-8795-4ccb-8d29-24ccc754164f": {
+      "title": "BREAKOUT + LÄRA – LIVE",
+      "starts_at": "2026-11-30T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Asta-Kneipe, Rosenheim",
+      "description": "Vorverkauf: 8€\nAbendkasse: 12€\nTickets: https://tickets.astakneipe.de/asta/brlae/",
+      "url": "https://astakneipe.de/veranstaltungen/breakout-laera-realease-party/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "asta"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:41:46.797Z"
+    },
+    "f03d25c8-6499-42a2-841b-d958697dcaed": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-12-01T17:00:00.000Z",
+      "ends_at": "2026-12-01T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "90bd8836-5736-46db-a734-eb175307e06e": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-12-03T15:00:00.000Z",
+      "ends_at": "2026-12-03T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "e7d5ec22-f081-400c-8b2f-be6d407820c6": {
+      "title": "Rudi and the Scusis",
+      "starts_at": "2026-12-03T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Rosenheim",
+      "description": "Tanzbarer Ro-tone Ska mit offbeat und backbeat\n\nReihe: Homegrown presented by MIR, Radio Regenbogen und Le Pirate\n\nSka aus der Dose mit ordentlich Druck. Zisch und Klack und schmeckt! \n\nDas Rezept ist denkbar einfach: Offbeat mit Backbeat. Tanzbarer Ro-tone Ska und Rocksteady, verfeinert mit treibenden Saxephönern und funky Basslines. Mal jazzig, stets lässig. Das Ganze kommt stimmig mit Lyrics aus dem echten Leben, voller Tiefgang und Humor.\nTanzschuhe schnüren, rumkommen! Wir räumen das Le Pirate leer und sorgen für jede Menge Dancefloor!\n\nLine-up:\nfather & son on everything\n\nEinlass: 19:00 Uhr · Eintritt: Frei\n\n>>> INSTA von Rudi & the Scusis: https://www.instagram.com/rudiandthescusis/",
+      "url": "https://www.lepirate-rosenheim.de/vvorschau_einzeln.html#id=ac801080-a6e1-4041-bee5-490863be62f6",
+      "image_url": "",
+      "tags": [
+        "lepirate",
+        "konzert",
+        "ska"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:14:30.457Z"
+    },
+    "3de9e628-db1b-4dc6-be64-ad83f1b85c52": {
+      "title": "Songwriting-Workshop mit Fabian Mägel",
+      "starts_at": "2026-12-05T11:00:00.000Z",
+      "ends_at": "2026-12-05T16:00:00.000Z",
+      "location": "Asta-Kneipe, Hubertusstraße 1, 83022 Rosenheim",
+      "description": "Songwriting-Workshop mit Fabian Mägel (Songwriter, Produzent, Songwriting Coach)\n\nMethoden, Tipps und Tricks zum Songwriting – gemeinsame Arbeit an euren Liedern, kein reiner Vortrag. Songs bis zum 28.11. an info@musikinitiative.com schicken oder mitbringen (Aufnahme, Zettel oder live). Die Songs müssen nicht fertig sein.\n\nBeginn 12:00 Uhr, ca. 5 Stunden\nTeilnahmegebühr: 20 € (MIR-Mitglieder 10 €)\nAnmeldung erforderlich unter info@musikinitiative.com – Teilnehmerzahl begrenzt\n\nMusikinitiative Rosenheim (M.I.R. e.V.)",
+      "url": "https://www.musikinitiative.com/",
+      "image_url": "",
+      "tags": [
+        "workshop",
+        "songwriting",
+        "musikinitiative",
+        "asta"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:29:02.989Z"
     },
     "d2452791-d2b0-4eae-b439-d427a6e3fe1b": {
       "title": "Good Night White Pride 2026",
@@ -853,6 +1387,79 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:39:29.086Z"
+    },
+    "2662bce5-01ba-4081-9b21-247ad71b4678": {
+      "title": "Since 11, Endton & One Brave Night",
+      "starts_at": "2026-12-06T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Asta-Kneipe, Rosenheim",
+      "description": "Vorverkauf: 10€\nAbendkasse: 12–18€\nTickets: https://tickets.astakneipe.de/asta/since11/",
+      "url": "https://astakneipe.de/veranstaltungen/since-11-endton-one-brave-night/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "asta"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:41:46.797Z"
+    },
+    "ca5c638a-38d0-4206-8078-6fde12331eb7": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-12-08T17:00:00.000Z",
+      "ends_at": "2026-12-08T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "f8e3747c-0d49-4ff7-afb9-ca3580087cce": {
+      "title": "Giacomo Ganzerli Trio",
+      "starts_at": "2026-12-09T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Rosenheim",
+      "description": "Junger, zeitgenössischer, experimenteller Jazz\n\nReihe: rising stars\n\nDas Giacomo Ganzerli Trio ist ein 2024 vom Schlagzeuger und Komponisten Giacomo Ganzerli gegründetes zeitgenössisches Jazzprojekt und Giacomo ist den Pirate-Stammgästen durch die legendären Konzerte des RED EMMA Trios auch wohlvertraut.\n\nIn der basslosen Besetzung spielen Daniele Nasi (Tenorsaxofon), Michele Bonifati (E-Gitarre) und Ganzerli (Schlagzeug, Percussion und Elektronik). Das Trio entstand aus dem Wunsch nach einem offenen musikalischen Raum, in dem Komposition und Improvisation nebeneinander bestehen können. Der Verzicht auf den Bass ist mehr als eine klangliche Besonderheit: Er…\n\nLine-up:\nDaniele Nasi (Tenorsaxofon)\nMichele Bonifati (E-Gitarre)\nGiacomo Ganzerli (Schlagzeug, Percussion und Elektronik)\n\nEinlass: 19:00 Uhr · Eintritt: 20,00 € erm. 10,00 €",
+      "url": "https://www.lepirate-rosenheim.de/vvorschau_einzeln.html#id=f65cdfa6-888b-418b-9e3a-1de94b416305",
+      "image_url": "",
+      "tags": [
+        "lepirate",
+        "konzert",
+        "jazz"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:14:30.457Z"
+    },
+    "19d428ad-f69b-46d5-bfe6-1c21a7a2cf1d": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-12-10T15:00:00.000Z",
+      "ends_at": "2026-12-10T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
     },
     "746a1577-e490-4493-8161-12cf9087f990": {
       "title": "15 Jahre nach der Selbstenttarnung des NSU",
@@ -898,6 +1505,80 @@
       "author_name": "",
       "created_at": "2026-10-03T19:40:32.039Z"
     },
+    "f82ae4de-bb36-4977-9526-48cff3062a0f": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-12-15T17:00:00.000Z",
+      "ends_at": "2026-12-15T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "54e15556-eb9e-45a9-8051-6ee515571157": {
+      "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
+      "starts_at": "2026-12-17T15:00:00.000Z",
+      "ends_at": "2026-12-17T16:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des Jungen Theater Rosenheim für Kids von 6–12 Jahren.\nDonnerstags 16:00–17:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos, Einstieg jederzeit ohne Anmeldung. Pause in den Schulferien.\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "kinder",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "d22cbd84-d7bd-497b-b13b-22d2069834b0": {
+      "title": "Lametta Schallplattler - Open Turntables",
+      "starts_at": "2026-12-19T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Rosenheim",
+      "description": "Classic House - Funk - Deep House - Disco\n\nReihe: DJ\n\nEinmal im Monat gibt es SUPERMUSIK im Pirate.\n\nOrganisiert vom Kulturklub Rosenheim legen die DJs Vinko Vrabec und Michael Fakesch einen eklektischen Mix aus Funk, Soul, House, HipHop und Electronica auf. Unterstützt werden die beiden dabei von renommierten Gast DJs.\n\ndiesmal:\n\nOpen Turntables beim Supermusik Weihnachtsevent: Jeder, der sich anmeldet, kann auflegen, wir wechseln durch - weil's so schön ist ab 18:00 :-)\n\nLine-up:\nVinko Vrabec // International Bohemia - Safari Lounge\nMichael Fakesch // Funkstörung - Monkeytown - IK7\nund jeder DJ der sich anmeldet\n\nEinlass: 18:00 Uhr · Eintritt: frei",
+      "url": "https://www.lepirate-rosenheim.de/vvorschau_einzeln.html#id=4a0e7cf4-63b9-4dc4-acd0-391bd0c365eb",
+      "image_url": "",
+      "tags": [
+        "lepirate",
+        "dj"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:14:30.457Z"
+    },
+    "f8035a22-3576-4467-97d9-1c7647ede5ad": {
+      "title": "Offener Theaterkurs (ab 13 Jahre)",
+      "starts_at": "2026-12-22T17:00:00.000Z",
+      "ends_at": "2026-12-22T18:30:00.000Z",
+      "location": "Blackbox im Lokschuppen, Rosenheim",
+      "description": "Offener Theaterkurs des JTR (Junges Theater Rosenheim) für alle ab 13 Jahre.\nDienstags 18:00–19:30 Uhr in der Blackbox im Lokschuppen.\nKostenlos. Pause in den Schulferien. Einfach vorbeikommen!\nVeranstaltet über den Stadtjugendring Rosenheim / JTR.",
+      "url": "https://www.stadtjugendring.de/terminkalender.html",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "kurs",
+        "jugend",
+        "stadtjugendring"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:15:33.142Z"
+    },
     "c4590e79-d662-45ea-bf5c-d604a3c664ae": {
       "title": "White Power - Europas Rechtsextreme",
       "starts_at": "2027-01-03T18:00:00.000Z",
@@ -914,6 +1595,42 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:40:47.651Z"
+    },
+    "e9acff06-4818-4e9a-b93d-e94dd6584a57": {
+      "title": "JAM-Session #44",
+      "starts_at": "2027-01-21T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Rosenheim",
+      "description": "Opener - Gregor Bürger & Band\n\nReihe: Postcovid JAM - Session #44\n\nWir laden wieder ein zur offenen Jamsession und möchten damit einmal im Monat ein spontanes Treffen für die lokale Jazzmusiker und Jazzliebhaber-Szene etablieren.\n\nAuf den Sessions treffen sich Jazzer vom Einsteiger bis zum Profi. Gespielt werden klassische Realbook Standards, aber auch jazzige Versionen von Bands anderer Genres sind herzlich willkommen. Spielfreude steht vor Virtuosität – es geht um den Spaß an der Musik.\n\nAls Opener des Abends spielt eine Rhythmusgruppe aus der lokalen und regionalen Rosenheimer Szene um Gregor Bürger, anschließend ist jeder eingeladen, in die offene Jams…\n\nLine-up:\nGregor Bürger & Kollegen\nGefördert durch die ...\n\nEinlass: 19:00 Uhr · Eintritt: frei",
+      "url": "https://www.lepirate-rosenheim.de/vvorschau_einzeln.html#id=9eb3adac-83c0-4ffc-8c34-9c881e423a20",
+      "image_url": "",
+      "tags": [
+        "lepirate",
+        "jam",
+        "jazz"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:14:30.457Z"
+    },
+    "0c3d733e-93cb-46b7-a951-0d1fc372db2a": {
+      "title": "Phish Heads",
+      "starts_at": "2027-01-21T20:30:00.000Z",
+      "ends_at": "",
+      "location": "Le Pirate, Rosenheim",
+      "description": "loud and explosiv - only for nerds\n\nReihe: heavy jazz rock without bounderies\n\nLaute Gitarre, schiebender Bass und treibendes Schlagzeug – Das Konzept des „Power Trios“ hat in der Musikgeschichte schon in unzähligen Konstellationen ungefiltert die Energie von 3 Musikern direkt zum Zuhörer transportiert. Ob bluesy und psychedelisch in der Jimi Hendrix Experience, sphärisch und warm bei Pat Metheny oder abstrakt und industriell bei Wayne Krantz – die Intimität und Kraft dieser Besetzung zieht einen in ihren Bann.\n\nDie Musik der Phish Heads vereint Elemente aus all diesen Musikwelten und kondensiert die Liebe der 3 Musiker zu groovendem Rock, vertraktem Jazz, mitreißende…\n\nLine-up:\nFelix Dehmel - Drums\nOliver Herlitzka - Guitar \nHenning Schiewer - Bass\n\nEinlass: 19:00 Uhr · Eintritt: frei - Hutgage · shortact nach der session\n\n>>> YOUTUBE-Video: https://www.youtube.com/watch?v=TjJC4siVjqs&t=220s",
+      "url": "https://www.lepirate-rosenheim.de/vvorschau_einzeln.html#id=83c16934-c955-48ee-9c23-19949602dea9",
+      "image_url": "",
+      "tags": [
+        "lepirate",
+        "konzert",
+        "jazz"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T09:14:30.457Z"
     },
     "52dcbb4e-2248-4158-a26d-0058e21ecae0": {
       "title": "Antifa, ja klar!",
@@ -944,6 +1661,23 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:41:24.148Z"
+    },
+    "0e6de934-3fc3-4052-911e-9e62556601ea": {
+      "title": "MAD FOXES & WEAK BOYS",
+      "starts_at": "2027-02-19T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Asta-Kneipe, Rosenheim",
+      "description": "Vorverkauf: 13€\nTickets: https://tickets.astakneipe.de/asta/madfoxes/",
+      "url": "https://astakneipe.de/veranstaltungen/mad-foxes-weak-boys/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "asta"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-03T08:41:46.797Z"
     }
   }
 }
