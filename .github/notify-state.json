@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-03T14:56:00.931Z",
-  "lastMailedOn": "2026-11-03",
+  "updatedAt": "2026-11-05T15:17:46.108Z",
+  "lastMailedOn": "2026-11-05",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1204,6 +1204,24 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "b112118d-7e03-4c9d-beeb-2419a3c7ed33": {
+      "title": "Adventsmarkt am blauen Haus",
+      "starts_at": "2026-11-27T14:00:00.000Z",
+      "ends_at": "2026-11-27T18:00:00.000Z",
+      "location": "Blaues Haus Reichenbachstraße 7, Rosenheim",
+      "description": "Sozialraumteam Ost  - kreativer Adventsmarkt am blauen Haus\n\nEs sind tolle Auftritte und schöne Stände in der Planung\n\n📌 Am blauen Haus in der Reichenbachstraße 7, Rosenheim",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1793888718323-dc631000.jpg",
+      "tags": [
+        "kinder",
+        "advent",
+        "sozialraumteams"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-05T14:25:19.395Z"
     },
     "a6f87262-507a-41f2-bf0d-24ca77f92a78": {
       "title": "Newcomer Abend in der AStA",
