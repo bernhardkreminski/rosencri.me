@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-05T15:17:46.108Z",
-  "lastMailedOn": "2026-11-05",
+  "updatedAt": "2026-11-06T14:54:27.137Z",
+  "lastMailedOn": "2026-11-06",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -732,6 +732,25 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "8a14bd7e-9be8-4a06-ae6c-f297e7cf0126": {
+      "title": "ROSA - Das Wohnzimmer für Alle",
+      "starts_at": "2026-11-03T17:00:00.000Z",
+      "ends_at": "2026-11-03T21:00:00.000Z",
+      "location": "H3CKE Makerspace Herzog-Otto-Straße 8A, 83022 Rosenheim",
+      "description": "ROSA - Das offene Wohnzimmer in Rosenheim\n🌈🛋️🎲🫖🫱🏽‍🫲🏼🤸🏾‍♀️🩷🌇🎨🥁🕺🏽🧃\n\ndienstags 18-22 Uhr\nin der @h3cke_makerspace\n\n- Es geht um Zusammenkommen & Austausch \n- Ohne Konsumzwang (Getränke gibts, können aber auch mitgebracht werden) \n- Egal ob nur für dich, oder mit anderen \n- Neben normalen Wohnzimmerabenden gibt es auch Themenabende (z.B. Workshops, Konzerte, Büchercafé, Kleidertausch) \n- Wir machen das ehrenamtlich und freuen uns über jede/n der kommt :)",
+      "url": "https://www.instagram.com/rosa.rosenheim?exln=MTVsM2V4M25lMHZxbw%3D%3D&utm_source=qr",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1793898321518-147e0142.jpg",
+      "tags": [
+        "sozial",
+        "kultur",
+        "community",
+        "gemeinschaft"
+      ],
+      "rrule": "FREQ=WEEKLY;UNTIL=20270730T215959Z",
+      "rdates": [],
+      "author_name": "ROSA Rosenheim",
+      "created_at": "2026-11-05T17:05:24.510Z"
     },
     "ea994e95-830d-4470-88eb-f955868241d8": {
       "title": "🌈 Queerer Stammtisch",
