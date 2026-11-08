@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-06T14:54:27.137Z",
-  "lastMailedOn": "2026-11-06",
+  "updatedAt": "2026-11-08T14:11:00.112Z",
+  "lastMailedOn": "2026-11-08",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -666,6 +666,24 @@
       "author_name": "",
       "created_at": "2026-08-04T06:31:28.718Z"
     },
+    "bf587d1a-72f7-445b-b1bd-a6c1598c4b6a": {
+      "title": "🌈  Queerer Barabend",
+      "starts_at": "2026-10-28T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Josy's Rosenheimer Party Oim, Ruedorfferstraße 9, 83022 Rosenheim, Deutschland",
+      "description": "Offen für alle",
+      "url": "https://lgbtq-rosenheim.de/",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794126822834-158b455c.jpg",
+      "tags": [
+        "sozial",
+        "queer",
+        "lgbtq"
+      ],
+      "rrule": "FREQ=MONTHLY;BYDAY=4WE",
+      "rdates": [],
+      "author_name": "Queers of Rosenheim",
+      "created_at": "2026-11-08T08:33:45.332Z"
+    },
     "832d0bd1-4a4d-438a-bae7-563b334d4c60": {
       "title": "Gesundheitsreform Was Nun?",
       "starts_at": "2026-10-29T17:30:00.000Z",
@@ -679,6 +697,24 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-16T17:58:13.212Z"
+    },
+    "6f157aa3-5f92-4fa0-8991-32ab030f95d1": {
+      "title": "Katerfrühstück",
+      "starts_at": "2026-11-01T10:00:00.000Z",
+      "ends_at": "",
+      "location": "Katzentempel Rosenheim, Bahnhofstraße 17, 83022 Rosenheim, Deutschland",
+      "description": "Am 1. Sonntag im Monat machen wir einen entspannten Brunch im Katzentempel. \n\nWir planen immer etwas Puffer mit ein, so, dass du auch spontan dazu kommen kannst. Sollte viel los sein, ist natürlich eine Anmeldung sinnvoll, damit sicher alles klappt!",
+      "url": "https://www.vegansofrosenheim.de/events",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794134409757-d305db60.jpg",
+      "tags": [
+        "vegan",
+        "sozial",
+        "essen"
+      ],
+      "rrule": "FREQ=MONTHLY;BYDAY=1SU",
+      "rdates": [],
+      "author_name": "Vegans of Rosenheim",
+      "created_at": "2026-11-08T10:40:11.851Z"
     },
     "87a675a0-365f-4371-b0a8-2fe2ce7dac0a": {
       "title": "Das neue Z stellt sich vor",
@@ -947,6 +983,24 @@
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
     },
+    "85531ac5-407b-4ab9-b0ee-0d824f9ed349": {
+      "title": "Veganer Stammtisch",
+      "starts_at": "2026-11-11T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Indisches Restaurant Taj Mahal, Münchener Str. 47, 83022 Rosenheim, Deutschland",
+      "description": "Wir treffen uns am 2. Mittwoch im Monat zum Stammtisch im Taj Mahal. Stammtisch heißt aber nicht, dass du schon dabei gewesen sein musst. Du musst natürlich auch nicht vegan sein.\n\nNormalerweise ist immer genug Platz, dass du auch spontan dazukommen kannst, eine Anmeldung ist natürlich trotzdem am besten!",
+      "url": "https://www.vegansofrosenheim.de/events",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794133584797-ded7f789.jpg",
+      "tags": [
+        "vegan",
+        "essen",
+        "sozial"
+      ],
+      "rrule": "FREQ=MONTHLY;BYDAY=2WE",
+      "rdates": [],
+      "author_name": "Vegans of Rosenheim",
+      "created_at": "2026-11-08T10:26:27.657Z"
+    },
     "3ba299ca-3983-47f0-aa76-899962fcf894": {
       "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
       "starts_at": "2026-11-12T15:00:00.000Z",
@@ -1141,6 +1195,24 @@
       "author_name": "",
       "created_at": "2026-11-03T09:14:30.457Z"
     },
+    "d923103d-2ebd-40fb-9d4f-9aff89c52787": {
+      "title": "Trans Day of Remembrance",
+      "starts_at": "2026-11-20T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Marktfrauenbrunnen (Ludwigsplatz), Rosenheim",
+      "description": "Am 20.11.2026, dem Trans Day of Remembrance, wollen wir in Rosenheim zusammenkommen und jenen gedenken, die durch trans*feindliche Gewalt und Diskriminierung ihr Leben verloren haben. \n\nDer TDOR ist nicht nur ein Tag der Trauer - es ist auch ein Tag der Wut und der Entschlossenheit, sich weiterhin für eine Gesellschaft einzusetzen, in der Diskriminierung und Gewalt keinen Platz haben. Eine Gesellschaft, in der trans*, nicht-binäre und gender-nonkonforme Menschen sicher und in Würde leben können. Diese Menschenrechte müssen weltweit verteidigt werden – auch in Deutschland. \n\nLasst uns gemeinsam, als Betroffene und Verbündete, am Trans Day of Remembrance zusammenkommen, in der Gemeinschaft Halt finden und Sichtbarkeit zeigen. 🏳️‍⚧️\n\nWir freuen uns über jede*n Teilnehmer*in 🩷",
+      "url": "https://www.instagram.com/p/DfeYXaWvkbu/?obrf=eTM2cXhoOW53aWR5",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794142468298-389570da.jpg",
+      "tags": [
+        "queer",
+        "lgbtq",
+        "demo"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-08T12:54:30.098Z"
+    },
     "756dfb5e-e4cf-45f2-a48f-673e6a6e7913": {
       "title": "Adventsmarkt: Die Kunst des Feierns",
       "starts_at": "2026-11-21T10:00:00.000Z",
@@ -1241,6 +1313,42 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-05T14:25:19.395Z"
+    },
+    "b6cf436d-a2e1-43d5-8b5f-eca20631a77f": {
+      "title": "Critical Mass",
+      "starts_at": "2026-11-27T17:00:00.000Z",
+      "ends_at": "",
+      "location": "Ludwigsplatz",
+      "description": "Gemeinsame Fahrraddour durch die Stadt. \n\nMit mehr als 15 Radfahrer:innen dürfen wir einen geschlossenen Verband bilden und dann nach StVO auch zu zweit nebeneinander auf der Fahrbahn fahren. Der Verband ist von der Radwegebenutzungspflicht ausgenommen.",
+      "url": "https://critical-mass.rosenheim.social/was-ist-critical-mass/",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794135256520-7eaf3b99.jpg",
+      "tags": [
+        "sozial",
+        "sport",
+        "fahrrad"
+      ],
+      "rrule": "FREQ=MONTHLY;BYDAY=-1FR",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-08T10:54:18.167Z"
+    },
+    "6b1f23a2-e25d-45ee-8c15-638200dbf6cc": {
+      "title": "Last Friday Night",
+      "starts_at": "2026-11-27T18:30:00.000Z",
+      "ends_at": "",
+      "location": "TONY‘s burger & (a)more, Kaiserstraße 24, 83022 Rosenheim, Deutschland",
+      "description": "Am letzten Freitag im Monat treffen wir uns im Tony's zum veganen Burger-Essen und Cocktail-Trinken. Es gibt auch Specials, wie Curry-Wurst. Also der pefekte Start ins Wochenende! 🙌\nWenn möglich, bitte anmelden!",
+      "url": "https://www.vegansofrosenheim.de/events",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794134691866-b3eb48e7.jpg",
+      "tags": [
+        "vegan",
+        "essen",
+        "sozial"
+      ],
+      "rrule": "FREQ=MONTHLY;BYDAY=-1FR",
+      "rdates": [],
+      "author_name": "Vegans of Rosenheim",
+      "created_at": "2026-11-08T10:44:53.557Z"
     },
     "a6f87262-507a-41f2-bf0d-24ca77f92a78": {
       "title": "Newcomer Abend in der AStA",
@@ -1407,6 +1515,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-19T15:45:32.545Z"
+    },
+    "faf81cc3-ad58-4cd0-b6b0-25210cf8d009": {
+      "title": "LGBTQ+ Infostand",
+      "starts_at": "2026-12-06T14:00:00.000Z",
+      "ends_at": "2026-12-06T17:00:00.000Z",
+      "location": "Münchener Straße 9a, beim Intersport",
+      "description": "Infostand von LGBTQ+ Rosenheim e.V.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794125385038-7d2c5476.jpg",
+      "tags": [
+        "lgbtq"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "Queers of Rosenheim",
+      "created_at": "2026-11-08T08:09:47.674Z"
     },
     "cd3935f9-28c7-4a42-ab84-d548a16781d9": {
       "title": "Spuren - Die Opfer des NSU",
@@ -1698,6 +1822,23 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:41:24.148Z"
+    },
+    "897efe9e-e49a-4575-be04-3c8db8c213d2": {
+      "title": "🌈  Queerer Stammtisch",
+      "starts_at": "2027-02-02T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Hans im Glück, Ludwigsplatz 14, Rosenheim",
+      "description": "Wir sind am 1. Dienstag im Monat im Hans im Glück zum Austausch und für tolle Gespräche. Dazu gibt es eine großartige Auswahl an Essen und Getränken!\n\nQueerer Stammtisch bedeutet dabei weder, dass du schon mal dabei gewesen sein musst. Auch musst du dich nicht als queer identifizieren. Komm einfach vorbei um neue Leute kennenzulernen! 🥳🌈\n\nFrag direkt am Empfang nach dem queeren Stammtisch, dann zeigen dir die Mitarbeiter:innen wo wir sitzen :)",
+      "url": "https://lgbtq-rosenheim.de/",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794125757367-8ae28872.jpg",
+      "tags": [
+        "essen",
+        "lgbtq"
+      ],
+      "rrule": "FREQ=MONTHLY;BYDAY=1TU",
+      "rdates": [],
+      "author_name": "Queers of Rosenheim",
+      "created_at": "2026-11-08T08:15:59.403Z"
     },
     "0e6de934-3fc3-4052-911e-9e62556601ea": {
       "title": "MAD FOXES & WEAK BOYS",
