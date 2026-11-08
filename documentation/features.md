@@ -124,8 +124,9 @@ point of the feature.
 
 ## Repeating events and series
 
-See [recurrence.md](recurrence.md). In short: weekly / every two weeks / monthly
-with an optional end date, or a list of arbitrary dates. Editing or deleting any
+See [recurrence.md](recurrence.md). In short: daily / weekly / every two weeks /
+monthly / monthly on the nth or last weekday ("jeden 1. Donnerstag") with an
+optional end date, or a list of arbitrary dates. Editing or deleting any
 occurrence affects the whole series, and the UI says so.
 
 ## Calendar subscription

@@ -3,15 +3,15 @@
  * Wires the store, the two views, the add-an-event flow and the dialogs.
  */
 
-import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20260808T0801';
-import { store } from './store.js?v=20260808T0801';
-import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20260808T0801';
-import { seriesSpan, seriesIdOf } from './recurrence.js?v=20260808T0801';
+import { SITE_URL, ICS_PATH, SITE_NAME, MAX_IMAGE_BYTES } from './config.js?v=20261108T0752';
+import { store } from './store.js?v=20261108T0752';
+import { renderCalendar, monthLabel, groupByDay } from './calendar.js?v=20261108T0752';
+import { seriesSpan, seriesIdOf, monthlyWeekdayRules } from './recurrence.js?v=20261108T0752';
 import {
   $, el, clear, formatDate, formatDateLong, formatTime, formatRange, relativeTime,
   eventPhase, parseDate, startOfDay, sameDay, dayKey, toLocalInput, fromLocalInput,
   linkify, hashHue, initials, debounce, MONTHS_DE,
-} from './util.js?v=20260808T0801';
+} from './util.js?v=20261108T0752';
 
 /* --------------------------------- state -------------------------------- */
 
@@ -620,6 +620,7 @@ function bindAddFlow() {
     ui.formPoster.hidden = true;
   });
   $('#field-repeat').addEventListener('change', (e) => syncRepeatMode(e.target.value));
+  ui.form.start.addEventListener('change', () => syncMonthlyWeekdayOptions());
   $('#btn-add-date').addEventListener('click', () => addDateRow(''));
   $('#form-poster-view').addEventListener('click', () => {
     openLightbox(ui.formPosterImg.src, 'Poster in voller Größe');
@@ -657,7 +658,7 @@ async function handleImage(file) {
   state.scanAbort = controller;
 
   try {
-    const ocr = await import('./ocr.js?v=20260808T0801');
+    const ocr = await import('./ocr.js?v=20261108T0752');
     const blob = await ocr.downscaleImage(file, 1600, 0.82);
     if (blob.size > MAX_IMAGE_BYTES) throw new Error('Das Bild ist zu groß (max. 5 MB).');
 
@@ -732,6 +733,7 @@ function openForm(draft, editing = null) {
     const [freq, until] = splitRRule(row.rrule || '');
     const extras = Array.isArray(row.rdates) ? row.rdates : [];
     form.repeat.value = extras.length && !freq ? 'dates' : freq;
+    syncMonthlyWeekdayOptions(/BYDAY=-/.test(freq) ? 'last' : /BYDAY=/.test(freq) ? 'nth' : null);
     form.repeatUntil.value = until;
     for (const d of extras) addDateRow(toLocalInput(d));
     syncRepeatMode(form.repeat.value);
@@ -751,6 +753,7 @@ function openForm(draft, editing = null) {
     const extraDates = Array.isArray(f.extraDates) ? f.extraDates : [];
     clear($('#extra-dates'));
     form.repeat.value = extraDates.length ? 'dates' : '';
+    syncMonthlyWeekdayOptions();
     form.repeatUntil.value = '';
     for (const d of extraDates) addDateRow(d);
     syncRepeatMode(form.repeat.value);
@@ -781,6 +784,34 @@ function syncRepeatMode(value) {
   if (value === 'dates' && !$('#extra-dates').children.length) addDateRow('');
 }
 
+/**
+ * Rebuild the "Jeden 1. Donnerstag im Monat" / "Jeden letzten Donnerstag im
+ * Monat" options from the start date — the weekday and ordinal are read off
+ * that date rather than picked separately, so the rule always matches the
+ * first occurrence. Moving the start keeps the chosen kind (nth or last) and
+ * re-derives it; a "last" that no longer fits falls back to the nth.
+ *
+ * @param {'nth'|'last'|null} [prefer]  kind to select; defaults to the current one
+ */
+function syncMonthlyWeekdayOptions(prefer = null) {
+  const select = ui.form.repeat;
+  const kind = prefer ?? select.selectedOptions[0]?.dataset.monthly;
+  for (const o of select.querySelectorAll('option[data-monthly]')) o.remove();
+
+  const start = fromLocalInput(ui.form.start.value);
+  const rules = start && monthlyWeekdayRules(new Date(start));
+  if (rules) {
+    const opts = [['nth', rules.nth], ['last', rules.last]]
+      .filter(([, r]) => r)
+      .map(([k, r]) => el('option', { value: r.rrule, dataset: { monthly: k }, text: r.label }));
+    select.querySelector('option[value="FREQ=MONTHLY"]').after(...opts);
+  }
+  if (kind) {
+    select.value = rules ? (kind === 'last' && rules.last ? rules.last : rules.nth).rrule : '';
+    syncRepeatMode(select.value);
+  }
+}
+
 /** One more date for an irregular series. */
 function addDateRow(value = '') {
   const input = el('input', { type: 'datetime-local', name: 'extraDate', value });
@@ -804,7 +835,8 @@ function splitRRule(rrule) {
   const m = /;?UNTIL=(\d{4})(\d{2})(\d{2})/i.exec(rrule);
   const base = rrule.replace(/;?UNTIL=[^;]*/i, '');
   const known = ['FREQ=DAILY', 'FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY'];
-  return [known.includes(base) ? base : '', m ? `${m[1]}-${m[2]}-${m[3]}` : ''];
+  const monthlyWeekday = /^FREQ=MONTHLY;BYDAY=(-1|[1-5])(MO|TU|WE|TH|FR|SA|SU)$/i.test(base);
+  return [known.includes(base) || monthlyWeekday ? base : '', m ? `${m[1]}-${m[2]}-${m[3]}` : ''];
 }
 
 function defaultStart() {
@@ -1174,7 +1206,7 @@ async function shareEvent(ev) {
 
 async function loadIcal() {
   if (!icalModule) {
-    icalModule = await import('./ical.js?v=20260808T0801');
+    icalModule = await import('./ical.js?v=20261108T0752');
     if (typeof icalModule.describeSchedule === 'function') {
       describeSchedule = icalModule.describeSchedule;
       render();

@@ -8,7 +8,9 @@
  * natively. This module exists purely so our own UI can show the same thing.
  *
  * Only the small subset the form can produce is supported:
- *   FREQ=DAILY|WEEKLY|MONTHLY|YEARLY, optional INTERVAL, optional UNTIL.
+ *   FREQ=DAILY|WEEKLY|MONTHLY|YEARLY, optional INTERVAL, optional UNTIL,
+ *   and for MONTHLY one ordinal weekday — BYDAY=1TH ("1. Donnerstag") or
+ *   BYDAY=-1FR ("letzter Freitag").
  *
  * Isomorphic: no DOM, no imports.
  */
@@ -27,7 +29,8 @@ export const isOccurrenceId = (id) => String(id ?? '').includes(SEP);
 
 /**
  * @param {string} rrule
- * @returns {{freq: string, interval: number, until: Date|null}|null}
+ * @returns {{freq: string, interval: number, until: Date|null,
+ *            byday: {nth: number, weekday: number}|null}|null}
  */
 export function parseRRule(rrule) {
   if (typeof rrule !== 'string' || !rrule.trim()) return null;
@@ -50,7 +53,56 @@ export function parseRRule(rrule) {
       if (Number.isNaN(until.getTime())) until = null;
     }
   }
-  return { freq, interval, until };
+  // Only one ordinal weekday on a monthly rule — the form never produces
+  // "1st and 3rd Thursday", and a plain weekly BYDAY would be a different rule.
+  let byday = null;
+  const bd = freq === 'MONTHLY' && /^([+-]?[1-5])(MO|TU|WE|TH|FR|SA|SU)$/i.exec(parts.BYDAY || '');
+  if (bd && (+bd[1] > 0 || +bd[1] === -1)) {
+    byday = { nth: +bd[1], weekday: WEEKDAYS.indexOf(bd[2].toUpperCase()) };
+  }
+  return { freq, interval, until, byday };
+}
+
+/** RFC 5545 weekday codes, indexed like Date#getDay(). */
+const WEEKDAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+const WEEKDAY_NAMES_DE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+
+/**
+ * The "x. Wochentag im Monat" rules a start date fits, for the repeat select.
+ * A Thursday on the 4th yields only "1. Donnerstag"; one in the last seven
+ * days of its month also yields "letzter Donnerstag" — the 26.11.2026 is both
+ * the 4th and the last Thursday, and which one is meant only the author knows.
+ *
+ * @param {Date} date
+ * @returns {{nth: {rrule: string, label: string}, last: {rrule: string, label: string}|null}|null}
+ */
+export function monthlyWeekdayRules(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return null;
+  const code = WEEKDAYS[date.getDay()];
+  const name = WEEKDAY_NAMES_DE[date.getDay()];
+  const nth = Math.ceil(date.getDate() / 7);
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  return {
+    nth: { rrule: `FREQ=MONTHLY;BYDAY=${nth}${code}`, label: `Jeden ${nth}. ${name}` },
+    last: date.getDate() > daysInMonth - 7
+      ? { rrule: `FREQ=MONTHLY;BYDAY=-1${code}`, label: `Jeden letzten ${name}` }
+      : null,
+  };
+}
+
+/**
+ * Day of month of the nth (or, for nth = -1, the last) weekday in a month, or
+ * null when that month has no such day (a 5th Thursday, most months).
+ */
+function nthWeekdayOfMonth(y, mo, nth, weekday) {
+  const daysInMonth = new Date(y, mo + 1, 0).getDate();
+  if (nth === -1) {
+    const lastDow = new Date(y, mo, daysInMonth).getDay();
+    return daysInMonth - ((lastDow - weekday + 7) % 7);
+  }
+  const firstDow = new Date(y, mo, 1).getDay();
+  const day = 1 + ((weekday - firstDow + 7) % 7) + 7 * (nth - 1);
+  return day <= daysInMonth ? day : null;
 }
 
 /**
@@ -60,15 +112,26 @@ export function parseRRule(rrule) {
  * when the clocks change.
  *
  * Returns null when the step lands on a date that does not exist (e.g. the 31st
- * in a 30-day month), which per RFC 5545 is skipped rather than clamped.
+ * in a 30-day month, or a 5th Thursday), which per RFC 5545 is skipped rather
+ * than clamped.
+ *
+ * With `byday`, a monthly step lands on that ordinal weekday instead of the
+ * same day of month. Step 0 is always the base itself: DTSTART is the first
+ * occurrence per RFC 5545 even if it does not match the rule.
  */
-function step(base, freq, n) {
+function step(base, freq, n, byday = null) {
   const y = base.getFullYear(), mo = base.getMonth(), d = base.getDate();
   const h = base.getHours(), mi = base.getMinutes(), s = base.getSeconds();
   let out;
   if (freq === 'DAILY') out = new Date(y, mo, d + n, h, mi, s);
   else if (freq === 'WEEKLY') out = new Date(y, mo, d + 7 * n, h, mi, s);
-  else if (freq === 'MONTHLY') {
+  else if (freq === 'MONTHLY' && byday) {
+    if (n === 0) return new Date(base);
+    const month = new Date(y, mo + n, 1);
+    const day = nthWeekdayOfMonth(month.getFullYear(), month.getMonth(), byday.nth, byday.weekday);
+    if (day === null) return null;
+    out = new Date(month.getFullYear(), month.getMonth(), day, h, mi, s);
+  } else if (freq === 'MONTHLY') {
     out = new Date(y, mo + n, d, h, mi, s);
     if (out.getDate() !== d) return null;      // e.g. 31 Jan -> "31 Feb"
   } else {
@@ -106,7 +169,7 @@ export function expandEvent(event, opts = {}) {
 
   const out = [];
   for (let n = 0; out.length < MAX_OCCURRENCES; n++) {
-    const occStart = step(start, rule.freq, n * rule.interval);
+    const occStart = step(start, rule.freq, n * rule.interval, rule.byday);
     // A skipped month/leap day is not the end of the series — keep stepping.
     if (occStart === null) {
       if (n > MAX_OCCURRENCES * 2) break;
@@ -129,7 +192,7 @@ export function expandEvent(event, opts = {}) {
   // one, otherwise a weekly event silently vanishes off the board.
   if (!out.length && !rule.until) {
     for (let n = 1; n <= MAX_OCCURRENCES; n++) {
-      const occStart = step(start, rule.freq, n * rule.interval);
+      const occStart = step(start, rule.freq, n * rule.interval, rule.byday);
       if (occStart && occStart >= from) {
         out.push({
           ...event,

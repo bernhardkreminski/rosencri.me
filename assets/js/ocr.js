@@ -18,7 +18,7 @@ import {
   OCR_VISION_ENABLED,
   OCR_FUNCTION_NAME,
   OCR_VISION_TIMEOUT_MS,
-} from './config.js?v=20260808T0801';
+} from './config.js?v=20261108T0752';
 
 /** Feature flag the app can check before showing OCR-related UI. */
 export const OCR_AVAILABLE = true;

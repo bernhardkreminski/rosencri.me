@@ -392,6 +392,10 @@ const FREQ_LABELS_DE = Object.freeze({
   MONTHLY: 'Jeden Monat',
   YEARLY: 'Jedes Jahr',
 });
+const WEEKDAY_NAMES_DE = Object.freeze({
+  MO: 'Montag', TU: 'Dienstag', WE: 'Mittwoch', TH: 'Donnerstag',
+  FR: 'Freitag', SA: 'Samstag', SU: 'Sonntag',
+});
 const FREQ_UNIT_PLURAL_DE = Object.freeze({
   DAILY: 'Tage',
   WEEKLY: 'Wochen',
@@ -422,8 +426,18 @@ export function describeRRule(rrule, locale = 'de') {
     const freq = (fields.FREQ || '').toUpperCase();
     const interval = parseInt(fields.INTERVAL, 10);
 
+    // "Jeden 1. Donnerstag im Monat" / "Jeden letzten Freitag im Monat" —
+    // the one BYDAY shape the form produces (see recurrence.js).
+    const byday = freq === 'MONTHLY' && /^(-1|[1-5])(MO|TU|WE|TH|FR|SA|SU)$/i.exec(fields.BYDAY || '');
+
     let label = '';
-    if (interval > 1 && FREQ_UNIT_PLURAL_DE[freq]) {
+    if (byday) {
+      const ordinal = byday[1] === '-1' ? 'letzten' : `${byday[1]}.`;
+      const day = WEEKDAY_NAMES_DE[byday[2].toUpperCase()];
+      label = interval > 1
+        ? `Alle ${interval} Monate am ${ordinal} ${day}`
+        : `Jeden ${ordinal} ${day} im Monat`;
+    } else if (interval > 1 && FREQ_UNIT_PLURAL_DE[freq]) {
       label = `Alle ${interval} ${FREQ_UNIT_PLURAL_DE[freq]}`;
     } else {
       label = FREQ_LABELS_DE[freq] || '';

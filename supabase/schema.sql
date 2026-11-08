@@ -35,7 +35,8 @@ create table if not exists public.events (
   is_seed       boolean not null default false,
   status        text not null default 'published' check (status in ('published', 'hidden')),
   -- RFC 5545 RRULE *value* (no "RRULE:" prefix), '' for a one-off event.
-  -- e.g. 'FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY;UNTIL=20261231T220000Z'
+  -- e.g. 'FREQ=WEEKLY', 'FREQ=WEEKLY;INTERVAL=2', 'FREQ=MONTHLY;UNTIL=20261231T220000Z',
+  -- 'FREQ=MONTHLY;BYDAY=1TH' (1st Thursday), 'FREQ=MONTHLY;BYDAY=-1FR' (last Friday)
   rrule         text not null default '',
   -- Explicit extra occurrence starts (RFC 5545 RDATE). starts_at is the first
   -- date and is NOT repeated here. Covers series on irregular dates, which an

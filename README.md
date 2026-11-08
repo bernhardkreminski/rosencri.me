@@ -13,7 +13,7 @@ A community board for subculture events in Rosenheim, Germany — concerts, Vok�
 - **Month calendar view**, including past events, for browsing by date.
 - **iCal subscription** (`webcal://`) for the whole board, plus a per-event "add to my calendar" link.
 - **Likes, RSVP ("ich bin dabei"), and comments** — comments become more prominent on events that are currently happening, for live updates from the event itself.
-- **Edit and delete** any event, and **repeating events** — daily/weekly/biweekly/monthly, or a series on arbitrary dates.
+- **Edit and delete** any event, and **repeating events** — daily/weekly/biweekly/monthly, monthly on a weekday ("jeden 1. Donnerstag"), or a series on arbitrary dates.
 - **Pull to refresh** on touch devices — drag down from the top to re-read the board without reloading the page.
 - **A daily 09:00 email digest for the operator** of every event added, edited or removed, so an open board with no undo isn't also a silent one.
 

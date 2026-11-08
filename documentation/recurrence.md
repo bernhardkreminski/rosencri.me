@@ -18,9 +18,28 @@ fits, so those dates are listed explicitly.
 ## The form
 
 "Wiederholung" offers: Einmalig · **Mehrere Termine (eigene Daten)** · Jeden Tag ·
-Jede Woche · Alle 2 Wochen · Jeden Monat. Picking a rule reveals an optional end
-date; picking
+Jede Woche · Alle 2 Wochen · Jeden Monat · **Jeden x. Wochentag** · **Jeden
+letzten Wochentag**. Picking a rule reveals an optional end date; picking
 "Mehrere Termine" reveals a list of date rows with add/remove.
+
+### Monthly on a weekday
+
+"Jeden Monat" repeats the day of month (the 5th). For "the first Thursday" the
+select offers options **derived from the start date** — `monthlyWeekdayRules()`
+in `recurrence.js` — instead of separate ordinal/weekday pickers:
+
+| Start date | Options added | Stored as |
+|---|---|---|
+| Thu 05.11.2026 | Jeden 1. Donnerstag | `FREQ=MONTHLY;BYDAY=1TH` |
+| Thu 26.11.2026 | Jeden 4. Donnerstag · Jeden letzten Donnerstag | `BYDAY=4TH` / `BYDAY=-1TH` |
+
+"letzten" is only offered in the last seven days of a month, where the date is
+both the 4th (or 5th) and the last of its weekday — only the author knows which
+is meant. Changing the start date rebuilds the options and keeps the chosen kind;
+a "letzten" that no longer fits falls back to the ordinal.
+
+Deriving the rule from the start keeps DTSTART on the rule, which RFC 5545
+expects. A 5th weekday skips months that have none, like the 31st does.
 
 On save, extra dates are sorted, de-duplicated, and any date equal to the start
 is dropped — a repeated first occurrence makes some calendar clients show the
@@ -81,7 +100,7 @@ own event.
 ## Labels
 
 `describeSchedule(event)` from `ical.js` returns "Jede Woche", "Alle 2 Wochen",
-"4 Termine", "Jede Woche + 2 weitere Termine", or `''`.
+"Jeden 1. Donnerstag im Monat", "4 Termine", "Jede Woche + 2 weitere Termine", or `''`.
 
 `seriesSpan(event)` from `recurrence.js` returns `{first, last}` for the
 "von … bis …" line. `last` is **null for an open-ended rule** — a weekly event
