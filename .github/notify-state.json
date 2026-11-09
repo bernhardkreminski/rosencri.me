@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-08T14:11:00.112Z",
-  "lastMailedOn": "2026-11-08",
+  "updatedAt": "2026-11-09T17:19:48.972Z",
+  "lastMailedOn": "2026-11-09",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1020,6 +1020,25 @@
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
     },
+    "b9576b3d-cf50-4dca-a9dd-17a6f65210d1": {
+      "title": "Musik | Open Stage at Cafe-Bar Leichtsinn",
+      "starts_at": "2026-11-12T16:00:00.000Z",
+      "ends_at": "2026-11-12T22:30:00.000Z",
+      "location": "Café Bar Leichtsinn, Bad-Trissl-Straße 4, 83080, Oberaudorf",
+      "description": "Jam-Session auf der Leichtsinn-Bühne\n\nDie offene Leichtsinn-Bühne lädt Musikerinnen und Musiker aller Genres zum gemeinsamen Jammen ein. Egal ob auf oder vor der Bühne – als aktive Instrumentalist:innen, Sänger:innen oder schlicht als Zuhörende sind alle herzlich willkommen.\n\nWichtiger Hinweis für Auftretende: Bitte bringt euer eigenes Instrument sowie ein eigenes Mikrofon inklusive Kabel mit. Ein Akustikschlagzeug ist vor Ort vorhanden.",
+      "url": "https://around-rosenheim.de/event/musik-open-stage-at-cafe-bar-leichtsinn/2026-11-12/",
+      "image_url": "",
+      "tags": [
+        "musik",
+        "open-stage",
+        "jam",
+        "leichtsinn"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T11:17:54.657Z"
+    },
     "d4ed120e-c504-4b7b-8b72-3b1631640d91": {
       "title": "Meinungsfreiheit. Vortrag und Gespräch mit Ronen Steinke",
       "starts_at": "2026-11-12T17:30:00.000Z",
@@ -1106,6 +1125,63 @@
       "author_name": "",
       "created_at": "2026-11-03T09:16:43.256Z"
     },
+    "717fa98b-ff56-455b-aa71-3618bf42a937": {
+      "title": "TSCHICK – Junges Theater Rosenheim",
+      "starts_at": "2026-11-13T19:00:00.000Z",
+      "ends_at": "2026-11-13T20:30:00.000Z",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Theatervorführung des Jungen Theater Rosenheims: „TSCHICK“\n\nLivehörspiel ab 13 Jahren von Wolfgang Herrndorf, Bühnenfassung von Robert Koall.\nDauer: ca. 90 Minuten inklusive Nachgespräch.\n\n„Die Mutter in einer Entzugsklinik, der Vater auf Geschäftsreise mit seiner Assistentin: Maik Klingenberg verbringt die großen Ferien allein am Pool der elterlichen Villa. Doch dann taucht Tschick auf. Tschick, mit vollem Namen Andrej Tschichatschow, stammt aus einem der Hochhäuser in Hellersdorf, hat es von der Förderschule bis zum Gymnasium geschafft und wirkt nicht gerade wie ein Paradebeispiel für Integration. Zudem hat er einen gestohlenen Wagen dabei. Damit beginnt eine unvergessliche Reise ohne Karte und Kompass durch die glühend heiße deutsche Provinz.“ (Rowohlt Verlag)\n\nComing-of-Age-Roadtrip zu Familie, Sexualität, Freundschaft, sozialem Status, Selbstbestimmung und Verantwortung.\n\nRegie: Florentine Klepper\nEs spielen: Andreas Schwankl und Benedikt Zimmermann\n\nTickets: https://www.yesticket.org/events/de/junges-theater-rosenheim/\nMehr: https://www.junges-theater-rosenheim.de/Stuecke/Tschick-13/",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "livehoerspiel",
+        "junges-theater",
+        "vfbk"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T10:41:23.981Z"
+    },
+    "43b3f1c5-0524-4a89-9220-2b7643aa5e29": {
+      "title": "TSCHICK – Junges Theater Rosenheim",
+      "starts_at": "2026-11-14T19:00:00.000Z",
+      "ends_at": "2026-11-14T20:30:00.000Z",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Theatervorführung des Jungen Theater Rosenheims: „TSCHICK“\n\nLivehörspiel ab 13 Jahren von Wolfgang Herrndorf, Bühnenfassung von Robert Koall.\nDauer: ca. 90 Minuten inklusive Nachgespräch.\n\n„Die Mutter in einer Entzugsklinik, der Vater auf Geschäftsreise mit seiner Assistentin: Maik Klingenberg verbringt die großen Ferien allein am Pool der elterlichen Villa. Doch dann taucht Tschick auf. Tschick, mit vollem Namen Andrej Tschichatschow, stammt aus einem der Hochhäuser in Hellersdorf, hat es von der Förderschule bis zum Gymnasium geschafft und wirkt nicht gerade wie ein Paradebeispiel für Integration. Zudem hat er einen gestohlenen Wagen dabei. Damit beginnt eine unvergessliche Reise ohne Karte und Kompass durch die glühend heiße deutsche Provinz.“ (Rowohlt Verlag)\n\nComing-of-Age-Roadtrip zu Familie, Sexualität, Freundschaft, sozialem Status, Selbstbestimmung und Verantwortung.\n\nRegie: Florentine Klepper\nEs spielen: Andreas Schwankl und Benedikt Zimmermann\n\nTickets: https://www.yesticket.org/events/de/junges-theater-rosenheim/\nMehr: https://www.junges-theater-rosenheim.de/Stuecke/Tschick-13/",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "livehoerspiel",
+        "junges-theater",
+        "vfbk"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T10:41:23.981Z"
+    },
+    "798b35d9-9c7b-4c8e-907f-5beb9c2719de": {
+      "title": "Kleidertausch-Party in der Vetternwirtschaft",
+      "starts_at": "2026-11-15T16:00:00.000Z",
+      "ends_at": "2026-11-15T19:00:00.000Z",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Greenpeace lädt ein zu „Kleidertausch statt Konsumrausch“!\n\nMotto: „Neu denken statt neu kaufen!“\nVeranstaltet von Greenpeace Rosenheim, der Jugendumweltgruppe „Greenteam“ und dem VfbK e.V.\n\nEintritt frei – bringen und mitnehmen, was ihr wollt. Kleider in allen Größen willkommen (Kinder, Damen, Herren). Bitte max. 10 Teile für Erwachsene und 10 Teile für Kinder. Saubere und intakte Kleidung ohne Löcher, mit funktionierenden Reißverschlüssen.\n\nEinsortieren gemeinsam vor Ort. Kein Bringzwang – nur stöbern und mitnehmen ist auch willkommen. Upcycling-Kiste zum Basteln und Selbermachen.\n\nHinweis auf Fast Fashion, Vermüllung und Überkonsum. Bewirtung / Thekenseelsorge in der Vetternwirtschaft auch danach.\n\nWeitere Infos: https://www.kleidertausch.de",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "kleidertausch",
+        "greenpeace",
+        "umwelt",
+        "vfbk"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T11:10:03.686Z"
+    },
     "7534fd94-9124-4481-b0cd-d2a387e914d8": {
       "title": "FASCHISIERUNG oder: Wie groß ist die Gefahr von Rechts?",
       "starts_at": "2026-11-16T18:30:00.000Z",
@@ -1176,6 +1252,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "e94cb196-3a9d-4cbd-adbe-5e795a6b3a02": {
+      "title": "Vorabenddemonstration zum Trans Day of Remembrance",
+      "starts_at": "2026-11-19T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Salingarten",
+      "description": "Vorabenddemonstration zum Trans Day of Remembrance unter dem Motto Kein Vergeben Kein Vergessen.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794151215749-87efa3e2.jpg",
+      "tags": [
+        "soli"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-08T15:20:16.643Z"
     },
     "bc37c0a8-6066-4a21-94f8-51a6e53b2ec7": {
       "title": "JAM-Session #42",
@@ -1277,6 +1369,25 @@
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
     },
+    "2ecce096-a50d-4686-a324-1eff9a3d25fe": {
+      "title": "Offener Spieleabend",
+      "starts_at": "2026-11-25T17:00:00.000Z",
+      "ends_at": "2026-11-25T20:00:00.000Z",
+      "location": "H3CKE Makerspace, Herzog-Otto-Straße 8a, 83022 Rosenheim",
+      "description": "Offener Spieleabend in der H3CKE\n\nBrett- und Kartenspiele (u. a. Skyjo, Skip-Bo, UNO, Schafkopf), Gruppenspiele wie Werwolf werden angeboten und angeleitet. Eigenes Lieblingsspiel mitbringen willkommen. Snacks und Getränke vor Ort.\n\nKostenfrei – über Spenden freut sich die H3CKE.\nMehr: https://h3cke.de/products/offener-spieleabend",
+      "url": "https://h3cke.de/products/offener-spieleabend",
+      "image_url": "",
+      "tags": [
+        "spiele",
+        "brettspiele",
+        "h3cke",
+        "makerspace"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T11:20:17.241Z"
+    },
     "1f2fc4f4-e4d3-4310-988f-a1cd6ecb9eac": {
       "title": "Offener Theaterkurs für Kinder (ab 6 Jahren)",
       "starts_at": "2026-11-26T15:00:00.000Z",
@@ -1295,6 +1406,25 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "31fdd918-7d62-4de5-a63d-25f5ac9b1341": {
+      "title": "TSCHICK – Junges Theater Rosenheim",
+      "starts_at": "2026-11-26T19:00:00.000Z",
+      "ends_at": "2026-11-26T20:30:00.000Z",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Theatervorführung des Jungen Theater Rosenheims: „TSCHICK“\n\nLivehörspiel ab 13 Jahren von Wolfgang Herrndorf, Bühnenfassung von Robert Koall.\nDauer: ca. 90 Minuten inklusive Nachgespräch.\n\n„Die Mutter in einer Entzugsklinik, der Vater auf Geschäftsreise mit seiner Assistentin: Maik Klingenberg verbringt die großen Ferien allein am Pool der elterlichen Villa. Doch dann taucht Tschick auf. Tschick, mit vollem Namen Andrej Tschichatschow, stammt aus einem der Hochhäuser in Hellersdorf, hat es von der Förderschule bis zum Gymnasium geschafft und wirkt nicht gerade wie ein Paradebeispiel für Integration. Zudem hat er einen gestohlenen Wagen dabei. Damit beginnt eine unvergessliche Reise ohne Karte und Kompass durch die glühend heiße deutsche Provinz.“ (Rowohlt Verlag)\n\nComing-of-Age-Roadtrip zu Familie, Sexualität, Freundschaft, sozialem Status, Selbstbestimmung und Verantwortung.\n\nRegie: Florentine Klepper\nEs spielen: Andreas Schwankl und Benedikt Zimmermann\n\nTickets: https://www.yesticket.org/events/de/junges-theater-rosenheim/\nMehr: https://www.junges-theater-rosenheim.de/Stuecke/Tschick-13/",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "livehoerspiel",
+        "junges-theater",
+        "vfbk"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T10:41:23.981Z"
     },
     "b112118d-7e03-4c9d-beeb-2419a3c7ed33": {
       "title": "Adventsmarkt am blauen Haus",
@@ -1368,6 +1498,25 @@
       "author_name": "",
       "created_at": "2026-11-03T08:41:46.797Z"
     },
+    "5abdbf45-85b8-45d1-982f-ef337bf6904d": {
+      "title": "TSCHICK – Junges Theater Rosenheim",
+      "starts_at": "2026-11-27T19:00:00.000Z",
+      "ends_at": "2026-11-27T20:30:00.000Z",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Theatervorführung des Jungen Theater Rosenheims: „TSCHICK“\n\nLivehörspiel ab 13 Jahren von Wolfgang Herrndorf, Bühnenfassung von Robert Koall.\nDauer: ca. 90 Minuten inklusive Nachgespräch.\n\n„Die Mutter in einer Entzugsklinik, der Vater auf Geschäftsreise mit seiner Assistentin: Maik Klingenberg verbringt die großen Ferien allein am Pool der elterlichen Villa. Doch dann taucht Tschick auf. Tschick, mit vollem Namen Andrej Tschichatschow, stammt aus einem der Hochhäuser in Hellersdorf, hat es von der Förderschule bis zum Gymnasium geschafft und wirkt nicht gerade wie ein Paradebeispiel für Integration. Zudem hat er einen gestohlenen Wagen dabei. Damit beginnt eine unvergessliche Reise ohne Karte und Kompass durch die glühend heiße deutsche Provinz.“ (Rowohlt Verlag)\n\nComing-of-Age-Roadtrip zu Familie, Sexualität, Freundschaft, sozialem Status, Selbstbestimmung und Verantwortung.\n\nRegie: Florentine Klepper\nEs spielen: Andreas Schwankl und Benedikt Zimmermann\n\nTickets: https://www.yesticket.org/events/de/junges-theater-rosenheim/\nMehr: https://www.junges-theater-rosenheim.de/Stuecke/Tschick-13/",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "livehoerspiel",
+        "junges-theater",
+        "vfbk"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T10:41:23.981Z"
+    },
     "c6f776ca-b6ae-4e6e-b7f8-9a8482494791": {
       "title": "Bavarian Metal Battle",
       "starts_at": "2026-11-28T17:00:00.000Z",
@@ -1404,6 +1553,25 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T07:20:46.608Z"
+    },
+    "1752dcae-97c9-491a-9f02-dd1c7e8108b6": {
+      "title": "TSCHICK – Junges Theater Rosenheim",
+      "starts_at": "2026-11-29T16:00:00.000Z",
+      "ends_at": "2026-11-29T17:30:00.000Z",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Theatervorführung des Jungen Theater Rosenheims: „TSCHICK“\n\nLivehörspiel ab 13 Jahren von Wolfgang Herrndorf, Bühnenfassung von Robert Koall.\nDauer: ca. 90 Minuten inklusive Nachgespräch.\n\n„Die Mutter in einer Entzugsklinik, der Vater auf Geschäftsreise mit seiner Assistentin: Maik Klingenberg verbringt die großen Ferien allein am Pool der elterlichen Villa. Doch dann taucht Tschick auf. Tschick, mit vollem Namen Andrej Tschichatschow, stammt aus einem der Hochhäuser in Hellersdorf, hat es von der Förderschule bis zum Gymnasium geschafft und wirkt nicht gerade wie ein Paradebeispiel für Integration. Zudem hat er einen gestohlenen Wagen dabei. Damit beginnt eine unvergessliche Reise ohne Karte und Kompass durch die glühend heiße deutsche Provinz.“ (Rowohlt Verlag)\n\nComing-of-Age-Roadtrip zu Familie, Sexualität, Freundschaft, sozialem Status, Selbstbestimmung und Verantwortung.\n\nRegie: Florentine Klepper\nEs spielen: Andreas Schwankl und Benedikt Zimmermann\n\nTickets: https://www.yesticket.org/events/de/junges-theater-rosenheim/\nMehr: https://www.junges-theater-rosenheim.de/Stuecke/Tschick-13/",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "theater",
+        "livehoerspiel",
+        "junges-theater",
+        "vfbk"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T10:41:23.981Z"
     },
     "e52dc776-8795-4ccb-8d29-24ccc754164f": {
       "title": "BREAKOUT + LÄRA – LIVE",
@@ -1703,6 +1871,25 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
+    },
+    "24d5ef8b-fd54-4b24-a25a-3f91056b5396": {
+      "title": "Offener Spieleabend",
+      "starts_at": "2026-12-17T17:00:00.000Z",
+      "ends_at": "2026-12-17T20:00:00.000Z",
+      "location": "H3CKE Makerspace, Herzog-Otto-Straße 8a, 83022 Rosenheim",
+      "description": "Offener Spieleabend in der H3CKE\n\nBrett- und Kartenspiele (u. a. Skyjo, Skip-Bo, UNO, Schafkopf), Gruppenspiele wie Werwolf werden angeboten und angeleitet. Eigenes Lieblingsspiel mitbringen willkommen. Snacks und Getränke vor Ort.\n\nKostenfrei – über Spenden freut sich die H3CKE.\nMehr: https://h3cke.de/products/offener-spieleabend",
+      "url": "https://h3cke.de/products/offener-spieleabend",
+      "image_url": "",
+      "tags": [
+        "spiele",
+        "brettspiele",
+        "h3cke",
+        "makerspace"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-09T11:20:17.241Z"
     },
     "d22cbd84-d7bd-497b-b13b-22d2069834b0": {
       "title": "Lametta Schallplattler - Open Turntables",
