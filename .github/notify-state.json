@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-09T17:19:48.972Z",
-  "lastMailedOn": "2026-11-09",
+  "updatedAt": "2026-11-10T15:29:26.397Z",
+  "lastMailedOn": "2026-11-10",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1143,6 +1143,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-09T10:41:23.981Z"
+    },
+    "af34aeca-68fb-4e65-90b5-fc8727e33055": {
+      "title": "Rotary Bewegt Kinder",
+      "starts_at": "2026-11-14T16:30:00.000Z",
+      "ends_at": "2026-11-14T18:00:00.000Z",
+      "location": "Turnhalle am Ignaz-Günther Gymnasium",
+      "description": "Kostenloses Kinderturnen und Fußball mit Spaß an Bewegung, Spielen und Sport in der Turnhalle. \n\nJeden Samstag bis März 2027",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794316315564-0e9ac353.jpg",
+      "tags": [
+        "kinder"
+      ],
+      "rrule": "FREQ=WEEKLY;UNTIL=20270331T215959Z",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-10T13:11:57.046Z"
     },
     "43b3f1c5-0524-4a89-9220-2b7643aa5e29": {
       "title": "TSCHICK – Junges Theater Rosenheim",
