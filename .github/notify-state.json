@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-10T15:29:26.397Z",
-  "lastMailedOn": "2026-11-10",
+  "updatedAt": "2026-11-11T15:00:09.349Z",
+  "lastMailedOn": "2026-11-11",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1365,6 +1365,36 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T07:18:43.322Z"
+    },
+    "bb7cc35c-a9c0-496e-820e-d127f29e49b6": {
+      "title": "Kuh-Markt",
+      "starts_at": "2026-11-22T10:00:00.000Z",
+      "ends_at": "2026-11-22T17:00:00.000Z",
+      "location": "Bürgerstiftung Rosenheim, Königstraße 7b, Rosenheim",
+      "description": "Kunst und Handwerk und alles, was der Seele gut tut.",
+      "url": "https://instagram.com/kuh__markt___",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794390891719-ef28f302.jpg",
+      "tags": [
+        "handwerksmarkt"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-11T09:54:53.804Z"
+    },
+    "6e7eb2db-a2e8-44d1-8d20-d4cf044e702e": {
+      "title": "Interkulturelles Essen von Moja KWA Moja",
+      "starts_at": "2026-11-22T17:30:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft",
+      "description": "",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794344287167-378c1867.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-10T20:58:04.775Z"
     },
     "a43cb811-23d7-4958-b2c8-34346fe9dc54": {
       "title": "Offener Theaterkurs (ab 13 Jahre)",
