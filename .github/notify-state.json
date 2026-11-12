@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-11T15:00:09.349Z",
-  "lastMailedOn": "2026-11-11",
+  "updatedAt": "2026-11-12T15:53:05.378Z",
+  "lastMailedOn": "2026-11-12",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1178,6 +1178,26 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-09T10:41:23.981Z"
+    },
+    "1aa5d3a1-d647-4ed8-8457-2682df4d843c": {
+      "title": "Bücherflohmarkt & Tag der offenen Tür – Bücherei Christkönig",
+      "starts_at": "2026-11-15T09:00:00.000Z",
+      "ends_at": "2026-11-15T14:00:00.000Z",
+      "location": "Bücherei Christkönig, Kardinal-Faulhaber-Platz 7, Rosenheim",
+      "description": "Bücherflohmarkt und Tag der offenen Tür in der Bücherei Christkönig.\n\nStöbern in Krimis, Romanen, Bilder- und Sachbüchern. Ort: erster Stock des Pfarr- und Familienzentrums.\n\nUnter dem Motto „Books meets Maker“ bietet die H3CKE – Makerspace Rosenheim Mitmach-Stationen für alle Altersgruppen: Bücher mit individuellem Farbschnitt gestalten, 3D-Drucker beobachten, eigene Lesezeichen entwerfen (Lasergravur). Keine Vorkenntnisse nötig. Für Kinder gibt es ein Bilderbuchkino. Kaffee, Kuchen und kleiner Imbiss.\n\nQuelle: https://www.rosenheim24.de/rosenheim/rosenheim-stadt/rosenheim-buecherflohmarkt-und-tag-der-offenen-tuer-in-der-buecherei-christkoenig-94582478.html",
+      "url": "https://www.rosenheim24.de/rosenheim/rosenheim-stadt/rosenheim-buecherflohmarkt-und-tag-der-offenen-tuer-in-der-buecherei-christkoenig-94582478.html",
+      "image_url": "",
+      "tags": [
+        "bücher",
+        "flohmarkt",
+        "bücherei",
+        "h3cke",
+        "familie"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-12T15:04:43.628Z"
     },
     "798b35d9-9c7b-4c8e-907f-5beb9c2719de": {
       "title": "Kleidertausch-Party in der Vetternwirtschaft",
