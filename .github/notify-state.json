@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-12T15:53:05.378Z",
-  "lastMailedOn": "2026-11-12",
+  "updatedAt": "2026-11-14T14:01:22.577Z",
+  "lastMailedOn": "2026-11-14",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1144,6 +1144,24 @@
       "author_name": "",
       "created_at": "2026-11-09T10:41:23.981Z"
     },
+    "343306e7-84cd-41da-8b6a-0ca0a00ff40f": {
+      "title": "SUPERAFFEKT",
+      "starts_at": "2026-11-13T19:00:00.000Z",
+      "ends_at": "2026-11-14T01:00:00.000Z",
+      "location": "Le Pirate",
+      "description": "House & Techno Music mit Chester Durden, Bengarlo und Ron Kiesler.",
+      "url": "https://lepirate-rosenheim.de",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794594395015-5d24f3bc.jpg",
+      "tags": [
+        "party",
+        "techno",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "jovan",
+      "created_at": "2026-11-13T18:26:35.809Z"
+    },
     "af34aeca-68fb-4e65-90b5-fc8727e33055": {
       "title": "Rotary Bewegt Kinder",
       "starts_at": "2026-11-14T16:30:00.000Z",
@@ -1368,6 +1386,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-10-03T19:39:10.257Z"
+    },
+    "6367fc0a-78c5-4aaf-b0e3-0bd7f7c9f482": {
+      "title": "Blackout Songs",
+      "starts_at": "2026-11-21T18:30:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft Rosenheim, Oberaustraße 2",
+      "description": "Eine Produktion von Theater mit S. Die beiden begegnen sich das erste Mal auf einem Treffen der anonymen Alkoholiker. Sie verziehen sich, um gemeinsam den allerletzten Schluck zu trinken.",
+      "url": "https://www.vfbk.net",
+      "image_url": "",
+      "tags": [
+        "theater"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-14T12:14:08.425Z"
     },
     "4900b84f-6341-4f7e-ad2a-b188cf710535": {
       "title": "Couch Rocker Crew 20 Jahre Jubiläum!",
