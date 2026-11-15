@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-14T14:01:22.577Z",
-  "lastMailedOn": "2026-11-14",
+  "updatedAt": "2026-11-15T14:37:33.983Z",
+  "lastMailedOn": "2026-11-15",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1269,6 +1269,20 @@
       "author_name": "",
       "created_at": "2026-11-03T09:15:33.142Z"
     },
+    "05a944c5-8b37-4e4c-9448-3272840de5cf": {
+      "title": "Antifaschismus im Visier von Polizei und Justiz!",
+      "starts_at": "2026-11-17T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Z linkes Zentrum, Samerstr. 11, Rosenheim",
+      "description": "Vortrag im Z linkes Zentrum.",
+      "url": "https://instagram.com/noropression",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794732726035-dd2b3576.jpg",
+      "tags": [],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-15T08:52:06.424Z"
+    },
     "7eed0881-1bd4-4824-9b67-f553b97ee2b6": {
       "title": "PROGRAMMKINO: ROSE",
       "starts_at": "2026-11-18T18:30:00.000Z",
@@ -1358,6 +1372,23 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-08T12:54:30.098Z"
+    },
+    "d1a4fb59-3194-418c-b6ea-1ff8410f1234": {
+      "title": "Angela Aux - Live @ Bebop Schallplatten",
+      "starts_at": "2026-11-20T18:00:00.000Z",
+      "ends_at": "",
+      "location": "Bebop Schallplatten, Samerstr. 4, Rosenheim",
+      "description": "Instore Konzert mit Angela Aux bei Bebop Schallplatten in Rosenheim.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794690523005-ed6144b7.jpg",
+      "tags": [
+        "konzert",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "Tom",
+      "created_at": "2026-11-14T21:08:43.899Z"
     },
     "756dfb5e-e4cf-45f2-a48f-673e6a6e7913": {
       "title": "Adventsmarkt: Die Kunst des Feierns",
@@ -1673,23 +1704,6 @@
       "author_name": "",
       "created_at": "2026-11-09T10:41:23.981Z"
     },
-    "e52dc776-8795-4ccb-8d29-24ccc754164f": {
-      "title": "BREAKOUT + LÄRA – LIVE",
-      "starts_at": "2026-11-30T18:00:00.000Z",
-      "ends_at": "",
-      "location": "Asta-Kneipe, Rosenheim",
-      "description": "Vorverkauf: 8€\nAbendkasse: 12€\nTickets: https://tickets.astakneipe.de/asta/brlae/",
-      "url": "https://astakneipe.de/veranstaltungen/breakout-laera-realease-party/",
-      "image_url": "",
-      "tags": [
-        "konzert",
-        "asta"
-      ],
-      "rrule": "",
-      "rdates": [],
-      "author_name": "",
-      "created_at": "2026-11-03T08:41:46.797Z"
-    },
     "f03d25c8-6499-42a2-841b-d958697dcaed": {
       "title": "Offener Theaterkurs (ab 13 Jahre)",
       "starts_at": "2026-12-01T17:00:00.000Z",
@@ -1783,6 +1797,26 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-08-19T15:45:32.545Z"
+    },
+    "56f220b4-1c04-46b0-8c2a-dbee9b6cf9e4": {
+      "title": "Good Night White Pride konzert",
+      "starts_at": "2026-12-05T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft, Oberaustr. 2, Rosenheim",
+      "description": "Antifaschistisches Konzert mit Enraged Minority, No Future, Bibi Blockwart und Novichoks. Infostände, Solitombola ...",
+      "url": "www.vfbk.net",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794734573366-dc4f9c1a.jpg",
+      "tags": [
+        "konzert",
+        "punk",
+        "hardcore",
+        "soli",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-15T09:22:54.435Z"
     },
     "faf81cc3-ad58-4cd0-b6b0-25210cf8d009": {
       "title": "LGBTQ+ Infostand",
@@ -2007,6 +2041,27 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T09:14:30.457Z"
+    },
+    "39d6994f-a592-4f77-ac16-03842350ec20": {
+      "title": "Konzert mit Peter Coretto, Dankeschatz und 0101",
+      "starts_at": "2026-12-19T19:00:00.000Z",
+      "ends_at": "",
+      "location": "Vetternwirtschaft, Oberaustraße 2, 83026 Rosenheim",
+      "description": "Konzert in der Vetternwirtschaft.\n\nPeter Coretto (Post-Punk / München)\nDankeschatz (Melodic Punkrock / München)\n0101 (Neo-Kraut / Rosenheim)\n\nEinlass: 19 Uhr\nBeginn: 20 Uhr\nEinlass ab 16 Jahren\n\nMehr: https://vfbk.net/",
+      "url": "https://vfbk.net/",
+      "image_url": "",
+      "tags": [
+        "konzert",
+        "post-punk",
+        "punk",
+        "neo-kraut",
+        "vfbk",
+        "live-musik"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-14T14:55:57.530Z"
     },
     "f8035a22-3576-4467-97d9-1c7647ede5ad": {
       "title": "Offener Theaterkurs (ab 13 Jahre)",
