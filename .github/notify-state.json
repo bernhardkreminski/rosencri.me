@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-17T16:47:32.738Z",
-  "lastMailedOn": "2026-11-17",
+  "updatedAt": "2026-11-18T16:19:07.678Z",
+  "lastMailedOn": "2026-11-18",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1714,6 +1714,25 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-03T07:20:46.608Z"
+    },
+    "5bd5b6f4-171c-4f5e-9ca2-1d31d89c87a3": {
+      "title": "Tanzaufführung „Ungebrochen“",
+      "starts_at": "2026-11-29T15:00:00.000Z",
+      "ends_at": "",
+      "location": "Hans-Fischer-Saal, Ludwigsplatz 15, 83022 Rosenheim",
+      "description": "Stoppt Gewalt gegen Frauen – Einführung in das Thema und Tanzstück „Ungebrochen“ mit Mitarbeiterinnen des SKF e.V., Frauenhaus Rosenheim – TS – BGL. Diese Veranstaltung läuft auf Spendenbasis.",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1795003509092-21599f39.jpg",
+      "tags": [
+        "tanz",
+        "performance"
+      ],
+      "rrule": "",
+      "rdates": [
+        "2026-11-29T18:00:00.000Z"
+      ],
+      "author_name": "",
+      "created_at": "2026-11-18T12:05:17.138Z"
     },
     "1752dcae-97c9-491a-9f02-dd1c7e8108b6": {
       "title": "TSCHICK – Junges Theater Rosenheim",
