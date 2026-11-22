@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-20T15:59:03.024Z",
-  "lastMailedOn": "2026-11-20",
+  "updatedAt": "2026-11-22T15:10:04.989Z",
+  "lastMailedOn": "2026-11-22",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1728,19 +1728,19 @@
       "author_name": "",
       "created_at": "2026-11-03T09:16:43.256Z"
     },
-    "277a6ed3-cad1-4045-b311-fab4649f6309": {
+    "d674229d-2841-444b-8192-1064624cf6da": {
       "title": "Zwischen Widerstand und Neuorientierung: Die kurdische Freiheitsbewegung im Wandel",
       "starts_at": "2026-11-28T18:30:00.000Z",
       "ends_at": "",
-      "location": "Samerstraße 11, Z-linkes Zentrum",
-      "description": "Vortrag von Journalist Tim Krüger über die kurdische Freiheitsbewegung.",
+      "location": "Z-linkes Zentrum, Samerstraße 11",
+      "description": "Die kurdische Freiheitsbewegung steht vor einer historischen Zäsur. Nach Jahrzehnten des bewaffneten Konflikts und tiefgreifenden geopolitischen Verschiebungen in der Region sucht die Bewegung im Mittleren Osten nach neuen Wegen für Frieden und demokratische Selbstbestimmung. Mit den seit mehr als zwei Jahren andauernden Verhandlungen zwischen dem inhaftierten PKK-Gründer Abdullah Öcalan und dem türkischen Staat, wächst die Hoffnung auf ein Ende der Gewalt. Doch während die mittlerweile aufgeflöste Arbeiterpartei Kurdistans PKK weitreichende Schritte unternommen hat, lassen die notwendigen Reformen und Demokratisierungsschritte auf Seiten des türkischen Staates noch auf sich warten.\n\nMit unserer Veranstaltung wollen wir die aktuelle Lage in der Türkei und Kurdistan näher beleuchten, die laufenden strategischen Debattten um eine Neuausrichtung der kurdischen Freiheitsbewegung analysieren und diskutieren was es braucht, damit ein wirklicher und demokratischer Friedensprozess denkbar wird.\n\nAls Referent haben wir Tim Krüger eingeladen. Tim Krüger ist freier Journalist und berichtet in seinen Beiträgen für zahlreiche deutsche und internationale Medien schwerpunktmäßig über die politischen und gesellschaftlichen Auseinandersetzungen in Kurdistan, dem Mittleren Osten und Afrika.",
       "url": "",
-      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1795159736721-9f40e708.jpg",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1795353202949-db547abc.jpg",
       "tags": [],
       "rrule": "",
       "rdates": [],
       "author_name": "",
-      "created_at": "2026-11-20T07:28:57.341Z"
+      "created_at": "2026-11-22T13:13:24.307Z"
     },
     "a438f157-a13a-4c25-b5af-119f06b026b9": {
       "title": "SMUG & Kill me after that/KMAT - LIVE",
