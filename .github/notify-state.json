@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-22T15:10:04.989Z",
-  "lastMailedOn": "2026-11-22",
+  "updatedAt": "2026-11-25T17:53:15.718Z",
+  "lastMailedOn": "2026-11-25",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -2289,7 +2289,7 @@
       "starts_at": "2027-01-23T10:00:00.000Z",
       "ends_at": "2027-01-23T16:00:00.000Z",
       "location": "Z - linkes Zentrum, Rosenheim",
-      "description": "Antifa, ja klar!\nEin Bildungsmodul für engagierte\nMenschen\nDieses Seminar richtet sich an alle, die sich gegen Neonazismus, Rassismus und rechte Ideologien engagieren wollen, die diskutieren, dazulernen und sich mit anderen austauschen möchten.\nNie war es wichtiger als heute, sich klar antifaschistisch zu positionieren und Antifa als vielfältige Praxis solidarischen Handelns sichtbar zu machen. Ob junge Aktivist*innen oder „Omas gegen Rechts\": Antifaschismus geht uns alle an.\n23. Januar | 11:00 - 17:00 Uhr Z - linkes Zentrum in Selbstverwaltung\nSamerstraße 11,\n83022 Rosenheim",
+      "description": "Antifa, ja klar!\nEin Bildungsmodul für engagierte\nMenschen\nDieses Seminar richtet sich an alle, die sich gegen Neonazismus, Rassismus und rechte Ideologien engagieren wollen, die diskutieren, dazulernen und sich mit anderen austauschen möchten.\nNie war es wichtiger als heute, sich klar antifaschistisch zu positionieren und Antifa als vielfältige Praxis solidarischen Handelns sichtbar zu machen. Ob junge Aktivist*innen oder „Omas gegen Rechts\": Antifaschismus geht uns alle an.\n23. Januar | 11:00 - 17:00 Uhr Z - linkes Zentrum in Selbstverwaltung\nSamerstraße 11,\n83022 Rosenheim\n\nAnmeldung unter: https://bayern.rosalux.de/veranstaltung/es_detail/D9CO2/antifa-ja-klar",
       "url": "",
       "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1794857846035-3152270c.jpg",
       "tags": [],
@@ -2303,7 +2303,7 @@
       "starts_at": "2027-01-23T19:00:00.000Z",
       "ends_at": "",
       "location": "Z linkes Zentrum, Samerstr 11, Rosenheim",
-      "description": "Tagesseminar",
+      "description": "Tagesseminar\n\nAnmeldung unter: https://bayern.rosalux.de/veranstaltung/es_detail/D9CO2/antifa-ja-klar",
       "url": "",
       "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1791056465453-2fb871dd.jpg",
       "tags": [],
