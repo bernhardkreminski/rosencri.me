@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T17:38:15.381Z",
-  "lastMailedOn": "2026-11-26",
+  "updatedAt": "2026-11-27T17:21:15.008Z",
+  "lastMailedOn": "2026-11-27",
   "events": {
     "6bff7c14-7bc6-4bfb-96d6-6473f309cbdf": {
       "title": "Essbaum Viertel Sommerfest",
@@ -1708,6 +1708,22 @@
       "rdates": [],
       "author_name": "",
       "created_at": "2026-11-09T10:41:23.981Z"
+    },
+    "9b910d55-17c9-47fc-95ce-1d0cc17dcfb1": {
+      "title": "Wohnraum erkämpfen Demo",
+      "starts_at": "2026-11-28T16:00:00.000Z",
+      "ends_at": "",
+      "location": "Salingarten Rosenheim",
+      "description": "⁨⁨\"Wohnraum\": Wenn du das hörst, woran denkst du?\nDie etlichen Stunden, die man verbracht hat, um die Wohnung fürs Studium zu finden. Wie nie etwas gepasst hat, zu teuer, zu weit, zu außerhalb oder zu klein. Vielleicht kommt dir auch die monatliche Verzweiflung in den Kopf, wenn wieder mehr als die Hälfte des Einkommens für die Miete drauf geht. Das Geld, mit dem man sich eigentlich eine Reise, sein Hobby oder die Weihnachtsgeschenke finanzieren wollte, verschwindet ganz schnell, wenn die nächste Mieterhöhung kommt.\nWir können uns das Leben nicht mehr leisten, und verlieren uns immer weiter in Hoffnungslosigkeit.\nBesonders hier in Rosenheim ist die Situation dramatisch. Zu Beginn jedes Semesters stehen viele Studierende ohne Wohnung da. Denn die Wohnkosten hier sind nunmal für die meisten Menschen unbezahlbar. Rosenheim ist die Kleinstadt mit den stärksten Mietsteigerungen Deutschlands. \nDoch: Wohnraum ist ein Grundbedürfnis und kein Luxus. In unserem Gesellschaftssystem wird unser Wohnraum wie eine Ware gehandelt, obwohl er doch so grundlegend für unser individuelles und kollektives Leben ist. Hier kann und muss sich etwas ändern. Steigende Mieten, Leerstand, fehlende Sozialwohnungen und ein unbezahlbareres Leben: So muss die Welt nicht aussehen.  \nWir gehen gemeinsam auf die Straße, weil wir diese Zustände nicht akzeptieren wollen. Die Bundesregierung gibt Milliarden für Aufrüstung und Millitär aus, um dann zu behauten, es sei kein Geld für bspw. soziale Bereiche vorhanden, oder hier müsse gekürzt werden, da die Rüstungsausgaben nunmal Priorität hätten.\nWir wollen, dass niemand Angst haben muss, sich keine Wohnung leisten zu können, Schulen und Krankenhäuser zu Grunde gespart werden und Milliarden Euro in die Rüstungsindustrie gehen.\n \nDoch die Regierung wird nicht freiwillig anfangen, Geld in sinnvollere Dinge zu stecken. Immobilienkonzerne werden nicht aus Gutherzigkeit aufhören, unseren Wohnraum als profitable Ware zu handeln. Wir müssen dafür kämpfen, dass sich etwas verändert. Denn soziale Rechte wie der Achtstundentag, Frauenrechte, und alle anderen sozialen fortschrittlichen Verbesserungen wurden nicht geschenkt, sondern immer hart erkämpft.\n \nDeswegen: Lasst uns jetzt gemeinsam Wohnraum erkämpfen!\nGegen Mietwahnsinn!\nGegen Leerstand!\nGegen Profit mit UNSEREM Wohnraum!\n \nFür das gute Leben für alle!⁩",
+      "url": "",
+      "image_url": "https://pyftcvikhuzleqxjsecn.supabase.co/storage/v1/object/public/posters/1795767196518-35e745a4.jpg",
+      "tags": [
+        "soli"
+      ],
+      "rrule": "",
+      "rdates": [],
+      "author_name": "",
+      "created_at": "2026-11-27T08:13:17.351Z"
     },
     "c6f776ca-b6ae-4e6e-b7f8-9a8482494791": {
       "title": "Bavarian Metal Battle",
